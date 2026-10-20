@@ -152,36 +152,33 @@ EFFECTS = {
 # ---------- Effect modules ----------
 
 def apply_autotune(track, params):
-    """Attempt pitchbend assignment on channel-0 notes; invalid for Mido notes."""
+    """Insert pitch-bend messages and rescale CC1 modulation."""
     min_semitone = params.get('min_semitone', 12)
     max_semitone = params.get('max_semitone', 50)
     velocity = params.get('velocity', 0.8)
 
     for msg in track:
         if msg.type == 'note_on' and msg.channel == 0:
-            # Legacy attempt: note_on does not support a pitchbend attribute.
             bend = int(min_semitone + (max_semitone - min_semitone) * msg.velocity * 0.5)
-            msg.pitchbend = bend
-            msg.velocity = int(msg.velocity * velocity)
+            track.insert(track.index(msg) + 1, mido.Message('pitchwheel',
+                         channel=msg.channel, pitch=bend, time=0))
+            msg.velocity = max(0, min(127, int(msg.velocity * velocity)))
         elif msg.type == 'control_change':
-            # CC1 = modulation
             if msg.control == 1:
-                msg.value = int(12 + (50 - 12) * msg.value * 0.5)
+                msg.value = max(0, min(127, int(12 + (50 - 12) * msg.value * 0.5)))
 
 
 def apply_pitch_shift(track, params):
-    """Attempt transposition; msg.pitch is not a valid note_on attribute."""
+    """Transpose note_on messages by a number of semitones."""
     semitones = params.get('semitones', 0)
     velocity = params.get('velocity', 0.9)
 
     for msg in track:
         if msg.type == 'note_on':
-            # Shift pitch by semitones
-            new_pitch = msg.pitch + semitones
+            new_pitch = msg.note + semitones
             if 0 <= new_pitch <= 127:
-                new_note = mido.mid2freq(new_pitch / 12 * 440)  # not used directly
-                msg.pitch = new_pitch
-            msg.velocity = int(msg.velocity * velocity)
+                msg.note = new_pitch
+            msg.velocity = max(0, min(127, int(msg.velocity * velocity)))
 
 
 def apply_filter(track, params):
@@ -195,7 +192,7 @@ def apply_filter(track, params):
         if msg.type == 'control_change':
             # CC74 = filter cutoff
             if msg.control == 74:
-                msg.value = int(cutoff_low + (cutoff_high - cutoff_low) * msg.value * 0.5)
+                msg.value = max(0, min(127, int(cutoff_low + (cutoff_high - cutoff_low) * msg.value * 0.5)))
             # CC71 = filter resonance
             elif msg.control == 71:
                 msg.value = resonance

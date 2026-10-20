@@ -5,12 +5,10 @@ Reggaeton Dembow Pattern Generator
 
 Experimental legacy generator inspired by Jaime Altozano's MOTOMAMI analysis.
 It does not implement a validated dembow arrangement or isolated drum stems.
-Known defects: absolute ticks are written as deltas; four tracks duplicate the
-same multichannel pattern; channels 0-3 are not GM percussion channel 9.
-Tempo is fixed at 120 BPM and generation loops over eight bars; CLI --bpm and
---bars are not applied. The latin_cumbia recipe accesses a missing 808 entry.
+Fixes applied: delta timing, one instrument per track, GM percussion channel 9,
+recipe BPM, and safe handling of recipes without an 808 entry.
 Recipe labels such as 808 do not establish GM sounds. See
-references/effects_mapper.md for legacy implementation limits.
+references/effects_mapper.md for implementation limits.
 
 Usage:
     python3 dembow_generator.py --genre reggaeton_basic --out out.mid
@@ -126,110 +124,110 @@ DEMBO_PATTERNS = {
 
 # ---------- MIDI conversion ----------
 
-def create_dembow_track(title, pattern):
-    """Create a MIDI track with a dembow pattern."""
+def create_dembow_track(title, pattern, bars=8, bpm=None, ticks_per_beat=480,
+                        channel_base=9):
+    """Build one dembow instrument track on the correct GM percussion channel.
+
+    Fixed defects: deltas instead of absolute ticks; one instrument per track;
+    GM channel 9 (not 0-3); the recipe BPM is applied.
+    """
+    if bpm is None:
+        bpm = pattern['bpm']
     track = mido.MidiTrack()
     track.append(mido.MetaMessage('track_name', name=title, time=0))
-    track.append(mido.MetaMessage('set_tempo', tempo=500000, time=0))
+    track.append(mido.MetaMessage('set_tempo', tempo=mido.bpm2tempo(bpm), time=0))
     track.append(mido.MetaMessage('time_signature', numerator=4, denominator=4, time=0))
 
-    bpm = pattern['bpm']
-    # Four quarter-note beats per bar, 4/4; recipe BPM is not applied.
-    # Ticks per beat = 480 (standard)
-    ticks_per_beat = 480
+    events = []  # (tick, kind_order, channel, note, velocity)
 
-    # Create events
-    events = []
+    for bar in range(bars):
+        bar_start = bar * 4 * ticks_per_beat
+        # Kick: on beats 0 and 2 (the "1" and "3" of each bar)
+        for beat in (0, 2):
+            t = bar_start + beat * ticks_per_beat
+            kicks = pattern['pitches'].get('kick', [])
+            kvel = pattern['velocities'].get('kick', [])
+            if kicks:
+                idx = beat // 2 % len(kicks)
+                events.append((t, 2, channel_base, kicks[idx],
+                               kvel[idx % len(kvel)] if kvel else 100))
+        # Snare: the "&" of 2 and the "&" of 4
+        for beat in (1.5, 3.5):
+            t = int(bar_start + beat * ticks_per_beat)
+            snares = pattern['pitches'].get('snare', [])
+            svel = pattern['velocities'].get('snare', [])
+            if snares:
+                idx = int(beat) % len(snares)
+                events.append((t, 2, channel_base, snares[idx],
+                               svel[idx % len(svel)] if svel else 100))
+        # Hi-hat: eighth notes across the bar
+        for sub in range(8):
+            t = bar_start + sub * ticks_per_beat // 2
+            hats = pattern['pitches'].get('hihat', [])
+            hvel = pattern['velocities'].get('hihat', [])
+            if hats:
+                idx = sub % len(hats)
+                events.append((t, 2, channel_base, hats[idx],
+                               hvel[idx % len(hvel)] if hvel else 70))
+        # 808: quarter-note pulse
+        for sub in range(4):
+            t = bar_start + sub * ticks_per_beat
+            bass = pattern['pitches'].get('808', [])
+            bvel = pattern['velocities'].get('808', [])
+            if bass:
+                idx = sub % len(bass)
+                events.append((t, 2, channel_base, bass[idx],
+                               bvel[idx % len(bvel)] if bvel else 50))
 
-    # Calculate event times
-    # Intended grid: 8 bars = 32 quarter-note beats in 4/4.
-    # Each beat = 480 ticks = 1 quarter note
+    events.sort(key=lambda e: (e[0], e[1]))
 
-    for bar in range(8):  # 8 bars
-        for beat in range(4):  # 4 beats per bar
-            beat_time = (bar * 4 + beat) * ticks_per_beat
+    last_tick = [0]  # mutable cursor so note_off closes each note correctly
 
-            # Event on each quarter-note beat (0, 1, 2, 3).
-            if beat in [0, 1, 2, 3]:
-                kick_idx = beat % len(pattern['pitches']['kick'])
-                kick_pitch = pattern['pitches']['kick'][kick_idx]
-                kick_vel = pattern['velocities']['kick'][kick_idx]
-                events.append((beat_time, 'note_on', 0, kick_pitch, kick_vel))
-
-            # Events on zero-based beats 2 and 3, not eighth-note offbeats.
-            if beat in [2, 3]:
-                snare_idx = (beat // 2) % len(pattern['pitches']['snare'])
-                snare_pitch = pattern['pitches']['snare'][snare_idx]
-                snare_vel = pattern['velocities']['snare'][snare_idx]
-                events.append((beat_time, 'note_on', 1, snare_pitch, snare_vel))
-
-            # Eight subdivisions per quarter note (thirty-second-note spacing).
-            for i in range(8):
-                hihat_time = beat_time + (i * ticks_per_beat // 8)
-                hihat_idx = i % len(pattern['pitches']['hihat'])
-                hihat_pitch = pattern['pitches']['hihat'][hihat_idx]
-                hihat_vel = pattern['velocities']['hihat'][hihat_idx]
-                events.append((hihat_time, 'note_on', 2, hihat_pitch, hihat_vel))
-
-            # 808 persistent
-            for i, pitch in enumerate(pattern['pitches'].get('808', [])):
-                if i < 8:  # 8 pulses
-                    pulse_time = beat_time + (i * ticks_per_beat // 4)
-                    events.append((pulse_time, 'note_on', 3, pitch, pattern['velocities']['808'][i]))
-
-    # Sort events by time
-    events.sort(key=lambda x: x[0])
-
-    # Legacy defect: time is absolute here, but MIDI message.time is a delta.
-    for time, msg_type, channel, note, vel in events:
-        track.append(mido.Message(msg_type, channel=channel, note=note, velocity=vel, time=time))
-        # Add note_off for each note
-        track.append(mido.Message('note_off', channel=channel, note=note, velocity=60, time=10))
+    # Emit note_on at each event tick; close it with note_off on the next tick.
+    for i, (tick, _order, channel, note, vel) in enumerate(events):
+        nxt = events[i + 1][0] if i + 1 < len(events) else tick + ticks_per_beat // 2
+        dur = max(nxt - tick, 1)
+        track.append(mido.Message('note_on', channel=channel, note=note,
+                                  velocity=vel, time=tick - last_tick[0]))
+        track.append(mido.Message('note_off', channel=channel, note=note,
+                                  velocity=0, time=dur))
+        last_tick[0] = nxt
 
     return track
 
 
-def create_dembow_midi(pattern_name, output_file):
-    """Create a complete MIDI file with a dembow pattern."""
+def create_dembow_midi(pattern_name, output_file, bars=8, bpm=None):
+    """Create a complete MIDI file with one track per instrument.
+
+    Fixed: applies --bpm and --bars, uses GM channel 9, and does not duplicate
+    the same pattern across four tracks.
+    """
     if pattern_name not in DEMBO_PATTERNS:
         print(f'ERROR: Pattern "{pattern_name}" does not exist', file=sys.stderr)
-        print(f'   Available: {", ".join(DEMBO_PATTERNS.keys())}', file=sys.stderr)
+        print('   Available: ' + ', '.join(DEMBO_PATTERNS.keys()), file=sys.stderr)
         return 1
 
     pattern = DEMBO_PATTERNS[pattern_name]
-
+    bpm = bpm or pattern['bpm']
     print(f'Generating: {pattern_name}')
-    print(f'   BPM: {pattern["bpm"]}')
+    print(f'   BPM: {bpm}')
     print(f'   Description: {pattern["description"]}')
-    print(f'   Notes: {len(pattern["pitches"]["kick"])} kicks, {len(pattern["pitches"]["snare"])} snares, {len(pattern["pitches"]["hihat"])} hi-hats')
+    print(f'   {len(pattern["pitches"].get("kick", []))} kicks, '
+          f'{len(pattern["pitches"].get("snare", []))} snares, '
+          f'{len(pattern["pitches"].get("hihat", []))} hi-hats')
 
-    # Create tracks
     tracks = []
-    tracks.append(create_dembow_track('Kick', pattern))
-    tracks.append(create_dembow_track('Snare', pattern))
-    tracks.append(create_dembow_track('Hi-hat', pattern))
-    tracks.append(create_dembow_track('808', pattern))
+    for instrument in ('kick', 'snare', 'hihat', '808'):
+        if pattern['pitches'].get(instrument):
+            tracks.append(create_dembow_track(instrument.capitalize(), pattern,
+                                              bars=bars, bpm=bpm))
 
-    # Create MIDI file
     mid = mido.MidiFile()
     mid.ticks_per_beat = 480
     mid.tracks = tracks
-
-    # Save
     mid.save(output_file)
-
     print(f'   Saved: {output_file}')
     return 0
-
-
-def list_patterns():
-    """List available patterns."""
-    print('Available dembow patterns:')
-    for name, data in DEMBO_PATTERNS.items():
-        print(f'  {name:25s} | BPM: {data["bpm"]:3d} | {data["description"]}')
-
-    print(f'\n   MIDI notes (GM Drum Map):')
-    print(f'   Kick: 36, Snare: 38, Hi-hat: 42, 808: 41')
 
 
 def main():

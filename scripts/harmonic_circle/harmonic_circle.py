@@ -149,15 +149,13 @@ CLASSICAL_PROGRESSIONS = [
 
 def get_scale_notes(root, quality='maj'):
     """Get chord notes from the root and quality."""
-    root_idx = SCALE_DEGREES[root]
+    root_semi = SCALE_DEGREES.get(root, 0)
     intervals = QUALITIES[quality]
 
-    # Adjust to pitch 0-127 (MIDI)
+    # C3 = MIDI 48 as the bass octave; degrees map to proper semitones.
     notes = []
     for interval in intervals:
-        note_idx = (root_idx + interval) % 12
-        # Convert to pitch 0-127 (assuming C3 = 48, A2 = 45)
-        pitch = 48 + (note_idx * 2)  # ~2 semitones per degree on average
+        pitch = 48 + root_semi + interval
         notes.append(pitch)
 
     return notes
@@ -180,16 +178,16 @@ def create_harmony_track(title, notes, channel=0):
     if not notes:
         return track
 
-    # Intended duration: 2 seconds = 4 quarter notes at 120 BPM.
-    seconds_per_chord = 2.0
     ticks_per_beat = 480
-    beats_per_second = 60.0 / 120.0  # 0.5 seconds per quarter note
-    ticks_per_second = ticks_per_beat * beats_per_second
+    ticks_per_chord = 4 * ticks_per_beat  # 4 beats (1 bar) per chord
 
+    last_tick = 0
     for i, note in enumerate(notes):
-        chord_time = i * ticks_per_second * 4  # 4 notes per chord
-        track.append(mido.Message('note_on', channel=channel, note=note, velocity=80, time=int(chord_time)))
-        track.append(mido.Message('note_off', channel=channel, note=note, velocity=60, time=10))
+        chord_time = i * ticks_per_chord
+        delta = chord_time - last_tick
+        track.append(mido.Message('note_on', channel=channel, note=note, velocity=80, time=delta))
+        track.append(mido.Message('note_off', channel=channel, note=note, velocity=60, time=ticks_per_beat))
+        last_tick = chord_time + ticks_per_beat
 
     return track
 
@@ -205,14 +203,19 @@ def create_bass_track(title, progressions):
     for prog in progressions:
         for chord in prog['progression']:
             root_name = chord if isinstance(chord, str) else chord.get('root', 'I')
-            root_idx = SCALE_DEGREES.get(root_name, 0)
-            bass_note = 36 + (root_idx * 2)  # C1, D1, E1, etc.
+            root_semi = SCALE_DEGREES.get(root_name, 0)
+            bass_note = 36 + root_semi  # one octave below C3
             bass_notes.append((bass_note, root_name))
 
+    ticks_per_beat = 480
+    ticks_per_chord = 4 * ticks_per_beat
+    last_tick = 0
     for i, (note, root) in enumerate(bass_notes):
-        chord_time = i * 960  # nominal 1-second spacing; wrongly written as deltas
-        track.append(mido.Message('note_on', channel=1, note=note, velocity=70, time=int(chord_time)))
-        track.append(mido.Message('note_off', channel=1, note=note, velocity=50, time=10))
+        chord_time = i * ticks_per_chord
+        delta = chord_time - last_tick
+        track.append(mido.Message('note_on', channel=1, note=note, velocity=70, time=delta))
+        track.append(mido.Message('note_off', channel=1, note=note, velocity=50, time=ticks_per_beat))
+        last_tick = chord_time + ticks_per_beat
 
     return track
 
@@ -234,25 +237,20 @@ def create_harmony_midi(progressions, output_file):
 
     # Track 0: Harmonic voice
     voice_notes = []
+    arpeggio_notes = []
+    chord_index = 0
     for prog in progressions:
+        chord_types = prog.get('chord_types', [])
         for chord in prog['progression']:
-            notes = get_chord(chord, prog.get('quality', 'maj'))
+            quality = chord_types[chord_index % len(chord_types)] if chord_types else prog.get('quality', 'maj')
+            notes = get_chord(chord, quality)
             voice_notes.extend(notes)
+            arpeggio = notes + notes[::-1]
+            arpeggio_notes.extend(arpeggio[::2])
+            chord_index += 1
 
     tracks.append(create_harmony_track('Voice', voice_notes))
-
-    # Track 1: Bass
     tracks.append(create_bass_track('Bass', progressions))
-
-    # Track 2: Arpeggio
-    arpeggio_notes = []
-    for prog in progressions:
-        for chord in prog['progression']:
-            notes = get_chord(chord, prog.get('quality', 'maj'))
-            # Ascending arpeggio - reversed
-            arpeggio = notes + notes[::-1]
-            arpeggio_notes.extend(arpeggio[::2])  # Steps of 2
-
     tracks.append(create_harmony_track('Arpeggio', arpeggio_notes))
 
     # Create file
