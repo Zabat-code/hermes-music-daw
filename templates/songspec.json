@@ -1,0 +1,105 @@
+{
+  "title": "Título de la pieza",
+  "description": "Un par de líneas describiendo la canción, su emoción y su destino.",
+  "key": "D",
+  "scale": "mixolidio",
+  "tempo": 150,
+  "meter": [4, 4],
+  "humanize": {"seed": 42, "velocity": 0.07, "ticks": 4},
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "progression": ["D", "A", "Bm", "G"],
+      "dynamics": "mp",
+      "tracks": [
+        {"role": "guitar", "instrument": 30, "pattern": "arpeggio_up", "register": "high", "dynamics": "mp"},
+        {"role": "bass", "instrument": 33, "pattern": "bass_root", "register": "low", "dynamics": "mp"},
+        {"role": "campanas", "instrument": 12, "pattern": "arpeggio_up", "register": "high", "dynamics": "p"}
+      ]
+    },
+    {
+      "name": "desarrollo",
+      "bars": 10,
+      "progression": ["D", "F#m", "G", "D", "Bm", "G", "A", "D", "F#m", "G"],
+      "dynamics": "mf",
+      "melody": {"pattern": "escala_ascendente", "instrument": 73, "track": "flauta", "octave": 0, "dynamics": "mf"},
+      "tracks": [
+        {"role": "bass", "instrument": 33, "pattern": "bass_pulse", "register": "low", "dynamics": "mf"},
+        {"role": "strings", "instrument": 48, "pattern": "pad", "register": "high", "dynamics": "mp"},
+        {"role": "campanas", "instrument": 12, "pattern": "arpeggio_up", "register": "high", "dynamics": "mp"}
+      ]
+    },
+    {
+      "name": "melodia_A",
+      "bars": 8,
+      "progression": ["D", "Bm", "G", "A", "D", "G", "A", "D"],
+      "dynamics": "f",
+      "melody": {"pattern": "salto_climax", "instrument": 40, "track": "fiddle1", "octave": 1, "dynamics": "ff"},
+      "tracks": [
+        {"role": "bass", "instrument": 33, "pattern": "bass_pulse", "register": "low", "dynamics": "f"},
+        {"role": "guitar", "instrument": 30, "pattern": "block_chords", "register": "mid", "dynamics": "f"},
+        {"role": "campanas", "instrument": 12, "pattern": "arpeggio_up", "register": "high", "dynamics": "f"},
+        {"role": "segundo_fiddle", "instrument": 40, "pattern": "escala_ascendente", "register": "mid", "dynamics": "mf"}
+      ]
+    },
+    {
+      "name": "climax",
+      "bars": 8,
+      "progression": ["A", "Bm", "F#m", "G", "A", "G", "D", "A"],
+      "dynamics": "ff",
+      "melody": {"pattern": "salto_climax", "instrument": 40, "track": "fiddle1", "octave": 2, "dynamics": "fff"},
+      "tracks": [
+        {"role": "bass", "instrument": 33, "pattern": "bass_pulse", "register": "low", "dynamics": "ff"},
+        {"role": "guitar", "instrument": 30, "pattern": "block_chords", "register": "mid", "dynamics": "ff"},
+        {"role": "strings", "instrument": 48, "pattern": "pad", "register": "high", "dynamics": "f"},
+        {"role": "campanas", "instrument": 12, "pattern": "arpeggio_updown", "register": "high", "dynamics": "ff"},
+        {"role": "segundo_fiddle", "instrument": 40, "pattern": "giro_ornatical", "register": "mid", "dynamics": "f"},
+        {"role": "choir", "instrument": 53, "pattern": "choir_pad", "register": "mid", "dynamics": "ff"}
+      ]
+    },
+    {
+      "name": "desarrollo_alterado",
+      "bars": 8,
+      "progression": ["Bm", "G", "D", "A", "F#m", "D", "Bm", "E7"],
+      "dynamics": "f",
+      "melody": {"pattern": "giro_ornacional", "instrument": 40, "track": "fiddle2", "octave": 1, "dynamics": "ff"},
+      "tracks": [
+        {"role": "bass", "instrument": 33, "pattern": "bass_root", "register": "low", "dynamics": "f"},
+        {"role": "guitar", "instrument": 30, "pattern": "block_chords", "register": "mid", "dynamics": "f"},
+        {"role": "strings", "instrument": 48, "pattern": "pad", "register": "high", "dynamics": "mf"},
+        {"role": "campanas", "instrument": 12, "pattern": "arpeggio_up", "register": "high", "dynamics": "f"},
+        {"role": "flauta", "instrument": 73, "pattern": "arpeggio_up", "register": "high", "dynamics": "mf"},
+        {"role": "choir", "instrument": 53, "pattern": "choir_pad", "register": "mid", "dynamics": "f"}
+      ]
+    },
+    {
+      "name": "melodia_A_remix",
+      "bars": 8,
+      "progression": ["D", "G", "A", "D", "G", "A", "D", "D"],
+      "dynamics": "mf",
+      "melody": {"pattern": "escala_ascendente", "instrument": 40, "track": "fiddle1", "octave": 0, "dynamics": "f"},
+      "tracks": [
+        {"role": "bass", "instrument": 33, "pattern": "bass_pulse", "register": "low", "dynamics": "mf"},
+        {"role": "guitar", "instrument": 30, "pattern": "block_chords", "register": "mid", "dynamics": "mf"},
+        {"role": "campanas", "instrument": 12, "pattern": "arpeggio_up", "register": "high", "dynamics": "f"},
+        {"role": "choir", "instrument": 53, "pattern": "pad", "register": "mid", "dynamics": "mp"},
+        {"role": "segundo_fiddle", "instrument": 40, "pattern": "escala_ascendente", "register": "mid", "dynamics": "mf"}
+      ]
+    },
+    {
+      "name": "intro_loop",
+      "bars": 4,
+      "progression": ["D", "A", "Bm", "G"],
+      "dynamics": "mp",
+      "tracks": [
+        {"role": "guitar", "instrument": 30, "pattern": "arpeggio_up", "register": "high", "dynamics": "mp"},
+        {"role": "bass", "instrument": 33, "pattern": "bass_root", "register": "low", "dynamics": "mp"},
+        {"role": "campanas", "instrument": 12, "pattern": "arpeggio_up", "register": "high", "dynamics": "p"}
+      ]
+    }
+  ],
+  "tracks_global": [
+    {"role": "bateria", "instrument": 0, "pattern": "drum_metal", "is_drum": true, "channel": 9, "dynamics": "f"}
+  ]
+}

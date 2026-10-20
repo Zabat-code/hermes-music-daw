@@ -1,0 +1,3929 @@
+{
+  "schema_version": 1,
+  "note": "Contratos mínimos candidatos, NO 100 estilos verificados por escucha",
+  "sources": {
+    "huddersfield_metal": "https://pure.hud.ac.uk/en/publications/harmonic-structures-in-twenty-first-century-metal-music-a-harmoni",
+    "garza_metal": "https://mtosmt.org/issues/mto.21.27.1/mto.21.27.1.garza.php",
+    "garcia_drums": "https://garciamusic.com/educator/articles/swing.bossa.samba.drum.html",
+    "smithsonian_bell": "https://folkways.si.edu/braiding-rhythms-the-role-of-bell-patterns-in-west-african-and-afro-caribbean-music/tools-for-teaching/smithsonian",
+    "ableton_dnb": "https://www.ableton.com/en/blog/dnb-beats-and-sub-bass-tutorial-dj/",
+    "ableton_breaks": "https://www.ableton.com/en/blog/paradox-breakbeat-mastery/",
+    "smithsonian_zydeco": "https://folkways.si.edu/lesson/instruments-of-cajun-and-zydeco",
+    "smithsonian_bluegrass": "https://folkways.si.edu/bluegrass-folkways-american-roots-tradition/history/music/article/smithsonian",
+    "andalucia_compas": "https://www.juntadeandalucia.es/aaiicc/flamenco/content/cantes-de-comp%C3%A1s-mixto",
+    "smithsonian_tango": "https://folkways.si.edu/dance-traditions-argentina/chacarera-tango/music/tools-for-teaching/smithsonian",
+    "smithsonian_calypso": "https://folkways.si.edu/catch-calypso-beat-put-on-your-feet/music/tools-for-teaching/smithsonian",
+    "mto_loops": "https://www.mtosmt.org/issues/mto.19.25.4/mto.19.25.4.duinker.html",
+    "mto_drums": "https://mtosmt.org/issues/mto.24.30.2/mto.24.30.2.geary.html",
+    "mto_hiphop": "https://mtosmt.org/issues/mto.20.26.2/mto.20.26.2.adams.php",
+    "mto_hardcore": "https://mtosmt.org/issues/mto.19.25.1/mto.19.25.1.pearson.html",
+    "mto_funk": "https://www.mtosmt.org/issues/mto.16.22.2/mto.16.22.2.cohn.php",
+    "eno_ambient": "https://static1.squarespace.com/static/5d4dcd89a70bc90001638861/t/5d9ca5a21e81bb3340e041d3/1570547107101/eno-ambient.pdf",
+    "hud_drone": "https://eprints.hud.ac.uk/id/eprint/16268/3/GloverDec12Niblock_paper.pdf",
+    "lsbu_gabber": "https://openresearch.lsbu.ac.uk/item/8q681",
+    "smithsonian_mariachi": "https://folkways.si.edu/latino-music-usa/mariachi-music-in-mexico-and-the-united-states",
+    "reggaeton_dem_bow": "https://wayneandwax.com/pdfs/dembow-paper-proofs.pdf"
+  },
+  "profiles": {
+    "afrobeat": {
+      "id": "afrobeat",
+      "family": "África, Caribe y criollo",
+      "differentiator": "ostinati interdependientes, bajo, batería, percusión/guitarras/metales; crecimiento por capas, no patrón de cuatro golpes [4].",
+      "minimum_identity": [
+        "ostinatos de funciones distintas",
+        "ostinati interdependientes, bajo, batería, percusión/guitarras/metales; crecimiento por capas, no patrón de cuatro golpes [4]."
+      ],
+      "required_roles": [
+        "groove_kit",
+        "ostinato_bass",
+        "interlocking_guitar_or_keys",
+        "horns_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 2,
+      "requires_choice": true,
+      "variants": {
+        "classic_band": {
+          "minimum_identity": [
+            "ostinati de varias capas, sección de metales y crecimiento largo"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "ostinati de varias capas, sección de metales y crecimiento largo",
+          "evidence_level": "provisional"
+        },
+        "modern_fusion": {
+          "minimum_identity": [
+            "mantener ostinati de afrobeat con timbres contemporáneos; no llamarlo Afrobeats"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "mantener ostinati de afrobeat con timbres contemporáneos; no llamarlo Afrobeats",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "family",
+      "sources": [
+        "smithsonian_bell"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "alternative": {
+      "id": "alternative",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "etiqueta paraguas: exigir subestilo de referencia antes de fijar reglas.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "etiqueta paraguas: exigir subestilo de referencia antes de fijar reglas."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "guitar_rock": {
+          "minimum_identity": [
+            "riff/contraste de rock alternativo"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "riff/contraste de rock alternativo"
+        },
+        "electronic": {
+          "minimum_identity": [
+            "producción electrónica y forma de canción"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "producción electrónica y forma de canción"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "ambient": {
+      "id": "ambient",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "texturas largas y espacio con baja actividad; bombo no obligatorio.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "texturas largas y espacio con baja actividad; bombo no obligatorio."
+      ],
+      "required_roles": [
+        "sustained_textures"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "drone",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "eno_ambient"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "bachata": {
+      "id": "bachata",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "interacción de requinto/guitarra rítmica, bajo, bongó y güira; secuencias y remates por sección.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "interacción de requinto/guitarra rítmica, bajo, bongó y güira; secuencias y remates por sección."
+      ],
+      "required_roles": [
+        "requinto_or_lead_guitar",
+        "rhythm_guitar",
+        "bass",
+        "bongo",
+        "guira"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "tradicional": {
+          "minimum_identity": [
+            "requinto, segunda, bongó y güira con frase de respuesta"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "requinto, segunda, bongó y güira con frase de respuesta"
+        },
+        "urbana": {
+          "minimum_identity": [
+            "célula de bachata integrada con bajo/producción modernos"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "célula de bachata integrada con bajo/producción modernos"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "baroque": {
+      "id": "baroque",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "contrapunto/continuo y organización formal según danza/fuga/concierto; prohibir kit pop como default.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "contrapunto/continuo y organización formal según danza/fuga/concierto; prohibir kit pop como default."
+      ],
+      "required_roles": [
+        "contrapuntal_voices",
+        "continuo_or_harmonic_support"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "black_metal": {
+      "id": "black_metal",
+      "family": "Metal y derivados",
+      "differentiator": "tremolo picking/textura densa; modalismo menor y acordes no diatónicos para atmósfera [1].",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "tremolo picking/textura densa; modalismo menor y acordes no diatónicos para atmósfera [1]."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "tremolo_guitar",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "riff_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "atmospheric": {
+          "minimum_identity": [
+            "textura en capas con tremolo y cambios de densidad"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "textura en capas con tremolo y cambios de densidad"
+        },
+        "symphonic": {
+          "minimum_identity": [
+            "capas orquestales tras guitarra tremolo y kit"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "capas orquestales tras guitarra tremolo y kit"
+        },
+        "raw": {
+          "minimum_identity": [
+            "tremolo y producción cruda sin pads obligatorios"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "tremolo y producción cruda sin pads obligatorios"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "huddersfield_metal",
+        "garza_metal"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "bluegrass": {
+      "id": "bluegrass",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "banjo/mandolina/guitarra, bajo y breaks solistas acústicos; batería no obligatoria.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "banjo/mandolina/guitarra, bajo y breaks solistas acústicos; batería no obligatoria."
+      ],
+      "required_roles": [
+        "banjo_or_fiddle_or_mandolin",
+        "acoustic_bass",
+        "acoustic_rhythm"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "traditional": {
+          "minimum_identity": [
+            "banda acústica con banjo/fiddle/mandolina, bajo en pulso y breaks rotativos"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "banda acústica con banjo/fiddle/mandolina, bajo en pulso y breaks rotativos",
+          "evidence_level": "provisional"
+        },
+        "progressive": {
+          "minimum_identity": [
+            "instrumentos acústicos y breaks con armonía extendida"
+          ],
+          "harmony_strategy": "jazz_cycle",
+          "differentiator": "instrumentos acústicos y breaks con armonía extendida",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "smithsonian_bluegrass"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "blues": {
+      "id": "blues",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "fraseo con inflexión blues, call-response y bajo/acompañamiento acordes con el subestilo; 12 compases es frecuente, no universal.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "fraseo con inflexión blues, call-response y bajo/acompañamiento acordes con el subestilo; 12 compases es frecuente, no universal."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "blues_12",
+      "motif_bars": 12,
+      "groove_cycle_bars": 12,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "bolero": {
+      "id": "bolero",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "acompañamiento lento con fraseo cantabile, bajo/percusión adecuados a bolero cubano/mexicano.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "acompañamiento lento con fraseo cantabile, bajo/percusión adecuados a bolero cubano/mexicano."
+      ],
+      "required_roles": [
+        "tradition_specific_percussion",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "bossa_nova": {
+      "id": "bossa_nova",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "patrón sutil de guitarra y bajo/pandereta o kit suave, síncopa brasileña; no plantilla samba con BPM menor [2].",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "patrón sutil de guitarra y bajo/pandereta o kit suave, síncopa brasileña; no plantilla samba con BPM menor [2]."
+      ],
+      "required_roles": [
+        "guitar_syncopation",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "jazz_cycle",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "garcia_drums"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "breakbeat": {
+      "id": "breakbeat",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "break recortado/reordenado como material principal, no four-on-floor renombrado [3].",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "break recortado/reordenado como material principal, no four-on-floor renombrado [3]."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "ableton_breaks"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "breaks": {
+      "id": "breaks",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "variante de breakbeat con fraseo de pista y bajo; definir referencia concreta.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "variante de breakbeat con fraseo de pista y bajo; definir referencia concreta."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "calypso": {
+      "id": "calypso",
+      "family": "África, Caribe y criollo",
+      "differentiator": "fraseo vocal narrativo (si no hay voz: inspirado), percusión y acompañamiento caribeño.",
+      "minimum_identity": [
+        "ostinatos de funciones distintas",
+        "fraseo vocal narrativo (si no hay voz: inspirado), percusión y acompañamiento caribeño."
+      ],
+      "required_roles": [
+        "groove_percussion",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "narrative": {
+          "minimum_identity": [
+            "letra narrativa y fraseos de llamada-respuesta"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "letra narrativa y fraseos de llamada-respuesta",
+          "evidence_level": "provisional"
+        },
+        "instrumental_steelband": {
+          "minimum_identity": [
+            "adaptación instrumental con steelpan; no confundir con presencia de letra"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "adaptación instrumental con steelpan; no confundir con presencia de letra",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "smithsonian_calypso"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "cha_cha": {
+      "id": "cha_cha",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "marcar pulsación/danza y güiro/campana/piano, con estructura afro-cubana; no usar clave automática sin determinar variante.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "marcar pulsación/danza y güiro/campana/piano, con estructura afro-cubana; no usar clave automática sin determinar variante."
+      ],
+      "required_roles": [
+        "tradition_specific_percussion",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 2,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "chillout": {
+      "id": "chillout",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "finalidad/escena, no reglas musicales únicas; definir subestilo.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "finalidad/escena, no reglas musicales únicas; definir subestilo."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "ambient": {
+          "minimum_identity": [
+            "textura de baja actividad sin beat obligatorio"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "textura de baja actividad sin beat obligatorio",
+          "evidence_level": "provisional"
+        },
+        "downtempo": {
+          "minimum_identity": [
+            "beat relajado y bajo leve con secciones"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "beat relajado y bajo leve con secciones",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "chillwave": {
+      "id": "chillwave",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "texturas nostálgicas lo-fi/synth y estructura pop/electrónica según referencia.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "texturas nostálgicas lo-fi/synth y estructura pop/electrónica según referencia."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "classical": {
+      "id": "classical",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "etiqueta de época/uso ambiguo: si clasicismo, forma temática/función tonal/orquestación; percusión solo si pide partitura.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "etiqueta de época/uso ambiguo: si clasicismo, forma temática/función tonal/orquestación; percusión solo si pide partitura."
+      ],
+      "required_roles": [
+        "thematic_voices",
+        "harmonic_support"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "classical_period": {
+          "minimum_identity": [
+            "frase temática y sintaxis tonal del clasicismo"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "frase temática y sintaxis tonal del clasicismo"
+        },
+        "concert_music": {
+          "minimum_identity": [
+            "periodo y referencia explícitos; no perfil fijo"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "periodo y referencia explícitos; no perfil fijo"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "comedy_music": {
+      "id": "comedy_music",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "efecto narrativo de incongruencia/humor, no patrón fijo de batería.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "efecto narrativo de incongruencia/humor, no patrón fijo de batería."
+      ],
+      "required_roles": [
+        "comedic_narrative_or_timing"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "parody": {
+          "minimum_identity": [
+            "referente parodiado y cambio de expectativa"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "referente parodiado y cambio de expectativa"
+        },
+        "novelty": {
+          "minimum_identity": [
+            "tiempo narrativo/cómico y forma específica"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "tiempo narrativo/cómico y forma específica"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "country": {
+      "id": "country",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "groove, guitarra/steel/fiddle y fraseo según honky-tonk/bluegrass/contemporáneo.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "groove, guitarra/steel/fiddle y fraseo según honky-tonk/bluegrass/contemporáneo."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "honky_tonk": {
+          "minimum_identity": [
+            "piano/guitarra de baile y fraseo de canción"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "piano/guitarra de baile y fraseo de canción"
+        },
+        "contemporary": {
+          "minimum_identity": [
+            "estructura pop con lenguaje country de guitarras"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "estructura pop con lenguaje country de guitarras"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "cumbia": {
+      "id": "cumbia",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "elegir tradición colombiana/andina/villera/etc.; percusión y bajo cíclicos, acordeón opcional.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "elegir tradición colombiana/andina/villera/etc.; percusión y bajo cíclicos, acordeón opcional."
+      ],
+      "required_roles": [
+        "tradition_specific_percussion",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "colombiana": {
+          "minimum_identity": [
+            "percusión tradicional con ciclo bailable"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "percusión tradicional con ciclo bailable"
+        },
+        "andina": {
+          "minimum_identity": [
+            "melodía/acordeón o synth según tradición regional"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "melodía/acordeón o synth según tradición regional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "darkwave": {
+      "id": "darkwave",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "synth/guitarras y atmósfera oscura; elegir vertiente post-punk/electrónica.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "synth/guitarras y atmósfera oscura; elegir vertiente post-punk/electrónica."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "death_metal": {
+      "id": "death_metal",
+      "family": "Metal y derivados",
+      "differentiator": "riff extremo y contrastes técnicos, blast/doble bombo opcionales por variante, bajo y voz específicos si hay vocal.",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "riff extremo y contrastes técnicos, blast/doble bombo opcionales por variante, bajo y voz específicos si hay vocal."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "electric_bass",
+        "distorted_rhythm_guitar",
+        "lead_guitar_or_vocal"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "riff_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "technical": {
+          "minimum_identity": [
+            "frases con cambios métricos/rítmicos y riffs complejos"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "frases con cambios métricos/rítmicos y riffs complejos"
+        },
+        "melodic": {
+          "minimum_identity": [
+            "dobles leads melódicos integrados con riffs extremos"
+          ],
+          "harmony_strategy": "functional_minor",
+          "differentiator": "dobles leads melódicos integrados con riffs extremos"
+        },
+        "brutal": {
+          "minimum_identity": [
+            "riff y percusión extremos, tensión armónica/disonancia"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "riff y percusión extremos, tensión armónica/disonancia"
+        }
+      },
+      "evidence_level": "family",
+      "sources": [
+        "huddersfield_metal"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "disco": {
+      "id": "disco",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "pulso cuatro-al-piso, bajo con movimiento, contratiempos de guitarra/strings.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "pulso cuatro-al-piso, bajo con movimiento, contratiempos de guitarra/strings."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "doo_wop": {
+      "id": "doo_wop",
+      "family": "Jazz, R&B y canción",
+      "differentiator": "voces armonizadas y bajo vocal/melodía; MIDI sin voces solo imita disposición.",
+      "minimum_identity": [
+        "fraseo y articulación vinculados al subestilo",
+        "voces armonizadas y bajo vocal/melodía; MIDI sin voces solo imita disposición."
+      ],
+      "required_roles": [
+        "rhythm_section",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "doom_metal": {
+      "id": "doom_metal",
+      "family": "Metal y derivados",
+      "differentiator": "riffs graves lentos con espacio, peso armónico, no patrón backbeat pop.",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "riffs graves lentos con espacio, peso armónico, no patrón backbeat pop."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "electric_bass",
+        "heavy_riff_guitar",
+        "lead_or_vocal"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "riff_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "epic": {
+          "minimum_identity": [
+            "riff grave lento con melodía dramática"
+          ],
+          "harmony_strategy": "functional_minor",
+          "differentiator": "riff grave lento con melodía dramática"
+        },
+        "funeral": {
+          "minimum_identity": [
+            "gesto armónico espaciado y textura sostenida"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "gesto armónico espaciado y textura sostenida"
+        },
+        "death_doom": {
+          "minimum_identity": [
+            "riff lento con tensión de death metal"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "riff lento con tensión de death metal"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "downtempo": {
+      "id": "downtempo",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "rango de producción más que género único; seleccionar patrón de referencia.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "rango de producción más que género único; seleccionar patrón de referencia."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "breaks": {
+          "minimum_identity": [
+            "break espaciado y bajo repetitivo"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "break espaciado y bajo repetitivo",
+          "evidence_level": "provisional"
+        },
+        "ambient": {
+          "minimum_identity": [
+            "capas de sonido lentas con mínimo cambio de acorde"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "capas de sonido lentas con mínimo cambio de acorde",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "drill": {
+      "id": "drill",
+      "family": "Hip-hop y Caribe urbano",
+      "differentiator": "sub-bass/808 glides y acentos de beat desplazados; especificar drill UK/Chicago/Brooklyn.",
+      "minimum_identity": [
+        "pocket y espacio para lead/voz",
+        "sub-bass/808 glides y acentos de beat desplazados; especificar drill UK/Chicago/Brooklyn."
+      ],
+      "required_roles": [
+        "beat",
+        "bass_or_sub",
+        "lead_space"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "uk": {
+          "minimum_identity": [
+            "beat sincopado y bajo glissando según referencia UK"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "beat sincopado y bajo glissando según referencia UK"
+        },
+        "chicago": {
+          "minimum_identity": [
+            "beat y flow espaciosos según referencia Chicago"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "beat y flow espaciosos según referencia Chicago"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "drone": {
+      "id": "drone",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "nota/acorde sostenido y evolución espectral, no loop de bombo por defecto.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "nota/acorde sostenido y evolución espectral, no loop de bombo por defecto."
+      ],
+      "required_roles": [
+        "sustained_tone"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "drone",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "hud_drone"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "drum_and_bass": {
+      "id": "drum_and_bass",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "breaks rápidos y sub-bass con espacio y fills, relaciones kick/snare variables [3].",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "breaks rápidos y sub-bass con espacio y fills, relaciones kick/snare variables [3]."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "ableton_dnb"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "dubstep": {
+      "id": "dubstep",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "pulso percibido a medio tiempo, sub-bass y diseño de bajos/espacios; no basta BPM.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "pulso percibido a medio tiempo, sub-bass y diseño de bajos/espacios; no basta BPM."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "electronic": {
+      "id": "electronic",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "paraguas; requiere rama de producción antes de declarar identidad.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "paraguas; requiere rama de producción antes de declarar identidad."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "house": {
+          "minimum_identity": [
+            "pulso 4/4 y bajo/hats de house"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "pulso 4/4 y bajo/hats de house"
+        },
+        "ambient": {
+          "minimum_identity": [
+            "texturas sin beat obligatorio"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "texturas sin beat obligatorio"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "experimental": {
+      "id": "experimental",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "no hay plantilla identitaria; pedir restricción/idea formal y evaluar frente a ella.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "no hay plantilla identitaria; pedir restricción/idea formal y evaluar frente a ella."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "drone",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "minimal_process": {
+          "minimum_identity": [
+            "proceso de repetición y cambio explícito"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "proceso de repetición y cambio explícito"
+        },
+        "rhythmic_experiment": {
+          "minimum_identity": [
+            "regla de organización del ritmo explícita"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "regla de organización del ritmo explícita"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "flamenco": {
+      "id": "flamenco",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "escoger palo y compás antes de programar guitarra/palmas/cajón; no imponer 4/4 y backbeat al azar.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "escoger palo y compás antes de programar guitarra/palmas/cajón; no imponer 4/4 y backbeat al azar."
+      ],
+      "required_roles": [
+        "flamenco_guitar",
+        "palmas_or_pulse"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "phrygian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "solea": {
+          "minimum_identity": [
+            "compás de doce y fraseo de soleá"
+          ],
+          "harmony_strategy": "phrygian",
+          "differentiator": "compás de doce y fraseo de soleá",
+          "meter": [
+            12,
+            8
+          ],
+          "meter_notation_note": "Aproximación MIDI 12/8: NO equivale al compás mixto completo; requiere acentos",
+          "accent_pulses": [
+            3,
+            6,
+            8,
+            10,
+            12
+          ]
+        },
+        "bulerias": {
+          "minimum_identity": [
+            "compás de doce con acentos y remates de bulerías"
+          ],
+          "harmony_strategy": "phrygian",
+          "differentiator": "compás de doce con acentos y remates de bulerías",
+          "meter": [
+            12,
+            8
+          ],
+          "meter_notation_note": "Aproximación MIDI 12/8: NO equivale al compás mixto completo; requiere acentos",
+          "accent_pulses": [
+            3,
+            6,
+            8,
+            10,
+            12
+          ]
+        },
+        "tangos": {
+          "minimum_identity": [
+            "compás binario de tangos flamencos"
+          ],
+          "harmony_strategy": "phrygian",
+          "differentiator": "compás binario de tangos flamencos",
+          "meter": [
+            4,
+            4
+          ]
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "andalucia_compas"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente",
+        "Compás mixto de 12 tiempos no se reduce a 12/8; guía MIDI es aproximada"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "folk": {
+      "id": "folk",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "paraguas regional, exigir origen/instrumentación antes de generar.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "paraguas regional, exigir origen/instrumentación antes de generar."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "acoustic_song": {
+          "minimum_identity": [
+            "voz o lead acústico y tradición especificada"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "voz o lead acústico y tradición especificada"
+        },
+        "dance_tradition": {
+          "minimum_identity": [
+            "métrica y fraseo de danza local especificada"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "métrica y fraseo de danza local especificada"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "footwork": {
+      "id": "footwork",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "ritmo sincopado fragmentado con cambios frecuentes, samples/voz opcionales.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "ritmo sincopado fragmentado con cambios frecuentes, samples/voz opcionales."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "funk": {
+      "id": "funk",
+      "family": "Jazz, R&B y canción",
+      "differentiator": "bajo sincopado como eje, batería con ghost notes y stabs/cortes de guitarra/teclado.",
+      "minimum_identity": [
+        "fraseo y articulación vinculados al subestilo",
+        "bajo sincopado como eje, batería con ghost notes y stabs/cortes de guitarra/teclado."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "syncopated_bass",
+        "staccato_chords",
+        "lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "mto_funk"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "gabber": {
+      "id": "gabber",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "distorsión de bombo como motor y pulsación intensa; diseño sonoro decisivo.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "distorsión de bombo como motor y pulsación intensa; diseño sonoro decisivo."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "lsbu_gabber"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "gospel": {
+      "id": "gospel",
+      "family": "Jazz, R&B y canción",
+      "differentiator": "llamada-respuesta, armonías corales y desarrollo dinámico; instrumento depende tradición.",
+      "minimum_identity": [
+        "fraseo y articulación vinculados al subestilo",
+        "llamada-respuesta, armonías corales y desarrollo dinámico; instrumento depende tradición."
+      ],
+      "required_roles": [
+        "rhythm_section",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "goth": {
+      "id": "goth",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "etiqueta de escena: escoger goth rock/darkwave/etc. antes de componer.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "etiqueta de escena: escoger goth rock/darkwave/etc. antes de componer."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "goth_rock": {
+          "minimum_identity": [
+            "bajo/guitarra de post-punk y voz/lead oscuro"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "bajo/guitarra de post-punk y voz/lead oscuro",
+          "evidence_level": "provisional"
+        },
+        "darkwave": {
+          "minimum_identity": [
+            "synth/bajo atmosféricos y pulso electrónico"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "synth/bajo atmosféricos y pulso electrónico",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "grunge": {
+      "id": "grunge",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "dinámica quiet/loud, guitarras rugosas y fraseo menos pulido.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "dinámica quiet/loud, guitarras rugosas y fraseo menos pulido."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "hardcore": {
+      "id": "hardcore",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "ataque punk agresivo, cambios de acento/breakdowns según variante; no es `speed_metal`.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "ataque punk agresivo, cambios de acento/breakdowns según variante; no es `speed_metal`."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "riff_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "mto_hardcore"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "highlife": {
+      "id": "highlife",
+      "family": "África, Caribe y criollo",
+      "differentiator": "guitarras entrelazadas, bajo y percusión bailable; elegir tradición/época.",
+      "minimum_identity": [
+        "ostinatos de funciones distintas",
+        "guitarras entrelazadas, bajo y percusión bailable; elegir tradición/época."
+      ],
+      "required_roles": [
+        "groove_percussion",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "guitar_band": {
+          "minimum_identity": [
+            "guitarras de ostinatos entrelazados y percusión"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "guitarras de ostinatos entrelazados y percusión",
+          "evidence_level": "provisional"
+        },
+        "brass_band": {
+          "minimum_identity": [
+            "metales melódicos sobre percusión de baile"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "metales melódicos sobre percusión de baile",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "hiphop": {
+      "id": "hiphop",
+      "family": "Hip-hop y Caribe urbano",
+      "differentiator": "pocket de break/beat, bajo y espacio para rap; no rellenar todas las subdivisiones.",
+      "minimum_identity": [
+        "pocket y espacio para lead/voz",
+        "pocket de break/beat, bajo y espacio para rap; no rellenar todas las subdivisiones."
+      ],
+      "required_roles": [
+        "beat",
+        "bass_or_sub",
+        "lead_space"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "mto_hiphop"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "house": {
+      "id": "house",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "bombo estable, clap/snares, hats a contratiempo y groove de bajo/acordes.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "bombo estable, clap/snares, hats a contratiempo y groove de bajo/acordes."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "idm": {
+      "id": "idm",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "experimentación estructural del ritmo/timbre; no patrón fijo generalizable.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "experimentación estructural del ritmo/timbre; no patrón fijo generalizable."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "glitch": {
+          "minimum_identity": [
+            "patrones rítmicos alterados con timbres fragmentados"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "patrones rítmicos alterados con timbres fragmentados",
+          "evidence_level": "provisional"
+        },
+        "ambient_idm": {
+          "minimum_identity": [
+            "diseño sonoro ambiental con microeventos"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "diseño sonoro ambiental con microeventos",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "indie": {
+      "id": "indie",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "etiqueta de escena/producción, no ritmo único; pedir referencia de arreglo.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "etiqueta de escena/producción, no ritmo único; pedir referencia de arreglo."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "guitar_pop": {
+          "minimum_identity": [
+            "canción con riff de guitarra y dinámica de banda"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "canción con riff de guitarra y dinámica de banda",
+          "evidence_level": "provisional"
+        },
+        "synth_pop": {
+          "minimum_identity": [
+            "canción indie con sintes en primer plano"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "canción indie con sintes en primer plano",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "industrial": {
+      "id": "industrial",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "percusión mecánica/timbres abrasivos y arreglo según subtradición.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "percusión mecánica/timbres abrasivos y arreglo según subtradición."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "electronic": {
+          "minimum_identity": [
+            "percusión de timbres mecánicos y secuencias synth"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "percusión de timbres mecánicos y secuencias synth",
+          "evidence_level": "provisional"
+        },
+        "industrial_rock": {
+          "minimum_identity": [
+            "riff/bajo de rock con percusión mecanizada"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "riff/bajo de rock con percusión mecanizada",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "jazz": {
+      "id": "jazz",
+      "family": "Jazz, R&B y canción",
+      "differentiator": "elegir subestilo; voz melódica, interacción rítmica, reharmonización/improvisación simulada solo si compuesta musicalmente.",
+      "minimum_identity": [
+        "fraseo y articulación vinculados al subestilo",
+        "elegir subestilo; voz melódica, interacción rítmica, reharmonización/improvisación simulada solo si compuesta musicalmente."
+      ],
+      "required_roles": [
+        "rhythm_section",
+        "bass",
+        "comping",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "jazz_cycle",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "bebop": {
+          "minimum_identity": [
+            "líneas cromáticas rápidas sobre cambios funcionales"
+          ],
+          "harmony_strategy": "jazz_cycle",
+          "differentiator": "líneas cromáticas rápidas sobre cambios funcionales"
+        },
+        "modal": {
+          "minimum_identity": [
+            "pedal modal y espacio improvisatorio"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "pedal modal y espacio improvisatorio"
+        },
+        "swing_small_combo": {
+          "minimum_identity": [
+            "ride swing, bajo caminante y comping"
+          ],
+          "harmony_strategy": "jazz_cycle",
+          "differentiator": "ride swing, bajo caminante y comping"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "garcia_drums"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "jig": {
+      "id": "jig",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "fraseo ternario compuesto frecuente (6/8), no 4/4 a BPM alterado.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "fraseo ternario compuesto frecuente (6/8), no 4/4 a BPM alterado."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "compound_pulse"
+      ],
+      "meter": [
+        6,
+        8
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "juke": {
+      "id": "juke",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "célula percusiva rápida y cortes/samples; separar de footwork con referencias de escena.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "célula percusiva rápida y cortes/samples; separar de footwork con referencias de escena."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "lo_fi": {
+      "id": "lo_fi",
+      "family": "Hip-hop y Caribe urbano",
+      "differentiator": "estética de producción/imperfección intencional, no ritmo único.",
+      "minimum_identity": [
+        "pocket y espacio para lead/voz",
+        "estética de producción/imperfección intencional, no ritmo único."
+      ],
+      "required_roles": [
+        "beat",
+        "bass_or_sub",
+        "lead_space"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "hiphop": {
+          "minimum_identity": [
+            "beat hip-hop poco denso y textura de producción degradada"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "beat hip-hop poco denso y textura de producción degradada",
+          "evidence_level": "provisional"
+        },
+        "ambient_tape": {
+          "minimum_identity": [
+            "sostenidos y textura de cinta; sin ritmo obligatorio"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "sostenidos y textura de cinta; sin ritmo obligatorio",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "mambo": {
+      "id": "mambo",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "interacción montunos, secciones de metales y patrones afro-cubanos [4].",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "interacción montunos, secciones de metales y patrones afro-cubanos [4]."
+      ],
+      "required_roles": [
+        "tradition_specific_percussion",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 2,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "family",
+      "sources": [
+        "smithsonian_bell"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "mantra": {
+      "id": "mantra",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "repetición vocal/textual o referente instrumental explícito; sin voz, transparencia sobre limitación.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "repetición vocal/textual o referente instrumental explícito; sin voz, transparencia sobre limitación."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "drone",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "chant": {
+          "minimum_identity": [
+            "repetición textual cantada central; requiere voz o muestra autorizada"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "repetición textual cantada central; requiere voz o muestra autorizada",
+          "evidence_level": "provisional"
+        },
+        "instrumental_reference": {
+          "minimum_identity": [
+            "versión instrumental explícita sin simular canto"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "versión instrumental explícita sin simular canto",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "march": {
+      "id": "march",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "métrica y acentuación de marcha, caja/bombo/metales si banda; no un único tempo.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "métrica y acentuación de marcha, caja/bombo/metales si banda; no un único tempo."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        2,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "mariachi": {
+      "id": "mariachi",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "trompetas y cuerdas con vihuela/guitarrón y métrica acorde al son/ranchera/huapango.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "trompetas y cuerdas con vihuela/guitarrón y métrica acorde al son/ranchera/huapango."
+      ],
+      "required_roles": [
+        "vihuela_or_rhythm_guitar",
+        "guitarron_or_bass",
+        "lead_voice_or_violin_or_trumpet"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "son_jalisciense": {
+          "minimum_identity": [
+            "alternancia métrica y bajo/guitarra de son"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "alternancia métrica y bajo/guitarra de son",
+          "meter": [
+            6,
+            8
+          ]
+        },
+        "ranchera": {
+          "minimum_identity": [
+            "fraseo de ranchera con guitarrón/vihuela y voz/lead"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "fraseo de ranchera con guitarrón/vihuela y voz/lead"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "smithsonian_mariachi"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "math_rock": {
+      "id": "math_rock",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "acentos desplazados, células asimétricas, ostinati entrelazados.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "acentos desplazados, células asimétricas, ostinati entrelazados."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "mazurka": {
+      "id": "mazurka",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "tres tiempos con acento desplazado característico, diferente del vals.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "tres tiempos con acento desplazado característico, diferente del vals."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        3,
+        4
+      ],
+      "harmony_strategy": "functional_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "meditation": {
+      "id": "meditation",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "finalidad funcional; pedir timbre/duración/dinámica deseada, no género musical verificable.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "finalidad funcional; pedir timbre/duración/dinámica deseada, no género musical verificable."
+      ],
+      "required_roles": [
+        "ambient_texture"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "drone",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "drone": {
+          "minimum_identity": [
+            "sostenido de larga duración sin percusión obligatoria"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "sostenido de larga duración sin percusión obligatoria",
+          "evidence_level": "provisional"
+        },
+        "soft_pulse": {
+          "minimum_identity": [
+            "pulso suave estable y espacio acústico"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "pulso suave estable y espacio acústico",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "metal": {
+      "id": "metal",
+      "family": "Metal y derivados",
+      "differentiator": "riffs distorsionados, bajo alineado/contrapunto, kit acústico y contraste de secciones.",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "riffs distorsionados, bajo alineado/contrapunto, kit acústico y contraste de secciones."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "distorted_rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "riff_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "traditional": {
+          "minimum_identity": [
+            "riff y melodía central"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "riff y melodía central"
+        },
+        "nwobhm": {
+          "minimum_identity": [
+            "dobles guitarras melódicas y ritmo impulsor"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "dobles guitarras melódicas y ritmo impulsor"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "minuet": {
+      "id": "minuet",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "danza en triple y estructura formal/fraseo de época, no kick/snare.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "danza en triple y estructura formal/fraseo de época, no kick/snare."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        3,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "new_age": {
+      "id": "new_age",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "timbres suaves y desarrollo sencillo, pero etiqueta amplia y variable.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "timbres suaves y desarrollo sencillo, pero etiqueta amplia y variable."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "drone",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "acoustic": {
+          "minimum_identity": [
+            "instrumento acústico melódico y armonía abierta"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "instrumento acústico melódico y armonía abierta",
+          "evidence_level": "provisional"
+        },
+        "synth_ambient": {
+          "minimum_identity": [
+            "pads y evolución lenta"
+          ],
+          "harmony_strategy": "drone",
+          "differentiator": "pads y evolución lenta",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "nu_disco": {
+      "id": "nu_disco",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "cita disco con diseño de synth/bajo moderno y arreglo de producción.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "cita disco con diseño de synth/bajo moderno y arreglo de producción."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "polka": {
+      "id": "polka",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "baile binario con bajo/contratiempo (oom-pah), timbre según tradición.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "baile binario con bajo/contratiempo (oom-pah), timbre según tradición."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        2,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "pop": {
+      "id": "pop",
+      "family": "Jazz, R&B y canción",
+      "differentiator": "hook reconocible y cambios de textura entre verso/estribillo; no existe un único patrón pop.",
+      "minimum_identity": [
+        "fraseo y articulación vinculados al subestilo",
+        "hook reconocible y cambios de textura entre verso/estribillo; no existe un único patrón pop."
+      ],
+      "required_roles": [
+        "rhythm_section",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "mto_loops",
+        "mto_drums"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "post_metal": {
+      "id": "post_metal",
+      "family": "Metal y derivados",
+      "differentiator": "desarrollo largo por capas, tensión y contraste dinámico; clímax estructural.",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "desarrollo largo por capas, tensión y contraste dinámico; clímax estructural."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "distorted_rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "atmospheric": {
+          "minimum_identity": [
+            "acumulación gradual y clímax tímbrico"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "acumulación gradual y clímax tímbrico"
+        },
+        "sludge_derived": {
+          "minimum_identity": [
+            "peso de riff y desarrollo por capas"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "peso de riff y desarrollo por capas"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "post_rock": {
+      "id": "post_rock",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "crecimiento tímbrico y formal, repetición con transformación y clímax.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "crecimiento tímbrico y formal, repetición con transformación y clímax."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "power_metal": {
+      "id": "power_metal",
+      "family": "Metal y derivados",
+      "differentiator": "impulso de doble bombo cuando corresponda, riffs/power chords, bajo real, melodía destacada con desarrollos y harmonías de guitarras, coros o lead instrumental, solo compuesto y clímax; no limitar a menor armónica. La investigación de Boddington et al. encuentra color dórico y dominantes secundarias/disminuidos en su muestra, no una ley universal [1].",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "impulso de doble bombo cuando corresponda, riffs/power chords, bajo real, melodía destacada con desarrollos y harmonías de guitarras, coros o lead instrumental, solo compuesto y clímax; no limitar a menor armónica. La investigación de Boddington et al. encuentra color dórico y dominantes secundarias/disminuidos en su muestra, no una ley universal [1]."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "electric_bass",
+        "distorted_rhythm_guitar",
+        "lead_guitar_or_vocal"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "symphonic": {
+          "minimum_identity": [
+            "Orquestación de soporte y leitmotiv con riffs, bajo y kit presentes"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "Orquestación de soporte y leitmotiv con riffs, bajo y kit presentes"
+        },
+        "european": {
+          "minimum_identity": [
+            "estribillo melódico amplio y bombo sostenido en secciones de empuje"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "estribillo melódico amplio y bombo sostenido en secciones de empuje"
+        },
+        "us_power": {
+          "minimum_identity": [
+            "riffs más agresivos y pulso de heavy clásico"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "riffs más agresivos y pulso de heavy clásico"
+        },
+        "neoclassical": {
+          "minimum_identity": [
+            "secuencias de lead inspiradas en recursos clásicos sin sustituir el riff"
+          ],
+          "harmony_strategy": "functional_minor",
+          "differentiator": "secuencias de lead inspiradas en recursos clásicos sin sustituir el riff"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "huddersfield_metal",
+        "garza_metal"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "prog_rock": {
+      "id": "prog_rock",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "secciones contrastantes, desarrollo temático y métricas irregulares cuando aporten.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "secciones contrastantes, desarrollo temático y métricas irregulares cuando aporten."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "symphonic_prog": {
+          "minimum_identity": [
+            "desarrollo temático con episodios contrastantes"
+          ],
+          "harmony_strategy": "functional_minor",
+          "differentiator": "desarrollo temático con episodios contrastantes"
+        },
+        "odd_meter": {
+          "minimum_identity": [
+            "motivo en compás asimétrico y retorno reconocible"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "motivo en compás asimétrico y retorno reconocible"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "psybient": {
+      "id": "psybient",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "capas ambientales con producción psicodélica/micro-ritmos, no ambient renombrado.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "capas ambientales con producción psicodélica/micro-ritmos, no ambient renombrado."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "drone",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "punk": {
+      "id": "punk",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "riff simple y directo, batería incisiva, forma breve y energía; complejidad no obligatoria.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "riff simple y directo, batería incisiva, forma breve y energía; complejidad no obligatoria."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "family",
+      "sources": [
+        "mto_hardcore"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "reel": {
+      "id": "reel",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "melodía de danza en 4/4 de fiddle/instrumento regional, fraseo repetido.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "melodía de danza en 4/4 de fiddle/instrumento regional, fraseo repetido."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "reggae": {
+      "id": "reggae",
+      "family": "Hip-hop y Caribe urbano",
+      "differentiator": "bajo central, offbeat de skank, espacio/dub y batería según one-drop/rockers/steppers.",
+      "minimum_identity": [
+        "pocket y espacio para lead/voz",
+        "bajo central, offbeat de skank, espacio/dub y batería según one-drop/rockers/steppers."
+      ],
+      "required_roles": [
+        "beat",
+        "bass_or_sub",
+        "lead_space"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "one_drop": {
+          "minimum_identity": [
+            "acentos de one-drop y bajo espacioso"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "acentos de one-drop y bajo espacioso"
+        },
+        "rockers": {
+          "minimum_identity": [
+            "patrón rockers con bajo/skank"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "patrón rockers con bajo/skank"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "reggaeton": {
+      "id": "reggaeton",
+      "family": "Hip-hop y Caribe urbano",
+      "differentiator": "dembow y bajo articulados en ciclos; breaks y acentos varían según época; no four-on-floor ni confundir con salsa.",
+      "minimum_identity": [
+        "pocket y espacio para lead/voz",
+        "dembow y bajo articulados en ciclos; breaks y acentos varían según época; no four-on-floor ni confundir con salsa."
+      ],
+      "required_roles": [
+        "beat",
+        "bass_or_sub",
+        "lead_space"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 2,
+      "requires_choice": true,
+      "variants": {
+        "early_dembow": {
+          "minimum_identity": [
+            "dembow de ciclo corto y bajo, espacio vocal"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "dembow de ciclo corto y bajo, espacio vocal",
+          "evidence_level": "provisional"
+        },
+        "melodic": {
+          "minimum_identity": [
+            "dembow con melodía de canción y mayor desarrollo armónico"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "dembow con melodía de canción y mayor desarrollo armónico",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "reggaeton_dem_bow"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "rnb": {
+      "id": "rnb",
+      "family": "Jazz, R&B y canción",
+      "differentiator": "especificar época/subestilo; pocket, voz/lead y armonías/síncopas.",
+      "minimum_identity": [
+        "fraseo y articulación vinculados al subestilo",
+        "especificar época/subestilo; pocket, voz/lead y armonías/síncopas."
+      ],
+      "required_roles": [
+        "rhythm_section",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "classic": {
+          "minimum_identity": [
+            "bajo/groove orgánico y voz/lead expresivo"
+          ],
+          "harmony_strategy": "functional_major",
+          "differentiator": "bajo/groove orgánico y voz/lead expresivo",
+          "evidence_level": "provisional"
+        },
+        "contemporary": {
+          "minimum_identity": [
+            "producción electrónica y armonía extendida con pocket"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "producción electrónica y armonía extendida con pocket",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "rock": {
+      "id": "rock",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "backbeat, bajo/guitarra en diálogo y riff/hook con forma.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "backbeat, bajo/guitarra en diálogo y riff/hook con forma."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "hard_rock": {
+          "minimum_identity": [
+            "riff distorsionado y backbeat con bajo y lead"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "riff distorsionado y backbeat con bajo y lead",
+          "evidence_level": "provisional"
+        },
+        "soft_rock": {
+          "minimum_identity": [
+            "guitarra/teclado en canción y backbeat moderado"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "guitarra/teclado en canción y backbeat moderado",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "romantic": {
+      "id": "romantic",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "desarrollo temático/cromatismo/dinámica y rubato según obra, no pop con cuerdas.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "desarrollo temático/cromatismo/dinámica y rubato según obra, no pop con cuerdas."
+      ],
+      "required_roles": [
+        "thematic_lead",
+        "harmonic_support"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "rumba": {
+      "id": "rumba",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "especificar rumba cubana/flamenca/otra; son tradiciones diferentes, no un preset.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "especificar rumba cubana/flamenca/otra; son tradiciones diferentes, no un preset."
+      ],
+      "required_roles": [
+        "tradition_specific_percussion",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 2,
+      "requires_choice": true,
+      "variants": {
+        "cubana": {
+          "minimum_identity": [
+            "percusión y clave de rumba con llamada/respuesta"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "percusión y clave de rumba con llamada/respuesta"
+        },
+        "flamenca": {
+          "minimum_identity": [
+            "guitarra y palmas de rumba flamenca"
+          ],
+          "harmony_strategy": "phrygian",
+          "differentiator": "guitarra y palmas de rumba flamenca"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "salsa": {
+      "id": "salsa",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "elegir son/clave 2-3 o 3-2 y orientar bajo (tumbao), piano (montuno), conga/campana/metales; frase de al menos dos compases; no invertir la clave arbitrariamente [4].",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "elegir son/clave 2-3 o 3-2 y orientar bajo (tumbao), piano (montuno), conga/campana/metales; frase de al menos dos compases; no invertir la clave arbitrariamente [4]."
+      ],
+      "required_roles": [
+        "clave_cycle",
+        "tumbao_bass",
+        "montuno_or_harmonic_comping",
+        "lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 2,
+      "requires_choice": true,
+      "variants": {
+        "son_montuno": {
+          "minimum_identity": [
+            "clave de dos compases, tumbao y montuno"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "clave de dos compases, tumbao y montuno"
+        },
+        "salsa_romantica": {
+          "minimum_identity": [
+            "clave y tumbao con melodía/armonía de canción"
+          ],
+          "harmony_strategy": "loop",
+          "differentiator": "clave y tumbao con melodía/armonía de canción"
+        }
+      },
+      "evidence_level": "family",
+      "sources": [
+        "smithsonian_bell"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "samba": {
+      "id": "samba",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "articulación de múltiples percusiones y bajo/surdo, ciclos/acento de danza; variantes pagode/enredo distintas [2].",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "articulación de múltiples percusiones y bajo/surdo, ciclos/acento de danza; variantes pagode/enredo distintas [2]."
+      ],
+      "required_roles": [
+        "samba_pulse",
+        "bass_or_surdo",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "garcia_drums"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "ska": {
+      "id": "ska",
+      "family": "Hip-hop y Caribe urbano",
+      "differentiator": "contratiempo rápido de guitarra/teclado, bajo caminante e impulso rítmico.",
+      "minimum_identity": [
+        "pocket y espacio para lead/voz",
+        "contratiempo rápido de guitarra/teclado, bajo caminante e impulso rítmico."
+      ],
+      "required_roles": [
+        "beat",
+        "bass_or_sub",
+        "lead_space"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "sludge_metal": {
+      "id": "sludge_metal",
+      "family": "Metal y derivados",
+      "differentiator": "arrastre pesado, riffs saturados/disonancia y acentos hardcore.",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "arrastre pesado, riffs saturados/disonancia y acentos hardcore."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "distorted_rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "riff_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "hardcore_sludge": {
+          "minimum_identity": [
+            "acentos hardcore sobre riff arrastrado"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "acentos hardcore sobre riff arrastrado"
+        },
+        "post_sludge": {
+          "minimum_identity": [
+            "crecimiento de capas y clímax largo"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "crecimiento de capas y clímax largo"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "soca": {
+      "id": "soca",
+      "family": "África, Caribe y criollo",
+      "differentiator": "producción de carnaval, percusión/bajo motriz y hooks; no reutilizar highlife por tempo.",
+      "minimum_identity": [
+        "ostinatos de funciones distintas",
+        "producción de carnaval, percusión/bajo motriz y hooks; no reutilizar highlife por tempo."
+      ],
+      "required_roles": [
+        "groove_percussion",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "classic": {
+          "minimum_identity": [
+            "groove de carnaval y melodía cantada"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "groove de carnaval y melodía cantada",
+          "evidence_level": "provisional"
+        },
+        "power_soca": {
+          "minimum_identity": [
+            "célula de carnaval con arreglo de mayor densidad"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "célula de carnaval con arreglo de mayor densidad",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "soul": {
+      "id": "soul",
+      "family": "Jazz, R&B y canción",
+      "differentiator": "fraseo expresivo/call-response, bajo, órgano/piano y metales opcionales; no confundir con backbeat genérico.",
+      "minimum_identity": [
+        "fraseo y articulación vinculados al subestilo",
+        "fraseo expresivo/call-response, bajo, órgano/piano y metales opcionales; no confundir con backbeat genérico."
+      ],
+      "required_roles": [
+        "rhythm_section",
+        "bass",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "speed_metal": {
+      "id": "speed_metal",
+      "family": "Metal y derivados",
+      "differentiator": "pulsación rápida, riffs precisos, leads y ataque sostenido; no idéntico a power por velocidad.",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "pulsación rápida, riffs precisos, leads y ataque sostenido; no idéntico a power por velocidad."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "distorted_rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "riff_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "traditional": {
+          "minimum_identity": [
+            "lead melódico con riff veloz y pulso de heavy"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "lead melódico con riff veloz y pulso de heavy"
+        },
+        "melodic": {
+          "minimum_identity": [
+            "dobles leads con bajo y kit sin convertirse en power metal"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "dobles leads con bajo y kit sin convertirse en power metal"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "spoken_word": {
+      "id": "spoken_word",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "voz/texto y acompañamiento que deja espacio; MIDI instrumental no representa el elemento esencial.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "voz/texto y acompañamiento que deja espacio; MIDI instrumental no representa el elemento esencial."
+      ],
+      "required_roles": [
+        "spoken_voice",
+        "space_in_accompaniment"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "drone",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "poetic": {
+          "minimum_identity": [
+            "texto hablado central y espacio en acompañamiento"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "texto hablado central y espacio en acompañamiento"
+        },
+        "narrative": {
+          "minimum_identity": [
+            "narración central, dinámica musical subordinada"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "narración central, dinámica musical subordinada"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "stoner_metal": {
+      "id": "stoner_metal",
+      "family": "Metal y derivados",
+      "differentiator": "riff repetitivo con groove y textura psicodélica; variación gradual.",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "riff repetitivo con groove y textura psicodélica; variación gradual."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "distorted_rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "desert": {
+          "minimum_identity": [
+            "riff repetitivo con groove y espacio"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "riff repetitivo con groove y espacio"
+        },
+        "psychedelic": {
+          "minimum_identity": [
+            "texturas psicodélicas y variación gradual"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "texturas psicodélicas y variación gradual"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "swing": {
+      "id": "swing",
+      "family": "Jazz, R&B y canción",
+      "differentiator": "ride/hi-hat articulados y walking bass/comping, subdivisión swing no swing=valor fijo [2].",
+      "minimum_identity": [
+        "fraseo y articulación vinculados al subestilo",
+        "ride/hi-hat articulados y walking bass/comping, subdivisión swing no swing=valor fijo [2]."
+      ],
+      "required_roles": [
+        "ride_hi_hat",
+        "walking_bass",
+        "comping",
+        "melodic_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "jazz_cycle",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "direct",
+      "sources": [
+        "garcia_drums"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "synthwave": {
+      "id": "synthwave",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "timbres retro, bajo/arpegios y batería electrónica con forma de canción.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "timbres retro, bajo/arpegios y batería electrónica con forma de canción."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "tango": {
+      "id": "tango",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "fraseo y acentos de orquesta/guitarras/bandoneón; rubato y marcato según arreglo.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "fraseo y acentos de orquesta/guitarras/bandoneón; rubato y marcato según arreglo."
+      ],
+      "required_roles": [
+        "bandoneon_or_guitar_or_ensemble_lead",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": true,
+      "variants": {
+        "orquesta_tipica": {
+          "minimum_identity": [
+            "bandoneón, cuerda y bajo con marcato y fraseo"
+          ],
+          "harmony_strategy": "functional_minor",
+          "differentiator": "bandoneón, cuerda y bajo con marcato y fraseo",
+          "evidence_level": "provisional"
+        },
+        "tango_nuevo": {
+          "minimum_identity": [
+            "dispositivos modernos sin borrar fraseo de tango"
+          ],
+          "harmony_strategy": "modal_dorian",
+          "differentiator": "dispositivos modernos sin borrar fraseo de tango",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "smithsonian_tango"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "tarantella": {
+      "id": "tarantella",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "danza viva de subdivisión compuesta según tradición; programar fraseos reales.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "danza viva de subdivisión compuesta según tradición; programar fraseos reales."
+      ],
+      "required_roles": [
+        "traditional_lead",
+        "harmonic_accompaniment",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        6,
+        8
+      ],
+      "harmony_strategy": "functional_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "techno": {
+      "id": "techno",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "repetición hipnótica con automatización/timbre, reducción armónica deliberada.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "repetición hipnótica con automatización/timbre, reducción armónica deliberada."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "thrash_metal": {
+      "id": "thrash_metal",
+      "family": "Metal y derivados",
+      "differentiator": "riff sincopado/entrecortado, picking y cortes de acento, batería cambiante.",
+      "minimum_identity": [
+        "riff y batería/bajo interdependientes",
+        "riff sincopado/entrecortado, picking y cortes de acento, batería cambiante."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "distorted_rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "riff_minor",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {
+        "crossover": {
+          "minimum_identity": [
+            "acentos hardcore y frase corta"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "acentos hardcore y frase corta"
+        },
+        "progressive": {
+          "minimum_identity": [
+            "motivos extendidos y acentos asimétricos"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "motivos extendidos y acentos asimétricos"
+        },
+        "classic": {
+          "minimum_identity": [
+            "picking rápido y alternancia de riff/acento"
+          ],
+          "harmony_strategy": "riff_minor",
+          "differentiator": "picking rápido y alternancia de riff/acento"
+        }
+      },
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "trance": {
+      "id": "trance",
+      "family": "Electrónica de baile y breaks",
+      "differentiator": "arpegios/pads, builds y releases, sidechain/energía programada.",
+      "minimum_identity": [
+        "diseño tímbrico y cambio de energía por sección",
+        "arpegios/pads, builds y releases, sidechain/energía programada."
+      ],
+      "required_roles": [
+        "programmed_beat",
+        "bass_or_sub",
+        "synth_or_sample"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "trap": {
+      "id": "trap",
+      "family": "Hip-hop y Caribe urbano",
+      "differentiator": "hats articulados/rolls, 808 afinado y bombo/silencios; variación sobre el loop.",
+      "minimum_identity": [
+        "pocket y espacio para lead/voz",
+        "hats articulados/rolls, 808 afinado y bombo/silencios; variación sobre el loop."
+      ],
+      "required_roles": [
+        "beat",
+        "bass_or_sub",
+        "lead_space"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "vamp",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "trap_rock": {
+      "id": "trap_rock",
+      "family": "Rock, guitarras e híbridos",
+      "differentiator": "808/hats o diseño trap articulado con riff/bajo/guitarra rock; dos tradiciones distinguibles.",
+      "minimum_identity": [
+        "riff o hook con contraste entre secciones",
+        "808/hats o diseño trap articulado con riff/bajo/guitarra rock; dos tradiciones distinguibles."
+      ],
+      "required_roles": [
+        "drum_kit",
+        "bass",
+        "rhythm_guitar",
+        "lead_motif"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "trip_hop": {
+      "id": "trip_hop",
+      "family": "Hip-hop y Caribe urbano",
+      "differentiator": "beat pausado con breaks, bajo oscuro y capas espaciales; no es solo tempo lento.",
+      "minimum_identity": [
+        "pocket y espacio para lead/voz",
+        "beat pausado con breaks, bajo oscuro y capas espaciales; no es solo tempo lento."
+      ],
+      "required_roles": [
+        "beat",
+        "bass_or_sub",
+        "lead_space"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "modal_dorian",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "vallenato": {
+      "id": "vallenato",
+      "family": "Latinoamericano y Brasil",
+      "differentiator": "diálogo entre acordeón, caja y guacharaca; elegir aire (paseo/merengue/son/puya), no equiparar a cumbia.",
+      "minimum_identity": [
+        "ciclo rítmico y fraseo de la tradición",
+        "diálogo entre acordeón, caja y guacharaca; elegir aire (paseo/merengue/son/puya), no equiparar a cumbia."
+      ],
+      "required_roles": [
+        "accordion",
+        "caja",
+        "guacharaca",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "vaporwave": {
+      "id": "vaporwave",
+      "family": "Histórico, contemplativo y etiquetas funcionales",
+      "differentiator": "manipulación de muestras y tiempo/timbre; no realizable fielmente solo con GM MIDI.",
+      "minimum_identity": [
+        "textura o forma especificada por variante",
+        "manipulación de muestras y tiempo/timbre; no realizable fielmente solo con GM MIDI."
+      ],
+      "required_roles": [
+        "texture_or_lead"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "loop",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "waltz": {
+      "id": "waltz",
+      "family": "Folk, country y danzas europeas",
+      "differentiator": "tres tiempos por compás y fraseos de baile, no backbeat 4/4.",
+      "minimum_identity": [
+        "métrica y fraseo de danza local",
+        "tres tiempos por compás y fraseos de baile, no backbeat 4/4."
+      ],
+      "required_roles": [
+        "triple_pulse",
+        "melodic_lead"
+      ],
+      "meter": [
+        3,
+        4
+      ],
+      "harmony_strategy": "functional_major",
+      "motif_bars": 4,
+      "groove_cycle_bars": 1,
+      "requires_choice": false,
+      "variants": {},
+      "evidence_level": "provisional",
+      "sources": [],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    },
+    "zydeco": {
+      "id": "zydeco",
+      "family": "África, Caribe y criollo",
+      "differentiator": "acordeón, frottoir y groove de baile con bajo/kit; contexto de Luisiana.",
+      "minimum_identity": [
+        "ostinatos de funciones distintas",
+        "acordeón, frottoir y groove de baile con bajo/kit; contexto de Luisiana."
+      ],
+      "required_roles": [
+        "accordion",
+        "frottoir",
+        "bass_or_pulse"
+      ],
+      "meter": [
+        4,
+        4
+      ],
+      "harmony_strategy": "blues_12",
+      "motif_bars": 12,
+      "groove_cycle_bars": 12,
+      "requires_choice": true,
+      "variants": {
+        "electric": {
+          "minimum_identity": [
+            "acordeón con banda eléctrica y frottoir"
+          ],
+          "harmony_strategy": "blues_12",
+          "differentiator": "acordeón con banda eléctrica y frottoir",
+          "evidence_level": "provisional"
+        },
+        "old_style": {
+          "minimum_identity": [
+            "acordeón, frottoir y baile de Luisiana con arreglo despojado"
+          ],
+          "harmony_strategy": "vamp",
+          "differentiator": "acordeón, frottoir y baile de Luisiana con arreglo despojado",
+          "evidence_level": "provisional"
+        }
+      },
+      "evidence_level": "direct",
+      "sources": [
+        "smithsonian_zydeco"
+      ],
+      "verified_audio": false,
+      "limitations": [
+        "MIDI GM no certifica producción, voz ni articulación; evaluación auditiva pendiente"
+      ],
+      "minimum_gate": "roles+groove+form+listening (solo metadatos; sin audición validada)"
+    }
+  }
+}

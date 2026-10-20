@@ -1,0 +1,11 @@
+include LICENSE THIRD_PARTY_NOTICES.md README.md CONTRIBUTING.md PROTOCOL.md SKILL.md ENSAMBLE.md requirements.txt
+recursive-include docs *.md
+recursive-include references *.json *.md
+recursive-include templates *.json
+recursive-include examples *.py *.md *.json *.mid *.ogg
+recursive-include tests *.py
+recursive-include scripts *.py *.md
+global-exclude *.pyc *.bak*
+prune output
+prune .venv
+prune build

@@ -1,0 +1,96 @@
+{
+  "midi_sha256": "deb1644d57f2f2ebbd8349e276a6722cfc7626831f73a29ed0ae30bab0407b33",
+  "ogg_sha256": "0ada25923ce03463e45827ca36928281cedde2f25e453c02db70d9ada27f3e96",
+  "bars": 12,
+  "midi_seconds": 18.0,
+  "gates": [
+    {
+      "gate": "estructura",
+      "ok": true,
+      "detail": "notas cerradas y duración positiva"
+    },
+    {
+      "gate": "dinámica",
+      "ok": true,
+      "detail": ">=5 velocidades y amplitud >=10 en pistas con >=16 notas"
+    },
+    {
+      "gate": "registro",
+      "ok": true,
+      "detail": "rangos por rol dentro del contrato"
+    },
+    {
+      "gate": "espacio",
+      "ok": true,
+      "detail": "compases completos sin notas ni sustain: synth_piano:4"
+    },
+    {
+      "gate": "solapamiento",
+      "ok": true,
+      "detail": "68 instantes con 2+; 0 prohibidos; 0 grupos próximos prohibidos; primeros ticks prohibidos=[]"
+    },
+    {
+      "gate": "patrones",
+      "ok": true,
+      "detail": "5 patrones/12 compases activos; máximo 4 (33.3%); límites >=3 patrones y <=50%"
+    },
+    {
+      "gate": "densidad",
+      "ok": true,
+      "detail": "min=6, max=16, 3 niveles; contraste entre secciones/bloques=10.00 (mínimo 2)"
+    },
+    {
+      "gate": "fills",
+      "ok": true,
+      "detail": "candidatos (heurística)=[]; intervalos=[]; fuera de bordes=[]; periódico cada 4=False"
+    }
+  ],
+  "mix": {
+    "seconds": 22.526,
+    "peak_db": -5.18,
+    "rms_db": -25.02,
+    "stems_used": [
+      "drums",
+      "electric_bass",
+      "lead_guitar",
+      "rhythm_guitar_L",
+      "rhythm_guitar_R",
+      "synth_piano"
+    ],
+    "stems_ignored": []
+  },
+  "master_loudness": {
+    "integrated_lufs": -16.0,
+    "true_peak_dbfs": -2.15,
+    "lra_lu": 10.2
+  },
+  "ogg_loudness": {
+    "integrated_lufs": -16.06,
+    "true_peak_dbfs": -2.22,
+    "lra_lu": 10.2
+  },
+  "ogg_metrics": {
+    "seconds": 22.526,
+    "sample_rate": 44100,
+    "channels": 2,
+    "peak": 0.77452,
+    "peak_db": -2.22,
+    "rms_db": -22.12,
+    "clipping": false,
+    "stereo_correlation": 0.8753,
+    "octave_bands_db": {
+      "31.25Hz": -44.97,
+      "62.5Hz": -35.57,
+      "125Hz": -31.49,
+      "250Hz": -35.95,
+      "500Hz": -37.94,
+      "1000Hz": -34.16,
+      "2000Hz": -30.59,
+      "4000Hz": -28.63,
+      "8000Hz": -36.48,
+      "16000Hz": -42.9
+    }
+  },
+  "verdict": "ready",
+  "issues": []
+}

@@ -1,0 +1,377 @@
+{
+  "title": "Reencuentro",
+  "key": "F",
+  "scale": "mayor",
+  "tempo": 72,
+  "meter": [
+    4,
+    4
+  ],
+  "humanize": {
+    "seed": 42,
+    "velocity": 0.08,
+    "ticks": 4
+  },
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "progression": [
+        "Fmaj7",
+        "Am7",
+        "Bb",
+        "C"
+      ],
+      "dynamics": "p"
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "progression": [
+        "F",
+        "C/E",
+        "Dm7",
+        "Bb",
+        "Gm7",
+        "C7",
+        "F",
+        "C"
+      ],
+      "dynamics": "mp",
+      "melody": {
+        "instrument": 40,
+        "octave": 0,
+        "dynamics": "mp",
+        "notes": [
+          {
+            "bar": 0,
+            "beat": 0,
+            "dur": 1,
+            "note": "C5"
+          },
+          {
+            "bar": 0,
+            "beat": 1,
+            "dur": 1,
+            "note": "D5"
+          },
+          {
+            "bar": 0,
+            "beat": 2,
+            "dur": 2,
+            "note": "F5"
+          },
+          {
+            "bar": 1,
+            "beat": 0,
+            "dur": 2,
+            "note": "E5"
+          },
+          {
+            "bar": 1,
+            "beat": 2,
+            "dur": 1,
+            "note": "C5"
+          },
+          {
+            "bar": 1,
+            "beat": 3,
+            "dur": 1,
+            "note": "G4"
+          },
+          {
+            "bar": 2,
+            "beat": 0,
+            "dur": 1,
+            "note": "A4"
+          },
+          {
+            "bar": 2,
+            "beat": 1,
+            "dur": 1,
+            "note": "C5"
+          },
+          {
+            "bar": 2,
+            "beat": 2,
+            "dur": 2,
+            "note": "D5"
+          },
+          {
+            "bar": 3,
+            "beat": 0,
+            "dur": 2,
+            "note": "F5"
+          },
+          {
+            "bar": 3,
+            "beat": 2,
+            "dur": 1,
+            "note": "D5"
+          },
+          {
+            "bar": 3,
+            "beat": 3,
+            "dur": 1,
+            "note": "Bb4"
+          },
+          {
+            "bar": 4,
+            "beat": 0,
+            "dur": 1,
+            "note": "G4"
+          },
+          {
+            "bar": 4,
+            "beat": 1,
+            "dur": 1,
+            "note": "A4"
+          },
+          {
+            "bar": 4,
+            "beat": 2,
+            "dur": 2,
+            "note": "Bb4"
+          },
+          {
+            "bar": 5,
+            "beat": 0,
+            "dur": 1,
+            "note": "A4"
+          },
+          {
+            "bar": 5,
+            "beat": 1,
+            "dur": 1,
+            "note": "G4"
+          },
+          {
+            "bar": 5,
+            "beat": 2,
+            "dur": 2,
+            "note": "E4"
+          },
+          {
+            "bar": 6,
+            "beat": 0,
+            "dur": 2,
+            "note": "F4"
+          },
+          {
+            "bar": 6,
+            "beat": 2,
+            "dur": 2,
+            "note": "A4"
+          },
+          {
+            "bar": 7,
+            "beat": 0,
+            "dur": 2,
+            "note": "C5"
+          },
+          {
+            "bar": 7,
+            "beat": 2,
+            "dur": 2,
+            "note": "G4"
+          }
+        ]
+      }
+    },
+    {
+      "name": "B",
+      "bars": 8,
+      "progression": [
+        "Dm",
+        "Bb",
+        "F",
+        "C",
+        "Dm",
+        "Gm7",
+        "Bb",
+        "C"
+      ],
+      "dynamics": "mf",
+      "melody": {
+        "instrument": 40,
+        "octave": 0,
+        "dynamics": "mf",
+        "notes": [
+          {
+            "bar": 0,
+            "beat": 0,
+            "dur": 2,
+            "note": "D5"
+          },
+          {
+            "bar": 0,
+            "beat": 2,
+            "dur": 2,
+            "note": "F5"
+          },
+          {
+            "bar": 1,
+            "beat": 0,
+            "dur": 2,
+            "note": "F5"
+          },
+          {
+            "bar": 1,
+            "beat": 2,
+            "dur": 2,
+            "note": "D5"
+          },
+          {
+            "bar": 2,
+            "beat": 0,
+            "dur": 1,
+            "note": "C5"
+          },
+          {
+            "bar": 2,
+            "beat": 1,
+            "dur": 1,
+            "note": "D5"
+          },
+          {
+            "bar": 2,
+            "beat": 2,
+            "dur": 2,
+            "note": "F5"
+          },
+          {
+            "bar": 3,
+            "beat": 0,
+            "dur": 4,
+            "note": "E5"
+          },
+          {
+            "bar": 4,
+            "beat": 0,
+            "dur": 2,
+            "note": "F5"
+          },
+          {
+            "bar": 4,
+            "beat": 2,
+            "dur": 2,
+            "note": "A5"
+          },
+          {
+            "bar": 5,
+            "beat": 0,
+            "dur": 2,
+            "note": "G5"
+          },
+          {
+            "bar": 5,
+            "beat": 2,
+            "dur": 2,
+            "note": "D5"
+          },
+          {
+            "bar": 6,
+            "beat": 0,
+            "dur": 2,
+            "note": "F5"
+          },
+          {
+            "bar": 6,
+            "beat": 2,
+            "dur": 2,
+            "note": "D5"
+          },
+          {
+            "bar": 7,
+            "beat": 0,
+            "dur": 4,
+            "note": "C5"
+          }
+        ]
+      }
+    },
+    {
+      "name": "outro",
+      "bars": 4,
+      "progression": [
+        "F",
+        "Bb",
+        "Gm7",
+        "F"
+      ],
+      "dynamics": "p",
+      "melody": {
+        "instrument": 40,
+        "octave": 0,
+        "dynamics": "p",
+        "notes": [
+          {
+            "bar": 0,
+            "beat": 0,
+            "dur": 2,
+            "note": "C5"
+          },
+          {
+            "bar": 0,
+            "beat": 2,
+            "dur": 2,
+            "note": "A4"
+          },
+          {
+            "bar": 1,
+            "beat": 0,
+            "dur": 2,
+            "note": "Bb4"
+          },
+          {
+            "bar": 1,
+            "beat": 2,
+            "dur": 2,
+            "note": "D5"
+          },
+          {
+            "bar": 2,
+            "beat": 0,
+            "dur": 2,
+            "note": "A4"
+          },
+          {
+            "bar": 2,
+            "beat": 2,
+            "dur": 2,
+            "note": "G4"
+          },
+          {
+            "bar": 3,
+            "beat": 0,
+            "dur": 4,
+            "note": "F4"
+          }
+        ]
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "role": "harp",
+      "instrument": 46,
+      "pattern": "arpeggio_up",
+      "register": "high",
+      "dynamics": "p"
+    },
+    {
+      "role": "piano",
+      "instrument": 0,
+      "pattern": "bass_root",
+      "register": "low",
+      "dynamics": "mp"
+    },
+    {
+      "role": "piano_chords",
+      "instrument": 0,
+      "pattern": "block_chords",
+      "register": "mid",
+      "dynamics": "mp"
+    }
+  ]
+}

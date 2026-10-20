@@ -1,0 +1,67 @@
+{
+  "profile": "dense",
+  "intent": "18-second GM structural demo: three contrasting grooves, power chords and piano silence; listening quality not certified.",
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "groove": "intro",
+      "density": 6
+    },
+    {
+      "name": "verse",
+      "bars": 4,
+      "groove": "verse",
+      "density": 15
+    },
+    {
+      "name": "chorus",
+      "bars": 4,
+      "groove": "chorus",
+      "density": 16
+    }
+  ],
+  "instruments": [
+    {
+      "name": "drums",
+      "role": "drums",
+      "silent_bars": 0
+    },
+    {
+      "name": "rhythm_guitar_L",
+      "role": "rhythm_guitar",
+      "min": 48,
+      "max": 71,
+      "silent_bars": 0
+    },
+    {
+      "name": "rhythm_guitar_R",
+      "role": "rhythm_guitar",
+      "min": 48,
+      "max": 71,
+      "silent_bars": 0
+    },
+    {
+      "name": "electric_bass",
+      "role": "bass",
+      "min": 24,
+      "max": 47,
+      "silent_bars": 0
+    },
+    {
+      "name": "synth_piano",
+      "role": "piano",
+      "min": 60,
+      "max": 84,
+      "silent_bars": 4
+    },
+    {
+      "name": "lead_guitar",
+      "role": "lead",
+      "min": 76,
+      "max": 88,
+      "silent_bars": 4
+    }
+  ],
+  "fill_bars": []
+}

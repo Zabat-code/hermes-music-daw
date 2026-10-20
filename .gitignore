@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.bak*
+*.wav
+*.ogg
+!examples/sample.ogg
+stems/
+build/
+dist/
+*.egg-info/
+.venv/
+output/
+.coverage
+htmlcov/
