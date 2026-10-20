@@ -8,12 +8,12 @@ Tools:
   list_profiles        available mix profiles
   render_stems         split a MIDI file into a WAV per instrument
   analyze_audio        peak, RMS, spectrum, stereo correlation, octave bands
-  analyze_masking      which stem pairs mask each other (band overlap)
+  analyze_masking      rank spectral similarity between stem pairs (heuristic)
   auto_mix             apply the profile chain and return output metrics
   apply_eq             targeted EQ on a file
   apply_comp           targeted compression on a file
   master               mastering chain with a loudness target
-  compare_to_reference compare two files (loudness, tonal balance, stereo)
+  compare_to_reference compare sample peak, RMS, band energies and stereo metrics
   release_check        ready/needs-work verdict
 
 Usage: python3 daw_mcp.py  (stdio)   |   --selftest (test without MCP)
@@ -364,7 +364,7 @@ def release_check(path: str, profile: str = 'power_metal') -> dict:
     return {'file': str(path), 'profile': profile, 'metrics': m, 'loudness': measured,
             'verdict': 'needs_work' if issues else 'ready',
             'issues': issues,
-            'note': 'Structural verdict. Does not assess musical taste.'}
+            'note': 'Limited technical verdict. Does not assess musical taste.'}
 
 
 def list_profiles() -> dict:

@@ -14,11 +14,11 @@ Music coordinates sound in time through **patterns**. It requires:
 
 | Emotion | Scale | Reference Progression |
 |---|---|---|
-| Sad | natural minor (Dm, Am) | `i - VI - III - VII` → Dm - Bb - F - A |
+| Sad | minor with a major dominant (Dm, Am) | `i - bVI - bIII - V` → Dm - Bb - F - A |
 | Romantic | major (C, F) | `I - V - vi - IV` → C - G - Am - F |
-| Funeral | natural minor (Dm) | `i - iv - V - i` → Dm - Gm - A - Dm |
+| Funeral | minor with a major dominant (Dm) | `i - iv - V - i` → Dm - Gm - A - Dm |
 | Epic | major/Dorian (G, D) | `I - V - vi - iii - IV` → C - G - Am - Em - F |
-| Heroic | Mixolydian (A) | `I - V - vi - IV` with strings and brass |
+| Heroic | Mixolydian (A) | `I - bVII - IV - I` with strings and brass |
 | Tension | Phrygian (D, E) | `i - bII - i` stalled, no resolution |
 
 In `SongSpec`, "key" + "scale" and "progression" as chord symbols are sufficient.
@@ -33,7 +33,7 @@ The engine resolves degrees relative to each chord's root.
 | Funeral | intro .20/.2 · lament .30/.5 · tribute .25/.8 · finale .25/.3 |
 | Epic | intro .10/.3 · development .30/.6 · climax .30/1.0 · resolution .30/.5 |
 
-Translate proportions into `bars` (in 4/4, 1 bar = 4 eighth notes). Intensity maps to
+Translate proportions into `bars` (in 4/4, 1 bar = 4 quarter notes or 8 eighth notes). Intensity maps to
 `dynamics` (`pp`…`ff`).
 
 ## Grooves (16 steps = 1 bar in 4/4)
@@ -56,7 +56,8 @@ Direct equivalents in the engine: `block_chords`, `bass_root`, `bass_pulse`,
 
 A motif is 2-4 notes that: (1) appear at the start, (2) develop, (3) return transformed.
 Rules of thumb:
-- Start on the tonic (degree 0) or dominant (degree 4/5 depending on the scale).
+- In a seven-note scale, start on the tonic (index 0) or dominant (index 4).
+  Other scales need their own interval check; the engine uses zero-based indices.
 - Move stepwise rather than in large leaps (use `escala_ascendente`,
   `giro_ornacional`, `descenso_cadencia`).
 - Vary by changing 1-2 notes, reversing direction, or changing rhythm.

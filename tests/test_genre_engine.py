@@ -24,7 +24,7 @@ class GenreProfilesTests(unittest.TestCase):
                 self.assertIn(profile["evidence_level"], {"direct", "family", "provisional"})
                 self.assertIn("meter", profile)
                 if profile["requires_choice"]:
-                    self.assertTrue(profile["variants"], f"{name}: requiere variante pero no ofrece ninguna")
+                    self.assertTrue(profile["variants"], f"{name}: requires a variant but offers none")
                 self.assertGreaterEqual(len(profile["differentiator"]), 12)
 
     def test_umbrella_labels_fail_closed(self):

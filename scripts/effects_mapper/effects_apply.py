@@ -3,23 +3,20 @@
 Production Effects MIDI Mapper
 ===============================
 
-Apply production effects to MIDI files, based on the analysis in
+Experimental MIDI event edits inspired by the production techniques in
 Jaime Altozano's video "MOTOMAMI: an in-depth musical analysis ft. Rosalia".
 
-Effects:
-- autotune: aggressive pitch correction (pitch bend + CC1)
-- pitch_shift: key transposition
-- filter: low-pass/high-pass filter (CC74, CC71)
-- distortion: saturation distortion (CC11, velocity)
-- reverb: reverberation (CC91, CC94)
-- sidechain: accompaniment ducking (CC11)
-- vocoder: voice modulation (CC10, CC73)
-- chorus: spatial chorus/echo (CC66, CC58)
-- flanger: flanger (CC11, CC106)
+Effect names describe intentions, not functioning audio DSP. Known defects:
+autotune/pitch_shift use invalid Mido note attributes; filter/sidechain can
+produce invalid controller values; sidechain's note-off branch is unreachable.
+Per-track exceptions are warnings and do not necessarily make the CLI fail.
+See references/effects_mapper.md for the actual behavior of all nine names.
 
 Usage:
     python3 effects_apply.py input.mid output.mid --effect autotune --params "..."
-    python3 effects_apply.py list
+
+Parameters must be valid JSON. The CLI does not dispatch a list subcommand;
+call list_effects() from Python to inspect the historical effect metadata.
 """
 
 import sys
@@ -92,7 +89,7 @@ EFFECTS = {
         'description': 'Spatial reverberation',
         'notes': [
             'Apply CC91 (reverb depth) at the wet level',
-            'CC94 (reverb damping) based on room',
+            'CC94 (Effects 4 Depth) based on room; not standard reverb damping',
             'Vocals without reverb (dry), per the MOTOMAMI analysis',
         ],
     },
@@ -118,9 +115,9 @@ EFFECTS = {
         },
         'description': 'Vocoder: voice as modulator',
         'notes': [
-            'Apply CC73 (initial tempo) as carrier',
-            'CC10 (expression) as mod',
-            'Formant mapping per the MOTOMAMI analysis',
+            'Rewrite CC73 (attack time); no carrier is generated',
+            'Rewrite CC10 (pan), not expression',
+            'No formant or vocoder DSP is implemented',
         ],
     },
     'chorus': {
@@ -131,8 +128,8 @@ EFFECTS = {
         },
         'description': 'Chorus/echo for spatial width',
         'notes': [
-            'Apply CC66 (chorus depth) with depth',
-            'CC58 (chorus rate) based on rate',
+            'Rewrite CC66 (sostenuto) with depth; not standard chorus depth',
+            'Rewrite CC58 based on rate; not a standard chorus-rate control',
             '"Wild mixes" effect',
         ],
     },
@@ -145,7 +142,7 @@ EFFECTS = {
         'description': 'Flanger: sweeping effect',
         'notes': [
             'Apply CC11 (expression) with depth',
-            'CC106 (flanger speed) based on speed',
+            'Rewrite CC106 based on speed; not a standard flanger-speed control',
             'For a melodic "swirl" effect',
         ],
     },
@@ -155,14 +152,14 @@ EFFECTS = {
 # ---------- Effect modules ----------
 
 def apply_autotune(track, params):
-    """Apply autotune: pitch bend + CC1 for vocals on channel 1."""
+    """Attempt pitchbend assignment on channel-0 notes; invalid for Mido notes."""
     min_semitone = params.get('min_semitone', 12)
     max_semitone = params.get('max_semitone', 50)
     velocity = params.get('velocity', 0.8)
 
     for msg in track:
         if msg.type == 'note_on' and msg.channel == 0:
-            # Pitch bend: pitch bend +12 to +50 semitones (aggressive vocals)
+            # Legacy attempt: note_on does not support a pitchbend attribute.
             bend = int(min_semitone + (max_semitone - min_semitone) * msg.velocity * 0.5)
             msg.pitchbend = bend
             msg.velocity = int(msg.velocity * velocity)
@@ -173,7 +170,7 @@ def apply_autotune(track, params):
 
 
 def apply_pitch_shift(track, params):
-    """Apply pitch shift: constant transposition."""
+    """Attempt transposition; msg.pitch is not a valid note_on attribute."""
     semitones = params.get('semitones', 0)
     velocity = params.get('velocity', 0.9)
 
@@ -219,7 +216,7 @@ def apply_distortion(track, params):
 
 
 def apply_reverb(track, params):
-    """Apply reverb: CC91 (wet) and CC94 (damping)."""
+    """Rewrite existing CC91/CC94 and velocity; synthesizer-dependent result."""
     wet = params.get('wet', 0.3)
     dry = params.get('dry', 0.7)
     room = params.get('room', 30)
@@ -236,7 +233,7 @@ def apply_reverb(track, params):
 
 
 def apply_sidechain(track, params):
-    """Apply sidechain: backmask + CC11 ducking."""
+    """Legacy ducking attempt: default CC11 is invalid; note-off branch is unreachable."""
     duck_amount = params.get('duck_amount', -12)
     attack = params.get('attack', 5)
     release = params.get('release', 20)
@@ -253,7 +250,7 @@ def apply_sidechain(track, params):
 
 
 def apply_vocoder(track, params):
-    """Apply vocoder: CC73 (carrier) and CC10 (expression)."""
+    """Rewrite CC73 (attack time), CC10 (pan) and velocity; no vocoder DSP."""
     carrier = params.get('carrier', 73)
     modulation = params.get('modulation', 10)
     velocity = params.get('velocity', 0.8)
@@ -378,7 +375,7 @@ def apply_effects(midi_file, output_file, effect_name, params=None):
 
 
 def list_effects():
-    """List available effects."""
+    """Print historical effect intentions/parameters, not verified capabilities."""
     print('Available effects:')
     for name, data in EFFECTS.items():
         print(f'  {name:15s} | {data["description"]}')
@@ -390,7 +387,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Production Effects MIDI Mapper',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='Examples:\n    python3 effects_apply.py input.mid output.mid --effect autotune\n    python3 effects_apply.py input.mid output.mid --effect filter --params \'{"cutoff_low": 60, "cutoff_high": 150}\'\n    python3 effects_apply.py list'
+        epilog='Examples (legacy; inspect warnings):\n    python3 effects_apply.py input.mid output.mid --effect distortion\n    python3 effects_apply.py input.mid output.mid --effect distortion --params \'{"intensity": 0.4, "velocity": 0.9}\'\n    Metadata: call list_effects() from Python; no CLI list subcommand.'
     )
     parser.add_argument('input', help='Input MIDI file')
     parser.add_argument('output', help='Output MIDI file')

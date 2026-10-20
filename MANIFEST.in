@@ -1,4 +1,4 @@
-include LICENSE THIRD_PARTY_NOTICES.md README.md CONTRIBUTING.md PROTOCOL.md SKILL.md ENSAMBLE.md requirements.txt
+include LICENSE THIRD_PARTY_NOTICES.md README.md CONTRIBUTING.md PROTOCOL.md SKILL.md requirements.txt
 recursive-include docs *.md
 recursive-include references *.json *.md
 recursive-include templates *.json

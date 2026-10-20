@@ -82,7 +82,7 @@ El servidor expone 10 herramientas por stdio (FastMCP):
 | `apply_eq` | EQ puntual sobre un archivo |
 | `apply_comp` | Compresión puntual sobre un archivo |
 | `master` | Cadena de master con objetivo de loudness |
-| `compare_to_reference` | Compara dos archivos (loudness, balance, estéreo) |
+| `compare_to_reference` | Compara pico de muestras, RMS y bandas; incluye métricas estéreo |
 | `release_check` | Veredicto listo / necesita trabajo |
 
 ## Arquitectura
@@ -103,13 +103,13 @@ hermes-music-daw/
 | Gate | Qué verifica |
 |---|---|
 | `structure` | Notas cerradas y duración positiva |
-| `dynamics` | Mínimo 5 velocidades y amplitud 10 |
+| `dynamics` | Mínimo 5 velocidades y rango 10 en partes con al menos 16 notas |
 | `register` | Rangos MIDI por rol dentro del contrato |
 | `space` | Al menos un instrumento armónico calla un compás completo |
-| `overlap` | Máximo 2 piezas del kit por ataque |
+| `overlap` | Máximo 2 golpes; rechaza duplicados, dos platillos y caja con tom, también en grupos cercanos |
 | `patterns` | Mínimo 3 patrones, ninguno domina más del 50 % |
 | `density` | Mínimo 3 niveles y contraste entre secciones |
-| `fills` | Fills solo en bordes de sección, no periódicos |
+| `fills` | Candidatos heurísticos en bordes de sección; rechaza periodicidad de cuatro compases según el umbral del auditor |
 
 ## Límites honestos
 

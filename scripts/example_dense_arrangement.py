@@ -9,7 +9,7 @@ no solo duplicates and minor thirds where the chord symbol specifies minor.
 Does not write the original MIDIs or use modules from external projects.
 
 1) --plan plan.json writes decisions without generating notes.
-2) composition_guard.py plan.json --out final.mid -- este_script.py --out {draft}
+2) composition_guard.py plan.json --out final.mid -- scripts/example_dense_arrangement.py --out {draft}
 """
 import argparse
 import json
@@ -188,7 +188,7 @@ def arrange_drums(rng):
 
 
 # ==========================================================================
-# GUITARS - power chords + palm mute, double-tracked (L/R), NO arpeggios
+# GUITARS - power chords + short-note articulation, doubled (L/R), NO arpeggios
 # ==========================================================================
 def arrange_guitars(rng):
     L, R = [], []
@@ -347,7 +347,7 @@ def arrange_lead(rng):
             elif style == 'chorus' and local % 4 in (2, 3):
                 phrase(beat, 'B', 100)
             elif style == 'solo':
-                # continuous run: E minor scale, 16 notes per 2 bars
+                # continuous run: E minor scale, 16 notes per bar
                 scale = (76, 78, 79, 81, 83, 84, 86, 88)
                 if local % 2 == 0:
                     seq = scale + scale[::-1]
@@ -383,11 +383,11 @@ def compose():
 
 
 PROGRAMS = {
-    'rhythm_guitar_L': (30, 0),   # Overdriven Guitar, pan left
-    'rhythm_guitar_R': (30, 1),   # Overdriven Guitar, pan right
+    'rhythm_guitar_L': (30, 0),   # Distortion Guitar, pan left
+    'rhythm_guitar_R': (30, 1),   # Distortion Guitar, pan right
     'electric_bass':   (34, 2),   # Electric Bass (pick)
     'synth_piano':     (4,  3),   # Electric Piano 1
-    'lead_guitar':     (31, 4),   # Distortion Guitar
+    'lead_guitar':     (31, 4),   # Guitar Harmonics
 }
 PANS = {'rhythm_guitar_L': 25, 'rhythm_guitar_R': 102, 'lead_guitar': 64,
         'electric_bass': 64, 'synth_piano': 64}

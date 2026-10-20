@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Headless mixing engine - foundation of the DAW MCP.
 
-Takes WAV stems and applies a professional mixing chain per role (HPF, EQ,
+Takes WAV stems and applies a configurable mixing chain per role (HPF, EQ,
 compression), stereo balance, and a master bus with tonal EQ + bus
 compression + sample limiter. All using Pedalboard (Spotify), 100% headless.
 

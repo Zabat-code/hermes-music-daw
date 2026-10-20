@@ -40,7 +40,7 @@ def test_mismo_pitch_en_canales_distintos_no_es_error(tmp_path):
         str(tmp_path / "twoch.mid"),
     )
     problems, _ = validate_midi(p)
-    assert problems == [], f"falso positivo: {problems}"
+    assert problems == [], f"false positive: {problems}"
 
 
 def test_mismo_pitch_mismo_canal_solapado_si_es_error(tmp_path):

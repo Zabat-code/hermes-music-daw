@@ -48,7 +48,7 @@ python examples/03_mix_and_master.py --work output/render-demo
 
 `render_stems` requires safe unique names, one channel per track with notes and
 a new/empty folder. Preserve global metadata in their original ticks.
-A type 0 multitrack must be split first; controllers and programs
+A multichannel type 0 track must be split first; controllers and programs
 shared across tracks are not reconstructed automatically.
 
 ## Duration and Tails

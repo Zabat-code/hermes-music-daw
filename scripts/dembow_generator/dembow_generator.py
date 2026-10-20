@@ -3,33 +3,24 @@
 Reggaeton Dembow Pattern Generator
 ===================================
 
-Generate MIDI drum patterns for reggaeton and dembow, based on the
-analysis in the video "MOTOMAMI: an in-depth musical analysis ft. Rosalia"
-by Jaime Altozano (5,700,000 views).
-
-The classic dembow pattern is:
-  - Kick: 1, e, &, a (1 e& a) with variation
-  - Snare: "&" of 2, and "&" of 4 (reggaeton "hop")
-  - Hi-hat: 8th notes, with ghost notes on & of 3
-  - 808: persistent background at a low level
-
-GM MIDI drum map:
-  - Kick: 36 (0x24)
-  - Snare: 38 (0x26)
-  - Closed Hi-hat: 42 (0x2a)
-  - Open Hi-hat: 43 (0x2b)
-  - 808: 41 (0x29)
-  - Tambourine: 48 (0x30)
+Experimental legacy generator inspired by Jaime Altozano's MOTOMAMI analysis.
+It does not implement a validated dembow arrangement or isolated drum stems.
+Known defects: absolute ticks are written as deltas; four tracks duplicate the
+same multichannel pattern; channels 0-3 are not GM percussion channel 9.
+Tempo is fixed at 120 BPM and generation loops over eight bars; CLI --bpm and
+--bars are not applied. The latin_cumbia recipe accesses a missing 808 entry.
+Recipe labels such as 808 do not establish GM sounds. See
+references/effects_mapper.md for legacy implementation limits.
 
 Usage:
-    python3 dembow_generator.py --genre reggaeton --bpm 92 --bars 8 --out out.mid
+    python3 dembow_generator.py --genre reggaeton_basic --out out.mid
 
     # List recipes
-    python3 dembow_generator.py list
+    python3 dembow_generator.py --genre list
 
 Output:
-    - out.mid: MIDI file with all 4 tracks (kick, snare, hihat, 808)
-    - out_pattern.txt: pattern description
+    - out.mid: four named tracks, each containing the same combined pattern
+    - No pattern-description text file is written.
 """
 
 import argparse
@@ -143,7 +134,7 @@ def create_dembow_track(title, pattern):
     track.append(mido.MetaMessage('time_signature', numerator=4, denominator=4, time=0))
 
     bpm = pattern['bpm']
-    # 16 beats per bar, 4/4
+    # Four quarter-note beats per bar, 4/4; recipe BPM is not applied.
     # Ticks per beat = 480 (standard)
     ticks_per_beat = 480
 
@@ -151,28 +142,28 @@ def create_dembow_track(title, pattern):
     events = []
 
     # Calculate event times
-    # 8 bars = 32 beats = 16 measures (4/4)
+    # Intended grid: 8 bars = 32 quarter-note beats in 4/4.
     # Each beat = 480 ticks = 1 quarter note
 
     for bar in range(8):  # 8 bars
         for beat in range(4):  # 4 beats per bar
             beat_time = (bar * 4 + beat) * ticks_per_beat
 
-            # Kick on 1 e & a (beats 0, 1, 2, 3)
+            # Event on each quarter-note beat (0, 1, 2, 3).
             if beat in [0, 1, 2, 3]:
                 kick_idx = beat % len(pattern['pitches']['kick'])
                 kick_pitch = pattern['pitches']['kick'][kick_idx]
                 kick_vel = pattern['velocities']['kick'][kick_idx]
                 events.append((beat_time, 'note_on', 0, kick_pitch, kick_vel))
 
-            # Snare on & of 2 and & of 4
+            # Events on zero-based beats 2 and 3, not eighth-note offbeats.
             if beat in [2, 3]:
                 snare_idx = (beat // 2) % len(pattern['pitches']['snare'])
                 snare_pitch = pattern['pitches']['snare'][snare_idx]
                 snare_vel = pattern['velocities']['snare'][snare_idx]
                 events.append((beat_time, 'note_on', 1, snare_pitch, snare_vel))
 
-            # Hi-hat 8th notes
+            # Eight subdivisions per quarter note (thirty-second-note spacing).
             for i in range(8):
                 hihat_time = beat_time + (i * ticks_per_beat // 8)
                 hihat_idx = i % len(pattern['pitches']['hihat'])
@@ -189,7 +180,7 @@ def create_dembow_track(title, pattern):
     # Sort events by time
     events.sort(key=lambda x: x[0])
 
-    # Add events to track
+    # Legacy defect: time is absolute here, but MIDI message.time is a delta.
     for time, msg_type, channel, note, vel in events:
         track.append(mido.Message(msg_type, channel=channel, note=note, velocity=vel, time=time))
         # Add note_off for each note
@@ -248,7 +239,7 @@ def main():
         epilog='''
 Examples:
     python3 dembow_generator.py --genre reggaeton_basic --bpm 92 --bars 8 --out reggaeton.mid
-    python3 dembow_generator.py list
+    python3 dembow_generator.py --genre list
         '''
     )
     parser.add_argument('--genre', '-g', help='Pattern name (reggaeton_basic, reggaeton_dembow_v2, reggaeton_melodic, trap_fast, latin_cumbia)')

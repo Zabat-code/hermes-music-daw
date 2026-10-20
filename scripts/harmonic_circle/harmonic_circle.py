@@ -7,11 +7,11 @@ Generate MIDI chord progressions based on the Circle of Fifths,
 based on Jaime Altozano's video "An INCREDIBLE TRICK FOR UNDERSTANDING CHORDS AND SCALES:
 The Circle of Fifths" (with millions of views).
 
-Works with:
-  - The Circle of Fifths (I, IV, V, vi, III, II, viidim)
-  - Extended chords (7, 9, 11, 13)
-  - Substitutions (iidim -> V, vi -> III, etc.)
-  - Function harmony (Tonic, Subdominant, Dominant)
+Experimental legacy utility, not a validated harmony engine. Known defects:
+pitch-class offsets are doubled, per-chord chord_types are ignored and growing
+absolute positions are written as MIDI deltas. Ninth, eleventh and thirteenth
+chords and an automatic substitution system are not implemented. See
+references/effects_mapper.md for implementation limits.
 
 MIDI output:
   - Track 0: Voice (octave harmonies)
@@ -19,10 +19,10 @@ MIDI output:
   - Track 2: Melody arpeggio
 
 Usage:
-    python3 harmonic_circle.py --genre pop --progression "I-vi-IV-V" --out pop.mid
+    python3 harmonic_circle.py --genre pop --names "I-vi-IV-V" --out pop.mid
 
     # List progressions
-    python3 harmonic_circle.py list
+    python3 harmonic_circle.py --list
 """
 
 import argparse
@@ -180,7 +180,7 @@ def create_harmony_track(title, notes, channel=0):
     if not notes:
         return track
 
-    # Each chord lasts 2 seconds (approx. 8 quarter notes at 120 BPM)
+    # Intended duration: 2 seconds = 4 quarter notes at 120 BPM.
     seconds_per_chord = 2.0
     ticks_per_beat = 480
     beats_per_second = 60.0 / 120.0  # 0.5 seconds per quarter note
@@ -195,7 +195,7 @@ def create_harmony_track(title, notes, channel=0):
 
 
 def create_bass_track(title, progressions):
-    """Create a bass track with the triad of each chord."""
+    """Create one bass note per degree; legacy pitch/timing defects remain."""
     track = mido.MidiTrack()
     track.append(mido.MetaMessage('track_name', name=title, time=0))
     track.append(mido.MetaMessage('set_tempo', tempo=500000, time=0))
@@ -210,7 +210,7 @@ def create_bass_track(title, progressions):
             bass_notes.append((bass_note, root_name))
 
     for i, (note, root) in enumerate(bass_notes):
-        chord_time = i * 960  # 2 seconds at 120 BPM
+        chord_time = i * 960  # nominal 1-second spacing; wrongly written as deltas
         track.append(mido.Message('note_on', channel=1, note=note, velocity=70, time=int(chord_time)))
         track.append(mido.Message('note_off', channel=1, note=note, velocity=50, time=10))
 
@@ -282,7 +282,7 @@ def main():
 Examples:
     python3 harmonic_circle.py --genre pop --out pop.mid
     python3 harmonic_circle.py --names "I-V-vi-IV" --out my_progression.mid
-    python3 harmonic_circle.py list
+    python3 harmonic_circle.py --list
         '''
     )
     parser.add_argument('--genre', '-g', help='Genre (pop, reggae, classical)')

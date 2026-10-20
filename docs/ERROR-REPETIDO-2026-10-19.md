@@ -4,6 +4,10 @@
 **Tool:** `hermes-music` skill (`hermesmusic.py` engine)
 **Severity:** high — the error occurred **twice**, and the correction was documented but not applied.
 
+Historical incident report from before the executable guard. Statements about
+missing gates and the pending guardrail describe that earlier state; the current
+implementation is documented in `PROTOCOL.md` and `docs/ARCHITECTURE.md`.
+
 ---
 
 ## What happened (facts, not interpretation)

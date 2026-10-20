@@ -13,6 +13,37 @@ This is an early open source toolkit. The composition checks have regression
 coverage; the DAW is a hardened prototype, with tests for all ten tools and a
 real stdio MCP session. Neither component decides whether music sounds good.
 
+| Component | What you get |
+| --- | --- |
+| `hermes-music` | MIDI composition, eight arrangement gates and SHA-256 delivery receipts |
+| `hermes-daw` | Ten MCP tools for rendering stems, measuring audio, mixing and mastering offline |
+
+The guard exists because written corrections failed to prevent the same defects
+in the next composition. It checks a defined structural contract before delivery;
+it cannot certify timbre, genre fidelity or listening quality.
+
+## Quick start: install, test, try
+
+From a downloaded or cloned checkout, on Linux with Python 3.12:
+
+```bash
+cd hermes-music-daw
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[dev]'
+sudo apt install fluidsynth fluid-soundfont-gm ffmpeg
+python scripts/check_install.py
+python -m pytest tests/ -q
+python examples/01_compose.py --work output/demo
+python examples/02_audit.py --work output/demo
+python examples/03_mix_and_master.py --work output/demo
+```
+
+The example produces an audited MIDI, six WAV stems, a mix, a master, an OGG
+and JSON measurements. Use a fresh output directory for each run. FluidSynth,
+FFmpeg and a SoundFont are needed for audio and the full integration tests;
+the MIDI gates do not require an audio device. See below for configuration and limits.
+
 ## Why the guard exists
 
 The same bad arrangement happened twice: mechanical drums, overlapping attacks,
@@ -36,18 +67,6 @@ code can bypass it; an agent must use the prescribed entry point.
 Tested with Python 3.12.3 on Linux. The main dependency versions are pinned in
 [requirements.txt](requirements.txt): Mido 1.3.3, NumPy 2.5.3, Pedalboard 0.9.26,
 FastMCP 4.1.1. The list does not lock transitive dependencies.
-
-From a downloaded or cloned checkout:
-
-```bash
-cd hermes-music-daw
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev]'
-# Linux Mint / Ubuntu: external dependencies for audio, not for MIDI analysis
-sudo apt install fluidsynth fluid-soundfont-gm ffmpeg
-python scripts/check_install.py
-```
 
 `pip install -e .` installs the runtime package without the pytest extra. The
 import namespace is `hermes_music.scripts`; console commands include
@@ -134,11 +153,13 @@ readings + decision plan + composer
 | `examples/` | Three executable stages and a small MIDI/OGG sample |
 | `tests/` | Composition regressions, DSP checks and real MCP calls |
 | `docs/` | Current guides and dated historical evidence |
-| `ENSAMBLE.md`, `SKILL.md` | Hermes integration notes and detailed composition skill |
+| `SKILL.md` | Detailed composition workflow and MIDI API; the historical integration guide is not bundled |
 | `templates/songspec.json` | Low-level SongSpec schema example |
 
 The legacy dembow, harmonic-circle and MIDI-effect scripts remain in `scripts/`
-as standalone utilities. They do not issue guard receipts. `build_index.py` is
+as experimental standalone utilities with known implementation defects; see the
+[MIDI-effect reference](references/effects_mapper.md). They do not issue guard
+receipts and are outside the tested composition/audio workflow. `build_index.py` is
 a Hermes-specific adapter requiring a separate skills-index plugin.
 
 ## MCP tools and clients
@@ -150,7 +171,7 @@ and `release_check` can also inspect an OGG supported by the installed decoder.
 | Tool | Use / result |
 | --- | --- |
 | `list_profiles` | Supported roles and complete DSP settings |
-| `render_stems` | Audited MIDI → named WAVs; requires FluidSynth and SoundFont |
+| `render_stems` | MIDI → named WAVs; audit first; requires FluidSynth and SoundFont |
 | `analyze_audio` | Sample peak, RMS, octave energy and stereo correlation |
 | `analyze_masking` | Heuristic ranking of spectral overlap between stems |
 | `auto_mix` | Role processing, stereo balance and bus chain; output metrics |

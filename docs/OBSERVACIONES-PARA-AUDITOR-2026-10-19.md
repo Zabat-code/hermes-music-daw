@@ -2,6 +2,10 @@
 
 Written so an external auditor can understand the failure pattern, not just this specific case.
 
+Historical requirements written before the guard was implemented. The current
+guard is an enforced entry point, not a sandbox: arbitrary code can bypass it.
+External project and scratch artifacts listed below are not bundled in this checkout.
+
 ## Traps that lead any agent to the same error
 1. **The easy path "works."** `render_song(spec, out)` + a `drum_grid` produces a valid MIDI with the exact requested duration, classified as "metal." An agent optimizes for "deliver something that passes the tests" and stops there. **Apparent success is the trap.**
 2. **Available validation is blind to musical defects.** `validate_midi` (orphan notes, duration) and `classify_genre` (onsets, tempo) return OK. An agent trusting the existing pipeline **has no signal that something is wrong**. There is no failing test.
@@ -13,7 +17,8 @@ Written so an external auditor can understand the failure pattern, not just this
 8. **"Documenting the error" is confused with "fixing the error."** It was documented twice (see `HALLAZGOS.md`), and the same error returned. Documenting without implementing a gate **does not change the next agent's behavior**.
 
 ## Guardrail requirements (for the auditor)
-The fix must not be another `.md`. It must be a **mandatory, verifiable protocol** the agent cannot skip. Criteria:
+The fix must not be another `.md`. It must be a **mandatory, verifiable protocol**
+that aborts failures when invoked through the prescribed entry point. Criteria:
 1. **Single entry point.** When the `hermes-music` skill is loaded to *compose* (not for reference), the agent must encounter the protocol before writing music.
 2. **Explicit step sequence**, not advice: what to read, decide, and write, in what order, and what NOT to do.
 3. **Automatic gates that fail visibly.** Checks must measure the actual defects (drum overlap, dynamic variation, space/silences, register limits) and **abort** when requirements are unmet — not merely report them.
@@ -23,14 +28,14 @@ The fix must not be another `.md`. It must be a **mandatory, verifiable protocol
 7. **Documented and prohibited anti-pattern**: "declare success because validate_midi passed."
 
 ## Material the auditor must review
-- `the skill's SKILL.md`
-- `the skill's references/teoria-composicion.md` (section "Arrangement: Making Space")
-- `the skill's references/rendering.md`
-- `the skill's scripts/hermesmusic.py` (functions `render_song`, `drum_grid`)
+- `SKILL.md`
+- `references/teoria-composicion.md` (section "Arrangement: Making Space")
+- `references/rendering.md`
+- `scripts/hermesmusic.py` (`render_song` function and its `drum_grid` pattern branch; `drum_grid` is not a function)
 - `~/.hermes/documentacion/hermesmusic/COMPARATIVA-BATERIA-METAL-2026-10-19.md`
 - `~/.hermes/documentacion/hermesmusic/TEORIA-Y-ARQUITECTURA-2026-10-19.md`
 - `HALLAZGOS.md`
 - `~/.hermes/documentacion/hermesmusic/ERROR-REPETIDO-2026-10-19.md`
 - `~/<project>/ash_to_dawn_drums_v2.py` (good example)
-- `a scratch path compose_gym_power_metal.py` (defective v1)
-- `a scratch path compose_gym_power_metal_v2.py` (corrected v2)
+- Scratch artifact `compose_gym_power_metal.py` (defective v1, not bundled)
+- Scratch artifact `compose_gym_power_metal_v2.py` (corrected v2, not bundled)

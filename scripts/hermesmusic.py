@@ -266,7 +266,7 @@ def _drum_metal(symbol, octave=None, tpb=TPB):
             b = beat + s * 0.5
             if s == 1:  # softer offbeat hi-hat
                 steps.append((b, 0.15, 42, 70))  # closed hi-hat (42)
-        # kick on 1 and 3 (and offbeat)
+        # kick on every quarter-note beat and its eighth-note offbeat
         steps.append((beat, 0.4, 36, 110))  # strong kick (36)
         steps.append((beat + 0.5, 0.3, 36, 90))  # kick offbeat
         # snare on 2 and 4
@@ -274,7 +274,7 @@ def _drum_metal(symbol, octave=None, tpb=TPB):
             steps.append((beat, 0.4, 38, 115))  # strong snare (38)
             steps.append((beat + 0.5, 0.3, 38, 100))  # snare offbeat
         else:
-            steps.append((beat + 0.5, 0.35, 38, 95))  # snare ghost
+                steps.append((beat + 0.5, 0.35, 38, 95))  # offbeat snare
     return steps
 
 
@@ -288,7 +288,7 @@ def _choir_pad(symbol, octave):
         steps.append((0.0, 4.0, n, 60))
     # second voice a 3rd/5th above
     steps.append((0.0, 4.0, notes[0] + 4, 55))
-    # third voice a 6th above (3-part harmony)
+    # additional voice a fifth above the root
     steps.append((0.0, 4.0, notes[0] + 7, 55))
     # gentle arpeggiated motion in upper voices
     pool = notes + [n + 12 for n in notes]
@@ -382,7 +382,7 @@ def build_track(name: str, notes, program: int, channel: int,
 
 # ---- compatibility wrappers for legacy skills ------------------
 def eventos_a_pista(nombre_pista, notas, program, channel, tpb=TPB):
-    """Compatibility: notes = (start_tick, pitch, dur_ticks, velocity)."""
+    """Compatibility: notes = (start_tick, dur_ticks, pitch, velocity)."""
     beats = [(s / tpb, d / tpb, p, v) for (s, d, p, v) in notas]
     return build_track(nombre_pista, beats, program, channel, tpb,
                        is_drum=(channel == 9))
@@ -473,7 +473,7 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
                         slot["notes"].append((when, 0.5,
                                               deg(scale, cdeg + off, oct_shift), dyn))
 
-    # ---- accompaniment tracks (per track) ----
+    # ---- root-level accompaniment entries, keyed by role ----
     accomp = {}  # name -> {"instrument","channel","notes":[], "is_drum"}
     # tracks_global applies to ALL sections
     all_track_entries = list(spec.get("tracks_global", [])) + list(spec.get("tracks", []))
@@ -529,7 +529,7 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
             accomp[t.get("role", "drums")] = {
                 "instrument": 0, "channel": 9, "notes": dnotes, "is_drum": True}
             continue
-        # --- genre pattern: automatically configure drum_grid + instruments ---
+        # --- genre pattern: drum grid + unused instrumentation metadata ---
         # t["genre"] = "jazz" | "rock" | "reggae" | ... (see genre_configs.json)
         if patname == "genre_grid":
             genre_name = t.get("genre", "").lower().replace("-", "_").replace(" ", "_")
@@ -585,7 +585,7 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
                                                0.1, pitch, _sdyn2))
             accomp[t.get("role", "drums")] = {
                 "instrument": 0, "channel": 9, "notes": dnotes, "is_drum": True}
-            # Automatically configure instruments if not specified
+            # Record instrumentation metadata; no track generator consumes it
             if not t.get("instruments") and gcfg.get("instruments"):
                 # instruments are used at spec level, not track level
                 # Save a reference for the spec to use
@@ -766,14 +766,15 @@ def render_audio(mid_path: str, out_path: str, soundfont: str = None,
 
 
 # ============================================================================
-# PERFORMANCE - FAITHFUL reconstruction of an actual MIDI (lossless)
+# PERFORMANCE - reconstruction of supported performance fields
 # ============================================================================
 # Unlike `render_song` (SongSpec: new composition), this rewrites
-# a `performance` extracted with miditrack_extract.py, preserving EVERYTHING:
-# tempo map, meter map, and per track: program, notes+velocity and CC7.
+# a `performance` extracted with miditrack_extract.py: tempo/meter maps and
+# per-track program, notes, controllers and pitch bends. It does not preserve
+# arbitrary MIDI messages, program changes over time or original event ordering.
 
 def render_performance(perf: dict, out_path: str, tpb: int = None) -> str:
-    """Reconstruct a faithful MIDI from a 'performance' dict (lossless)."""
+    """Reconstruct supported fields of a 'performance' dict; not lossless MIDI."""
     tpb = tpb or perf.get("tpb", TPB)
     mid = MidiFile(type=1, ticks_per_beat=tpb)
 

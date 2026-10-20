@@ -67,7 +67,7 @@ S=scripts
 **Dense contract gates:** maximum two kit pieces per attack; reject
 duplicates, simultaneous double cymbal/hi-hat hits, and snare+tom combinations. Also group attacks
 separated by <=1/48 of a quarter note to detect collisions hidden by jitter.
-Pitches with >=16 notes: >=5 distinct velocities and velocity range >=10; >=3 drum
+Track parts grouped by channel/program with >=16 notes: >=5 distinct velocities and velocity range >=10; >=3 drum
 patterns, none exceeding 50% of active bars; >=3 density levels and
 contrast >=2 hits between sections; >=1 harmonic instrument with >=1 bar
 without notes or sustain. Registers: bass 24-60, rhythm guitar 40-84, lead 48-90,
@@ -95,7 +95,8 @@ requires a delivery/runtime permission hook that demands the certificate; do not
 
 A single Python engine built on `mido` to **compose MIDI songs** from a
 `SongSpec` JSON or a recipe, **validate them**, and **export them to audio**. All
-logic lives in `scripts/hermesmusic.py`; the skill does not rewrite parsers or
+core SongSpec logic lives in `scripts/hermesmusic.py`; guards and audio processing
+live in separate modules. The skill does not rewrite parsers or
 timing logic on every call. It replaces the former patch-based system of
 `midi-*` and `deprecated_*` skills.
 
@@ -113,7 +114,8 @@ timing logic on every call. It replaces the former patch-based system of
 
 ## How to Run
 
-Skill path (relative to `the skills directory `): `hermes-music/`.
+In a Hermes skills directory, the skill folder is `hermes-music/`.
+For this standalone checkout, run from the repository root.
 
 ```bash
 M=scripts/hermesmusic.py
@@ -124,6 +126,10 @@ python3 "$M" compose my.spec.json -o my.mid --audio my.mp3
 python3 "$M" validate my.mid
 python3 "$M" render my.mid my.mp3
 ```
+
+These are low-level CLI forms, not passing arrangement examples. Legacy recipes
+may fail the current gates and never issue guard receipts; use the three scripts
+in `examples/` for a tested end-to-end workflow.
 
 Run commands with `terminal`. Write specs with `write` and read them with
 `read_file`. Locate existing files with `search_files`.
@@ -145,14 +151,14 @@ for game-specific adjustments, read `references/game-project.md`.
 
 | Concept | Values |
 |---|---|
-| `scale` (scales) | **Spanish identifiers, case-sensitive** — the engine's `SCALES` dict is keyed in Spanish. Valid: `mayor`, `menor_natural`, `menor_armonica`, `menor_melodica`, `dorico`, `frigio`, `frigio_dominante`, `lidio`, `mixolidio`, `locrio`, `alterado`, `pentatonica_menor`, `pentatonica_mayor`, `blues`. Do **not** write `major` or `minor_harmonic` — the engine rejects them. |
+| `scale` (scales) | **Spanish identifiers, case-sensitive** — the engine's `SCALES` dict is keyed in Spanish. Valid: `mayor`, `menor_natural`, `menor_armonica`, `menor_melodica`, `dorico`, `frigio`, `frigio_dominante`, `lidico`, `mixolidio`, `locrio`, `alterada`, `pentatonica_menor`, `pentatonica_mayor`, `blues`. Do **not** write `major` or `minor_harmonic` — the engine rejects them. |
 | `progression` (chord) | Letter-name chord symbols: `F`, `Am7`, `Fmaj7`, `C/E`, `G7sus4`, `Bb`, `Dm7`, `Bbmaj7`. Always use `maj7` (not `Maj7`); the `_QUAL` parser is case-sensitive. A bare chord such as `E` resolves to major. |
 | `accompany` (pattern) | `arpeggio_up`, `arpeggio_down`, `arpeggio_updown`, `block_chords`, `bass_root`, `bass_pulse`, `alberti`, `waltz`, `pad`, `choir_pad`, `drum_metal` |
 | `melody` (pattern) | `salto_climax`, `arpegio_confiado`, `escala_ascendente`, `giro_ornacional`, `nota_repetida`, `descenso_cadencia`, `swagger`, `balada` |
 | `dynamics` | `pp`, `p`, `mp`, `mf`, `f`, `ff` |
 | `register` | `low`, `mid`, `high` (or explicit `octave`) |
 | `drums` (`drum_grid`) | `grid = {kick, snare, hihat, cymbal, tom, ride}: [16]` where each cell is `(intensity, offset_beats)` or a single `intensity`. `grid_threshold` (0..1) filters by intensity; `offset_beats` shifts timing. If the key is `ride` (pitch 51), the engine generates it on channel 9 — `midi-rhythm-genre` groups pitch 51 into the `cymbal` class, so the jazz `ride` template is compared against `grid["cymbal"]`; always use the key `ride` for jazz/blues drum patterns. |
-| `swing` (`drum_grid`) | The engine's `rhythm_genre.classify_genre` computes swing over **all** drum onsets (kick+snare+ride+hihat+tom), not just the ride. Exact formula: `m = mean(offbeats); swing = round(clamp((m - 0.5) / 0.17, 0, 1))` where `offbeats` = onsets whose `beat % 1.0` falls between 0.15 and 0.85, and 0.5 = straight (mean of onsets at the half-beat position). Because kick/snare usually sit on straight grid positions (0.0/0.5), their presence lowers the **combined** swing average even if the ride has the correct offset. Swing target: 0.55–0.65 = jazz/blues (ride `x.xx.xx.x.xx.xx.` with offbeats delayed ~0.2–0.3b); 0.05–0.20 = rock/pop/waltz; ~0.0 = march/electronic four-on-the-floor. To verify actual ride swing, filter pitch 51 (ride) before measuring: the ride only dominates the average when it is notably denser than the rest. If combined swing is low but the ride sounds swung, reduce straight kicks or add more swung notes to piano_comp. |
+| `swing` | `drum_grid` uses explicit per-cell `offset_beats`. `genre_grid` reads the catalogue's `swing` value and applies `(swing - 0.5) * 0.34` beats to active odd steps when the value is above 0.3 and cells are scalar. The historical `rhythm_genre.classify_genre` classifier is external and is not bundled or required by this engine. |
 
 ## Procedure
 
@@ -167,7 +173,7 @@ the low-level API; it does not replace reading, planning, or gates.
 3. **Write the sections.** Each section has `name`, `bars`, `progression`
    (a list of chord symbols repeated across bars) and, if it has melody,
    `melody` with explicit notes (`{bar, beat, dur, note}`) or a `pattern`.
-4. **Add accompaniment.** Under `tracks`, each track has `role`, `instrument`
+4. **Add accompaniment.** Under root-level `tracks` or `tracks_global`, each track has `role`, `instrument`
    (GM), `pattern`, `register` or `octave`, `dynamics`, and, for percussion,
    `is_drum: true` and `channel: 9`.
 5. **Generate via `composition_guard.py` and require an exit-0 audit.** `validate_midi` is a
@@ -177,6 +183,9 @@ the low-level API; it does not replace reading, planning, or gates.
    against genre references before declaring quality/fidelity.
 
 ### `SongSpec` model
+
+Schema illustration only: this excerpt is not a passing guard plan or arrangement.
+The auditor infers roles from names/programs and may reject this instrumentation.
 
 ```json
 {
@@ -221,12 +230,13 @@ the low-level API; it does not replace reading, planning, or gates.
 - **`off` never comes after the next `on`.** `build_track` closes only the previous pitch so notes do not overlap or remain unclosed.
 - **A SoundFont with `-F` in `fluidsynth` does not render if the `.mid` is empty:** validate before exporting.
 - **`humanize.ticks` must not exceed ~10** (at 480 tpb) or it distorts the pulse.
-- **Rendering: the release tail adds 4-8 s.** Rendered duration is
-  `duration + tail`. For a fixed length, subtract the tail seconds from
-  the final section's `bars` (or trim the `.mp3` with `ffmpeg -t N`).
-- **Watch for track-duplication errors:** `tracks_global` across all
-  sections plus `tracks` in each section. Apply only once.
-- **`tracks_global` applies to all sections.** Drums or any track declared there appear in every bar. If a track already has a section-specific `pattern`, do not repeat it in `tracks_global` (duplicates defects).
+- **Rendering adds a variable release tail.** Measure it rather than assuming
+  a fixed duration. For exact timing, use the cut/fade workflow in
+  `references/rendering.md` and remeasure the final export.
+- **`tracks` and `tracks_global` are root-level lists.** Both apply across
+  sections unless a track's `sections` filter restricts it. Section-local
+  accompaniment `tracks` are not read. Entries sharing a `role` overwrite the
+  earlier accompaniment slot; use distinct roles/names for separate parts.
 - **Real vocals are not available.** `voice_*` is not in the dictionary. For three-part harmony, use `choir_pad` (instrument 53, 3 layers) or
   `choir` under `tracks`; the result is a choral pad, not real vocals.
 - **For electric guitar (30) and fiddle (40):** `block_chords` sounds like strings; `arpeggio_up` is a pulse. Do not apply `drum_metal` outside channel 9.
@@ -259,7 +269,7 @@ The pattern transfers kick/snare/hihat/ride/cymbal from a 16-step grid and the d
 
 Available genres: rock, pop, blues, jazz, swing, bossa_nova, samba, funk, soul, rnb, disco, house, techno, trance, dubstep, drum_and_bass, hiphop, trap, reggae, ska, punk, metal, hardcore, grunge, indie, classical, baroque, romantic, electronic, ambient, lo_fi, synthwave, vaporwave, chillwave, folk, country, bluegrass, mariachi, flamenco, tango, salsa, rumba, mambo, cha_cha, bolero, reggaeton, bachata, cumbia, vallenato, afrobeat, highlife, gospel, doo_wop, calypso, soca, zydeco, polka, waltz, mazurka, tarantella, march, minuet, reel, jig, breakbeat, breaks, gabber, psybient, downtempo, idm, footwork, juke, trap_rock, nu_disco, chillout, new_age, meditation, mantra, industrial, darkwave, goth, post_rock, math_rock, prog_rock, post_metal, doom_metal, black_metal, death_metal, power_metal, thrash_metal, speed_metal, sludge_metal, stoner_metal, drone, spoken_word, comedy_music, alternative, trip_hop, drill, experimental.
 
-**Verified with `rhythm_genre.classify_genre` (3 genres):** jazz→jazz (rank 1, swing 0.6), rock→rock (rank 1, swing 0.05), bossa_nova→bossa (rank 1, swing 0.2). MIDI validation reports `no problems` in all 3 cases. `genre_grid` reads the config once per generation (implicit Python import cache); for 100 genres, the JSON is ~12 KB.
+**Historical classifier results (external tool, not revalidated here):** jazz→jazz (rank 1, swing 0.6), rock→rock (rank 1, swing 0.05), bossa_nova→bossa (rank 1, swing 0.2). These labels do not imply that the arrangements pass current gates. `genre_grid` opens and parses the JSON for each matching track entry; it has no configuration cache.
 
 ## Chaining
 

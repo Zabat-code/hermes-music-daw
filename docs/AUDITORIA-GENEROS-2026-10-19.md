@@ -1,6 +1,11 @@
 # HermesMusic: musical audit and genre map (19 Oct 2026)
 
 ## Scope and honesty
+
+Historical audit: scratch artifacts, the external classifier and the composition
+scripts cited below are not bundled here. Their measurements are recorded
+evidence, not a description of the current executable examples.
+
 Static analysis of the skill sources (`SKILL.md`, `scripts/hermesmusic.py`, `references/genre_configs.json`), `rhythm_genre.py`, a scratch MIDI, and an output OGG. No re-rendering or critical listening was performed in this audit. The per-genre notes below are **candidate specifications**; they are not 100 implemented genres, universal traits, or 100 independent ethnomusicological validations. Musically, BPM and timbre alone do not define a genre.
 
 ## Hard evidence from the artifact

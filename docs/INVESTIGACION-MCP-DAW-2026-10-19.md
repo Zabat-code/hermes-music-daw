@@ -1,21 +1,26 @@
 # MCP DAW: implementation research (2026-10-19)
 
+Historical research snapshot. Sizes, stars, prices and local installation state
+were reported in that session and are not current compatibility guarantees.
+The architecture below includes proposals; see `ARCHITECTURE.md` and
+`scripts/daw_mcp.py` for the implemented interface.
+
 Research to build a DAW that the agent and the human operator can use to **adjust the quality** of generated pieces. MIDI does not capture palm mute, distortion, timbre, or mixing: that is done in the audio domain.
 
 ## 1. The real problem
-The `hermesmusic.py` engine produces MIDI. FluidSynth converts it to audio with a General MIDI SoundFont. It sounds like a **mockup**, not a production: GM has no real distorted guitar, no stem-panned mix, no EQ, no compression, no mastering. The pieces "sound better" but will never sound like a record without a **mixing and mastering stage over separate stems**.
+The `hermesmusic.py` engine produces MIDI. FluidSynth converts it to audio with a General MIDI SoundFont. This is a **mockup renderer**: GM instrument selection does not establish realistic guitar articulation or a finished production. Separate stems permit per-role mixing and measurement, but mixing cannot guarantee recording quality or replace the source timbres.
 
 The missing stage: **render each instrument separately (stems) → mix**.
 
 ## 2. Options evaluated (verified data)
 | Option | What it is | Size | Headless | License | Verdict |
 |---|---|---|---|---|---|
-| **Pedalboard** (Spotify) | Audio effects + VST3 in Python | **5 MB** | ✅ yes | GPL-3 (free use) | ✅ **installed and working** |
+| **Pedalboard** (Spotify) | Audio effects + VST3 in Python | **5 MB** | ✅ yes | GPL-3 | ✅ **installed and working** |
 | **dawdreamer** | Full Python DAW (JUCE): VST render, timeline | 40 MB | ✅ yes | GPL-3 | ⚪ viable, heavy |
 | **REAPER** | Real DAW; mature MCPs (176/181/600+ tools) | 13.7 MB installer | ⚠️ needs GUI/X11 | Commercial ($60) | ⚪ portable install possible |
 | **Ardour 8** | Free DAW in apt | 57 MB + deps | ⚠️ GUI | GPL-2 | ⚪ apt available |
 | **LMMS** | Already installed | — | ✅ `lmms render` | GPL-2 | ⚪ limited |
-| **ffmpeg** | 160 audio filters | already installed | ✅ yes | LGPL | ✅ complement |
+| **ffmpeg** | Audio filters (available set depends on build) | already installed | ✅ yes | Build-dependent; see upstream notices | ✅ complement |
 
 **Decision:** start with **Pedalboard + ffmpeg** (0 heavy installs, 100% headless, already working). REAPER stays as phase 2 if interactive editing is wanted.
 
@@ -34,12 +39,12 @@ DAW MCP servers that exist and serve as design references:
 **Common pattern of the good ones:** measure → decide → apply → **measure again**. No guessing. `phantom` and `hellyee` state it explicitly.
 
 ## 4. What is already implemented and verified (2026-10-19)
-### `the skill's scripts/mix_engine.py`
+### `scripts/mix_engine.py`
 Headless mixing engine with Pedalboard. It actually works:
 - Loads WAV stems per role (drums, bass, rhythm_guitar_L/R, lead_guitar_L/R)
-- **Per-role chain:** HPF (avoids masking), presence EQ, compression
-- **Real mid/side panned** (not just a number in the MIDI)
-- **Bus master:** HPF + low-mid mud cut (300 Hz) + air (8 kHz) + bus compression + trim + limiter to -1 dBTP
+- **Per-role chain:** HPF (reduces low-frequency competition), presence EQ, compression
+- **Linear stereo balance** applied to audio; no mid/side processing
+- **Bus master:** HPF + low-mid mud cut (300 Hz) + air (8 kHz) + bus compression + trim + sample limiter at -1 dBFS; true peak must be measured separately
 - **Genre profiles** (`power_metal`, `balanced`) with starting values
 - Returns metrics: peak, RMS, stems used/ignored
 
@@ -55,10 +60,18 @@ Final OGG: iron_determination_v3_MEZCLADO.ogg
 ```
 
 ### Technical finding
-The sum of 6 stems saturates at **0 dB (clipping)** if it is not trimmed before the limiter. A `Gain(trim=-3 dB)` was added in the bus master. Without that trim, the limiter cannot avoid clipping because it enters already saturated.
+Correction to the original diagnosis: the floating-point sum may exceed 0 dBFS
+without clipping at that stage. The bus applies -3 dB gain before its sample
+limiter for headroom. This is not a true-peak guarantee. Measure the written
+audio and final codec rather than inferring saturation from the internal sum.
 
 ## 5. Proposed MCP DAW architecture
 ### Phase 1 — Headless mixing (already implementable)
+
+Historical interface sketch, not executable signatures. The current tool is
+`analyze_audio`, not `analyze_stem`; `render_stems` takes `midi_path`/`out_dir`,
+and `auto_mix` takes `stems_dir`/`out`. Use the current Python signatures or MCP schema.
+
 ```
 hermes-daw-mcp (FastMCP, stdio)
 ├── list_profiles()              → available mixing profiles
@@ -79,9 +92,11 @@ Each tool: **measure before → apply → measure after → report the differenc
 REAPER **portable install** (13.7 MB, runs without installing): allows the operator to edit on the same project the agent mixes. Requires X11 (`DISPLAY=:0` already exists). Would connect with a `reaper-mcp`-type bridge.
 
 ### Phase 3 — Perceptual measurement
-`librosa` for features (MFCC, spectral centroid, tempo, tonality) and comparison against power-metal references. Closes the loop without human ears.
+Proposed `librosa` features (MFCC, spectral centroid, tempo, tonality) for comparison
+against power-metal references. Not implemented here; such measurements would
+not remove the need for human listening.
 
-## 6. Real team constraints
+## 6. Historical local constraints (not package requirements)
 - **Disk at 93%** (8.2 GB free on `/dev/sda6`). A DAW with samples is heavy; the 3-minute stems WAV already occupy 30 MB each. There is a 298 GB external disk and an external disk for heavy material.
 - **CPU i3-6006U, no GPU, 16 GB RAM.** Rendering is sequential; it works but is slow (the stems render took ~2 min).
 - **No JACK/ALSA for study.** Mixing is offline (files), not real-time. That is an advantage: no sound card needed.
@@ -91,7 +106,11 @@ REAPER **portable install** (13.7 MB, runs without installing): allows the opera
 - **It does not invent timbres.** With GM, a guitar sounds like GM guitar. To sound like real metal, quality samples/VSTs are needed (phase 2+).
 - **It does not replace an engineer.** It is an assistant that leaves the mix at a measurable, consistent starting point.
 
-## 8. Concrete next steps
+## 8. Next steps proposed at the time
+
+The ten MCP tools, octave-band heuristic and an automated full-loop test now
+exist. These bullets record the original proposal, not current missing features.
+
 1. Build the FastMCP with the 10 phase-1 tools.
 2. Add real spectral analysis (numpy FFT or librosa) for the masking detector.
 3. Test the full loop: MIDI → stems → auto_mix → master → release_check.

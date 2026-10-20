@@ -48,7 +48,7 @@ For a new piece, first record decisions and ALSO adapt the composer:
 ```bash
 mkdir -p output/my-piece
 python scripts/example_dense_arrangement.py --plan output/my-piece/plan.json
-# Revisar/editar plan.json y el compositor ANTES de generar eventos.
+# Review/edit plan.json and the composer BEFORE generating events.
 python scripts/composition_guard.py output/my-piece/plan.json \
   --out output/my-piece/piece.mid -- \
   scripts/example_dense_arrangement.py --out '{draft}' \
@@ -65,7 +65,9 @@ Implemented plan contract:
 
 - `profile: "dense"`, explicit `intent` with genre/variant and timbre limitations.
 - `sections`: unique names, integer `bars` >=2, target `groove` and `density`.
-  Density means **drum hits per bar**, averaged over each section.
+  Density means **drum hits per bar**. The auditor averages section bodies,
+  excluding the first/last bars and detected fills when possible, with fallback
+  to the remaining section bars for short sections.
 - `instruments`: names identical to MIDI tracks, `role`, MIDI `min`/`max`
   (except drums), integer `silent_bars` >=0. At least one harmonic instrument must
   remain silent for a full bar without notes or sustain.
@@ -217,7 +219,7 @@ after review; this protocol does not perform remote publication.
 | Density gate fails despite a wide range | There must be >=3 density levels AND contrast >=2 between sections. Two different sections can have the same hit count. Change kit orchestration musically; do not add jitter. |
 | Drum overlap | Maximum two kit pieces per attack; remove duplicates, double cymbal/hi-hat, and snare+tom. Closely spaced attacks are also grouped: jitter does not hide a collision. |
 | `Unknown profile` / stem mismatch | Call `list_profiles`, use exact names, or design an explicit profile with tests. Do not ignore stems. |
-| `no se sobrescriben entregas` | Choose another name/directory. The guard protects evidence from previous deliveries. |
+| `deliveries are not overwritten` | Choose another name/directory. The guard protects evidence from previous deliveries. |
 | Invalid certificate / readings or code changed | Regenerate through the guard with a new destination. Retain the previous receipt as historical evidence; do not edit hashes. |
 | `Silent audio` / `Empty audio` | Check MIDI notes, program, SoundFont, and subprocess. Do not normalize silence or continue with a missing stem. |
 | `needs_work` after OGG encoding | Review `issues` and the final codec's TP; lower the target/gain and remaster/re-encode. For intentional mono, document the exception to the stereo check instead of claiming it passed. |

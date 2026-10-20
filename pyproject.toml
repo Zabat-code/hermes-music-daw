@@ -34,7 +34,7 @@ package-dir = {hermes_music = "."}
 include-package-data = false
 
 [tool.setuptools.package-data]
-hermes_music = ["references/*.json", "references/*.md", "docs/*.md", "SKILL.md", "PROTOCOL.md", "ENSAMBLE.md", "THIRD_PARTY_NOTICES.md"]
+hermes_music = ["references/*.json", "references/*.md", "docs/*.md", "SKILL.md", "PROTOCOL.md", "THIRD_PARTY_NOTICES.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

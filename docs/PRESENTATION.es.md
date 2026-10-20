@@ -1,112 +1,109 @@
-# Hermes Music + DAW — A MIDI composer that refuses to ship a bad arrangement
+# Hermes Music + DAW
 
-Python MIDI composition with **executable arrangement checks**, plus a headless
-MCP server for offline mixing and mastering. CPU only.
+Herramientas Python para componer MIDI con controles de arreglo y procesar audio
+offline. El proyecto tiene dos componentes:
+
+| Componente | Función |
+| --- | --- |
+| `hermes-music` | Composición MIDI, ocho gates de arreglo y recibos de integridad SHA-256 |
+| `hermes-daw` | Servidor MCP por stdio con diez herramientas de renderizado, análisis, mezcla y masterización |
+
+Funciona con CPU, sin ventana de DAW ni interfaz de audio. General MIDI produce
+maquetas; los controles estructurales y las mediciones no certifican calidad sonora.
 
 **English:** [README.md](../README.md) · **Español:** [README.es.md](../README.es.md)
 
----
+## Por qué existe el guardarraíl
 
-## What it is
+Un arreglo repitió defectos ya documentados: batería mecánica, ataques solapados,
+dinámica plana e instrumentos sin espacio. La corrección escrita no evitó la
+siguiente entrega defectuosa. Por eso el flujo exige **leer → decidir → componer
+→ auditar → entregar**.
 
-A Python toolkit that composes MIDI by genre and **refuses to deliver a defective
-arrangement**. It also renders audio stems and mixes/masters them offline
-through an MCP server.
+`composition_guard.py` lee las referencias, valida el plan, ejecuta el compositor
+sobre un MIDI temporal y contrasta el resultado con el plan y los ocho gates.
+Si falla, aborta con código 1. Si pasa, publica el MIDI y su recibo sin sobrescribir
+entregas anteriores. Aquí «publicar» significa crear archivos locales.
 
-```
-MIDI ──▶ 8 arrangement gates ──▶ certified MIDI ──▶ stems ──▶ mix ──▶ master ──▶ OGG
-              (exit 1 if bad)     (SHA-256 receipt)
-```
+El recibo vincula el MIDI exacto, el plan guardado, las lecturas y tres archivos
+del motor/auditor/guard. Una edición del MIDI invalida la verificación. Es evidencia
+de integridad: no es una firma digital ni un sandbox. El flujo depende de que el
+agente use el punto de entrada indicado; código arbitrario puede evitarlo.
 
-## Why the guard exists
+## Instalar y probar
 
-The same bad arrangement happened **twice**: mechanical drums with overlapping
-attacks, flat dynamics, crowded instruments, and General MIDI guitars that sounded
-like an 8-bit mockup.
-
-The correction was already written in Markdown. **It did not change the next
-composition.**
-
-So the response was executable: `read → decide → compose → audit → publish`.
-Eight arrangement gates abort a defective delivery with exit code 1. An external
-audit later found faults in the author's own v2 — those were corrected too.
-
-**The lesson is the reason for this repository:** documentation needs enforcement
-at the point where an artifact is delivered.
-
-The guard records the exact MIDI's SHA-256, the plan, the required readings and the
-guard code. Editing the MIDI invalidates its receipt. It is an integrity record,
-**not a digital signature, aesthetic certificate or security sandbox**.
-
-## What is inside
-
-### The 8 arrangement gates
-
-| Gate | What it verifies |
-|---|---|
-| `structure` | Notes closed and positive duration |
-| `dynamics` | At least 5 velocities and range of 10 |
-| `register` | MIDI ranges per role within the contract |
-| `space` | At least one harmonic instrument silent for a full measure |
-| `overlap` | At most two drum-kit pieces per attack |
-| `patterns` | At least 3 patterns; none dominates over 50 % |
-| `density` | At least 3 density levels and contrast between sections |
-| `fills` | Fills only at section boundaries, not periodic |
-
-### The 10 MCP tools
-
-`list_profiles` · `render_stems` · `analyze_audio` · `analyze_masking` · `auto_mix` ·
-`apply_eq` · `apply_comp` · `master` · `compare_to_reference` · `release_check`
-
-All offline. No DAW window, no audio interface, no GPU.
-
-### Try it in three commands
+Desde una copia del repositorio, con Python 3.12 en Linux Mint/Ubuntu:
 
 ```bash
+cd hermes-music-daw
+python3.12 -m venv .venv
+source .venv/bin/activate
 python -m pip install -e '.[dev]'
-python scripts/check_install.py          # 12 dependencies and paths checked
-python examples/01_compose.py --work output/demo   # composes and certifies
-python examples/03_mix_and_master.py --work output/demo   # stems → mix → master
+sudo apt install fluidsynth fluid-soundfont-gm ffmpeg
+python scripts/check_install.py
+python -m pytest tests/ -q
 ```
 
-74 tests + 100 subtests pass. CI runs on Python 3.12.
+FluidSynth, FFmpeg y un SoundFont son necesarios para audio y las pruebas de
+integración. `MIDI_SOUNDFONT` permite seleccionar otro SoundFont. Los gates MIDI
+no necesitan dispositivo de audio. La configuración de clientes MCP está en el
+[README principal](../README.md#mcp-tools-and-clients).
 
-## What makes it different
+## Ejecutar el ejemplo
 
-Most MIDI generators ship a file and hope. This one **measures before it decides,
-applies a known chain, and measures again**. The audit is executable and aborts.
+Usa un directorio de salida nuevo en cada ejecución:
 
-That loop — measure → apply → measure — is the same pattern as the mature DAW MCPs
-(`reaper-mcp`, `phantom`), but implemented for the arrangement itself.
-
-## What it does NOT do (honest limits)
-
-1. **General MIDI does not reproduce real timbre** — no palm mute, no real distortion.
-   It sounds like a mockup, not a production master.
-2. **The auditor certifies structure, not musical taste.** A `ready` verdict does not
-   mean it sounds good.
-3. **Mix profiles are starting values**, not absolute truth.
-4. **73 of the genre profiles are `provisional`** — not validated by listening.
-5. **Masking analysis is heuristic**: it points where to investigate, it does not
-   prove inaudibility.
-6. **No perceptual evaluation or human listening** has been run. Verification is
-   structural and technical.
-
-## Layout
-
-```
-scripts/     composition engine, guard, auditor, MCP server, mix engine
-tests/       74 tests + 100 subtests
-examples/    3 runnable scripts + a sample MIDI/OGG
-references/  100 genres, theory, rendering, effects
-docs/        architecture, protocol, research, validation
-PROTOCOL.md  the mandatory walkthrough for agents
+```bash
+python examples/01_compose.py --work output/demo
+python examples/02_audit.py --work output/demo
+python examples/03_mix_and_master.py --work output/demo
 ```
 
-## Contribute
+El primer paso crea y certifica un MIDI de 12 compases y 18 segundos. El segundo
+repite la auditoría y verifica el recibo. El tercero renderiza seis stems WAV,
+mezcla, masteriza, exporta OGG y comprueba ese OGG. Conserva la cola del sintetizador
+y guarda métricas JSON; un objetivo de master incumplido o un resultado
+`needs_work` devuelve código 1. La escucha humana sigue pendiente.
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md). Run `python scripts/check_install.py`
-first and `python -m pytest tests/ -q` before opening a pull request.
+## Qué comprueban los ocho gates
 
-The biggest open work is splitting the monolithic engine (`hermesmusic.py`, 1,151
-lines) into modules — a good first issue.
+El contrato de composición `dense` está limitado a 4/4:
+
+| Gate | Condición |
+| --- | --- |
+| `structure` | Notas cerradas, duración positiva y secuencia no vacía |
+| `dynamics` | Cinco velocidades distintas y rango mínimo de 10 en partes con al menos 16 notas |
+| `register` | Registro dentro del rango permitido para cada rol reconocido |
+| `space` | Un instrumento armónico calla al menos un compás completo, sin notas ni sustain |
+| `overlap` | Máximo dos golpes por ataque; también rechaza duplicados, dos platillos y caja con tom, incluidos grupos cercanos |
+| `patterns` | Tres patrones de batería como mínimo; ninguno supera el 50 % de compases activos |
+| `density` | Tres niveles de golpes por compás y contraste mínimo de dos entre secciones |
+| `fills` | Candidatos detectados por toms/caja en bordes de sección; rechaza periodicidad de cuatro compases según el umbral del auditor |
+
+Los fills se infieren mediante una heurística que no detecta todos los casos.
+Son reglas de un contrato local; otros estilos necesitan contratos propios.
+
+## Audio y límites
+
+El MCP expone `list_profiles`, `render_stems`, `analyze_audio`, `analyze_masking`,
+`auto_mix`, `apply_eq`, `apply_comp`, `master`, `compare_to_reference` y
+`release_check`. La composición y la verificación del recibo se ejecutan por CLI.
+El renderizador MCP no exige un recibo: verifica el MIDI antes de usarlo.
+
+Los perfiles `balanced` y `power_metal` son puntos de partida con DSP por rol,
+balance estéreo lineal y cadena de bus. El master añade normalización FFmpeg en
+dos pasadas; devuelve mediciones y `target_met`. `release_check` mide LUFS,
+true peak y LRA, y aplica controles técnicos limitados. `ready` no significa
+que una pieza suene bien ni que cumpla un objetivo de loudness elegido.
+
+El catálogo contiene 100 etiquetas de género; 73 perfiles son provisionales.
+El planificador experimental genera guías armónicas de piano, no canciones
+completas de cada género. General MIDI no garantiza palm mute ni guitarras
+realistas, y el análisis de masking solo señala posibles solapamientos espectrales.
+Las utilidades antiguas no forman parte del flujo probado.
+
+Para desarrollar o revisar cambios: [protocolo](../PROTOCOL.md),
+[arquitectura](ARCHITECTURE.md), [documentación](README.md) y
+[contribución](../CONTRIBUTING.md). Licencia del código original:
+[MIT](../LICENSE); dependencias y muestras conservan sus
+[avisos de terceros](../THIRD_PARTY_NOTICES.md).

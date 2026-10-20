@@ -8,15 +8,15 @@ the original Python functions.
 ```mermaid
 flowchart TD
   R[Local readings + plan JSON] --> G[composition_guard]
-  G --> C[Compositor subprocess / temporary draft]
+  G --> C[Composer subprocess / temporary draft]
   C --> A[audit_arrangement: 8 gates]
   A --> V[Verify MIDI against plan]
-  V --> P[MIDI exacto + receipt SHA-256]
-  P --> F[FluidSynth + SoundFont por pista]
+  V --> P[Exact MIDI + SHA-256 receipt]
+  P --> F[FluidSynth + SoundFont per track]
   F --> S[Stems WAV]
-  S --> M[mix_engine: DSP por rol, balance, suma, bus]
-  M --> T[daw_mcp.master: bus + loudnorm dos pasadas]
-  T --> E[Exportación WAV/OGG]
+  S --> M[mix_engine: DSP per role, balance, sum, bus]
+  M --> T[daw_mcp.master: bus + two-pass loudnorm]
+  T --> E[WAV/OGG export]
   E --> Q[release_check + human listening]
 ```
 
@@ -24,12 +24,12 @@ flowchart TD
 
 | Module | Inputs → outputs / responsibility |
 | --- | --- |
-| `hermesmusic.py` | SongSpec or events → MIDI; vocabulary for notes, scales, chords, patterns, and absolute→delta timing. `render_song` audits before publishing; `render_performance` reconstructs third-party material. |
+| `hermesmusic.py` | SongSpec or events → MIDI; vocabulary for notes, scales, chords, patterns, and absolute→delta timing. `render_song` audits before publishing; `render_performance` reconstructs supported performance fields, without promising lossless MIDI preservation. |
 | `audit_arrangement.py` | MIDI → report on structure, dynamics, register, space, overlap, patterns, density, and fills. `ArrangementError`/exit 1 block a defective arrangement. |
 | `composition_guard.py` | Readings + plan + composer command → MIDI and certificate only after gates and comparison against the plan. `--verify` reruns the audit and checks hashes. |
 | `example_dense_arrangement.py` | Corrected original reference: 120 bars, written note by note. Its musical decisions are preserved. |
 | `genre_engine.py` | Metadata and seed → harmonic plan or piano guide. Does not implement 100 complete genres. |
-| `mix_engine.py` | WAVs named by role → 44100 Hz stereo. Per-role HPF/EQ/compression, linear pan, levels, floating-point summing, and master bus. Two explicit profiles. |
+| `mix_engine.py` | WAVs named by role → 44100 Hz stereo. Per-role HPF/EQ/compression, linear stereo balance, levels, floating-point summing, and master bus. Two explicit profiles. |
 | `daw_mcp.py` | Ten Python tools registered by `build_server`. Rendering, measurement, processing, mixing, mastering, comparison, verification. |
 | `audio_utils.py` | Audio and destination validation, writes via temporary-file replacement, binary/SoundFont discovery, subprocesses with timeout and error handling, FFmpeg measurement. |
 | `check_install.py` | Dependency and resource checks, without an external music project. |
