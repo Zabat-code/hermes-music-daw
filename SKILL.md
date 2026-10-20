@@ -1,6 +1,6 @@
 ---
 name: hermes-music
-description: Componer, renderizar y analizar MIDI con mido.
+description: Compose, render, and analyze MIDI with mido.
 version: 1.0.0
 author: the hermes-music-daw authors
 license: MIT
@@ -11,178 +11,176 @@ metadata:
     category: creative
 ---
 
-# Hermes Music Skill
+# SKILL: Hermes Music (hermes-music) — MIDI Composition & Mixing
 
-Guía vigente del paquete autónomo: [PROTOCOL.md](PROTOCOL.md). Instalación y MCP:
-[README.md](README.md). Ejecutar ejemplos desde la raíz con el venv activado.
-Las rutas antiguas de documentos históricos no son requisitos de instalación.
+Operating guide for the standalone package: [PROTOCOL.md](PROTOCOL.md). Installation and MCP:
+[README.md](README.md). Run examples from the root with the venv activated. Old paths in
+historical documents are not installation requirements.
 
-## COMPOSICIÓN: PROTOCOLO OBLIGATORIO ANTES DE ESCRIBIR MÚSICA
+## COMPOSITION: MANDATORY PROTOCOL BEFORE WRITING MUSIC
 
-**Entrada única para composición nueva de arreglos densos: `scripts/composition_guard.py`.**
-No entregar un MIDI generado directamente con `mido`, `build_track`, `gen`,
-`compose` o `render_song` como pieza terminada. El motor audita `render_song`
-antes de guardar; la entrada obligatoria añade lectura, decisiones verificables
-y publicación con certificado. Un fallo devuelve **exit 1 y ABORTA** la entrega.
+**Single entry point for composing new dense arrangements: `scripts/composition_guard.py`.**
+Do not deliver a MIDI generated directly with `mido`, `build_track`, `gen`,
+`compose`, or `render_song` as a finished piece. The engine audits `render_song`
+before saving; the mandatory entry point adds reading, verifiable decisions,
+and publication with a certificate. A failure returns **exit 1 and ABORTS** delivery.
 
-1. **LEER**, antes de escribir eventos: [comparativa de batería](docs/COMPARATIVA-BATERIA-METAL-2026-10-19.md),
-   [arquitectura](docs/TEORIA-Y-ARQUITECTURA-2026-10-19.md),
-   [teoría](references/teoria-composicion.md), [render](references/rendering.md)
-   y [ejemplo autónomo](scripts/example_dense_arrangement.py).
-   La entrada ejecutable los abre, muestra y registra sus hashes ANTES del compositor.
-2. **DECIDIR** y escribir `plan.json`: `profile: "dense"`, intención/género/variante,
-   secciones con nombre, compases, groove y densidad objetivo; instrumentos con
-   nombre, rol, mínimo/máximo MIDI y compases completos de silencio; `fill_bars`
-   solo en finales de sección. La entrada rechaza planes sin contraste o espacio.
-   Usar `example_dense_arrangement.py --plan plan.json` como esquema concreto;
-   adaptar sus decisiones a la pieza solicitada antes de generar notas.
-3. **ESCRIBIR** un compositor que acepte `--out` y cree marcadores por sección.
-   Para metal/rock denso, autoría nota a nota siguiendo el ejemplo: riffs de
-   quintas, diálogo instrumental, batería por frase y articulaciones explícitas.
-   Una rejilla única repetida toda la canción no es un arreglo terminado.
-   Ejecutarlo únicamente mediante la entrada de abajo; `{draft}` es temporal.
-4. **VERIFICAR antes de declarar terminado**: la entrada ejecuta
-   `audit_arrangement.py` sobre los bytes generados, comprueba instrumentos,
-   registros, silencios y forma contra el plan. Solo con exit 0 publica el MIDI
-   y `MIDI.audit.json`, con hash del archivo exacto. Cualquier edición posterior
-   invalida ese certificado: volver a auditar y publicar. Ejecutar también el
-   auditor explícitamente al revisar material existente y conservar su salida.
-   Antes de entregar, `composition_guard.py --verify pieza.mid` comprueba hashes
-   del MIDI, lecturas y código, repite el auditor y verifica el plan guardado.
-5. **RENDERIZAR y ESCUCHAR** después de pasar los gates. Aplicar
-   `references/rendering.md`, verificar duración/picos y comparar audio.
-   Si no hay escucha, entregar como «maqueta estructuralmente auditada;
-   calidad sonora pendiente». El análisis MIDI no demuestra timbre ni gusto.
+1. **READ**, before writing events: [drum comparison](docs/COMPARATIVA-BATERIA-METAL-2026-10-19.md),
+   [architecture](docs/TEORIA-Y-ARQUITECTURA-2026-10-19.md),
+   [theory](references/teoria-composicion.md), [rendering](references/rendering.md),
+   and [standalone example](scripts/example_dense_arrangement.py).
+   The executable entry point opens, displays, and hashes them BEFORE the composer runs.
+2. **DECIDE** and write `plan.json`: `profile: "dense"`, explicit `intent` with genre/variant,
+   named sections with `bars`, target `groove` and `density`; instruments with name, role,
+   min/max MIDI, and full silent bars; `fill_bars` only at section endings. The entry point rejects
+   plans without contrast or space. Use `example_dense_arrangement.py --plan plan.json` as a
+   concrete template; adapt its decisions to the requested piece before generating notes.
+3. **WRITE** a composer that accepts `--out` and creates section markers.
+   For dense metal/rock, write notes individually following the example: fifth-based
+   riffs, instrumental dialogue, drums phrased by section, and explicit articulations.
+   A single grid repeated throughout the song is not a finished arrangement.
+   Run it only through the entry point below; `{draft}` is temporary.
+4. **VERIFY** before declaring completion: the entry point runs
+   `audit_arrangement.py` on the generated bytes, checking instruments,
+   registers, silence, and form against the plan. Only on exit 0 does it publish the MIDI
+   and `MIDI.audit.json`, with the exact file hash. Any later edit
+   invalidates that certificate: audit and publish again. Also run the
+   auditor explicitly when reviewing existing material, and preserve its output.
+   Before delivery, `composition_guard.py --verify piece.mid` checks hashes of
+   the MIDI, readings, and code, reruns the auditor, and verifies the saved plan.
+5. **RENDER AND LISTEN** after passing the arrangement gates. Apply
+   `references/rendering.md`, verify duration/peaks, and compare audio.
+   Without listening, deliver as “structurally audited mockup;
+   sound quality pending.” MIDI analysis does not prove timbre or taste.
 
 ```bash
 PY=python
 S=scripts
 "$PY" "$S/example_dense_arrangement.py" --plan plan.json
-# Revisar/adaptar plan.json y el compositor antes de ejecutar:
-"$PY" "$S/composition_guard.py" plan.json --out pieza.mid -- compositor.py --out '{draft}'
-# Obligatorio en revisión; exit 1 impide entrega:
-"$PY" "$S/audit_arrangement.py" pieza.mid --json revision.json
-"$PY" "$S/composition_guard.py" --verify pieza.mid
+# Review/edit plan.json and the composer before running:
+"$PY" "$S/composition_guard.py" plan.json --out piece.mid -- composer.py --out '{draft}'
+# Mandatory in review; exit 1 blocks delivery:
+"$PY" "$S/audit_arrangement.py" piece.mid --json revision.json
+"$PY" "$S/composition_guard.py" --verify piece.mid
 ```
 
-**Gates del contrato denso:** máximo 2 piezas del kit por ataque; rechazar
-duplicados, dos platillos/hat y caja+tom simultáneos. También agrupar ataques
-separados por <=1/48 de negra para detectar colisiones ocultas por jitter.
-Pistas de >=16 notas: >=5 velocidades distintas y amplitud >=10; >=3 patrones
-de batería sin que uno supere el 50% de compases activos; >=3 densidades y
-contraste >=2 golpes entre secciones; >=1 instrumento armónico con >=1 compás
-sin notas ni sustain. Registros: bajo 24–60, guitarra rítmica 40–84, lead 48–90,
-piano 36–84, pad/cuerdas 36–90, coro 36–84. Rol no reconocido: abortar y diseñar
-un perfil explícito. Fills inferidos por toms/caja: rechazar periodicidad de 4
-compases (>=4 candidatos y >=75% de intervalos iguales a 4) y candidatos fuera
-de bordes marcados. Esta heurística NO identifica todos los fills posibles.
+**Dense contract gates:** maximum two kit pieces per attack; reject
+duplicates, simultaneous double cymbal/hi-hat hits, and snare+tom combinations. Also group attacks
+separated by <=1/48 of a quarter note to detect collisions hidden by jitter.
+Pitches with >=16 notes: >=5 distinct velocities and velocity range >=10; >=3 drum
+patterns, none exceeding 50% of active bars; >=3 density levels and
+contrast >=2 hits between sections; >=1 harmonic instrument with >=1 bar
+without notes or sustain. Registers: bass 24-60, rhythm guitar 40-84, lead 48-90,
+piano 36-84, pad/strings 36-90, choir 36-84. Unknown role: abort and design
+an explicit profile. Fills inferred from tom/snare hits: reject 4-bar periodicity (>=4 candidates and >=75% of intervals equal to 4) and candidates outside
+marked boundaries. This heuristic does not identify all possible fills.
 
-Estos son contratos locales de claridad y contraste, **no leyes musicales**:
-un ataque triple puede ser musicalmente válido fuera de este contrato. El perfil
-denso es el implementado por la entrada (4/4); otro estilo requiere implementar
-y probar un perfil adecuado, sin desactivar gates para forzar un aprobado.
-El motor conserva su API; piezas antes aceptadas pueden ahora abortar. Sin
-batería aplica controles básicos de estructura, dinámica y registro; eso no
-constituye aprobación del arreglo denso.
+These are local clarity and contrast contracts, **not musical laws**:
+a triple attack can be musically valid outside this contract. The dense profile
+is implemented by the entry point (4/4); another style requires implementing
+and testing a suitable profile, never disabling gates to force a pass.
+The engine preserves its API; previously accepted pieces may now abort. Without
+drums, basic structure, dynamics, and register checks apply; that does not
+constitute approval of the dense arrangement.
 
-**ANTI-PATRÓN PROHIBIDO: «declarar éxito porque `validate_midi` pasó».**
-Tampoco bastan una etiqueta del clasificador, duración correcta ni `ffprobe`.
-La v2 histórica NO es un caso dorado: contiene ataques triples y notas de
-duración cero. El ejemplo interno corrige esos defectos y se prueba por separado.
+**PROHIBITED ANTI-PATTERN: "declare success because `validate_midi` passed".**
+A classifier label, correct duration, or `ffprobe` output is also insufficient.
+The historical v2 is not a gold standard: it contains triple attacks and zero-duration
+notes. The internal example corrects these defects and is tested separately.
 
-**Límite de obligatoriedad:** la entrada y `render_song` abortan en código.
-Una skill no puede impedir que un agente con acceso arbitrario escriba otro
-programa o publique por fuera del motor. Para impedir esa evasión en TODO Hermes
-se requiere un hook de entrega/permisos del runtime que exija el certificado;
-no confundir una instrucción en Markdown con esa garantía de seguridad.
+**Enforcement limit:** the entry point and `render_song` abort in code.
+A skill cannot prevent an agent with arbitrary access from writing another
+program or publishing outside the engine. Preventing that bypass throughout Hermes
+requires a delivery/runtime permission hook that demands the certificate; do not confuse a Markdown instruction with that security guarantee.
 
-Motor único en Python sobre `mido` para **componer canciones MIDI** desde un
-`SongSpec` JSON o una receta, **validarlas** y **exportarlas a audio**. Toda la
-lógica vive en `scripts/hermesmusic.py`; la skill no reescribe parsers ni
-lógica de timing en cada llamada. Sustituye al antiguo sistema de parches de las
-skills `midi-*` y `deprecated_*`.
+A single Python engine built on `mido` to **compose MIDI songs** from a
+`SongSpec` JSON or a recipe, **validate them**, and **export them to audio**. All
+logic lives in `scripts/hermesmusic.py`; the skill does not rewrite parsers or
+timing logic on every call. It replaces the former patch-based system of
+`midi-*` and `deprecated_*` skills.
 
 ## When to Use
 
-- Crear o iterar una pieza MIDI (tema de amor, batalla, ambiente, fanfarria).
-- Convertir una idea musical (tonalidad + progresión + melodía) en `.mid` y `.mp3`.
-- Auditar un MIDI: notas sin cerrar, re-disparos, pistas vacías, duración.
-- Reutilizar vocabulario ya resuelto: escalas, cifrados de acorde y patrones.
+- Create or iterate on a MIDI piece (love theme, battle, ambient, fanfare).
+- Convert a musical idea (key + progression + melody) into `.mid` and `.mp3`.
+- Audit a MIDI: unclosed notes, re-triggers, empty tracks, duration.
+- Reuse established vocabulary: scales, chord encodings, and patterns.
 
-No lo uses para transcribir audio a MIDI (eso es otra tarea) ni para editar de
-forma no destructiva un MIDI ajeno: el motor **genera** canciones desde cero.
+- Do not use it to transcribe audio to MIDI (a separate task) or to destructively edit a MIDI you do not own: the engine **generates** songs from scratch.
 
-- Python 3.12+; instalar en un venv con `python -m pip install -e '.[dev]'`.
-  Ejecutar `python scripts/check_install.py` para dependencias y render. No hace
-  falta instalar Hermes para usar este paquete.
+- Python 3.12+; install in a venv with `python -m pip install -e '.[dev]'`.
+  Run `python scripts/check_install.py` to check dependencies and rendering. Installing Hermes is not required to use this package.
 
 ## How to Run
 
-Ruta de la skill (relativa a `~/.hermes/skills/`): `hermes-music/`.
+Skill path (relative to `the skills directory `): `hermes-music/`.
 
 ```bash
 M=scripts/hermesmusic.py
 
-python3 "$M" recipes                       # recetas disponibles
-python3 "$M" gen --recipe love_theme --key F --title Reencuentro -o tema.mid
-python3 "$M" compose mi.spec.json -o mi.mid --audio mi.mp3
-python3 "$M" validate mi.mid
-python3 "$M" render mi.mid mi.mp3
+python3 "$M" recipes                       # list available recipes
+python3 "$M" gen --recipe love_theme --key F --title Reencuentro -o theme.mid
+python3 "$M" compose my.spec.json -o my.mid --audio my.mp3
+python3 "$M" validate my.mid
+python3 "$M" render my.mid my.mp3
 ```
 
-Ejecuta los comandos con `terminal`. Escribe specs con `write` y léelos con
-`read_file`. Localiza ficheros existentes con `search_files`.
+Run commands with `terminal`. Write specs with `write` and read them with
+`read_file`. Locate existing files with `search_files`.
 
 ## Quick Reference
 
-| Comando | Efecto |
+| Command | Effect |
 |---|---|
-| `recipes` | Lista las recetas internas. |
-| `gen --recipe R --key T` | Genera un `.mid` desde una receta. |
-| `compose SPEC.json` | Genera desde un `SongSpec` propio. |
-| `validate MIDI [--expect 80]` | Reporta problemas y duración. |
-| `render MIDI AUDIO` | Exporta `.mp3`/`.ogg`/`.wav` con SoundFont. |
+| `recipes` | List internal recipes. |
+| `gen --recipe R --key T` | Generate a `.mid` from a recipe. |
+| `compose SPEC.json` | Generate from a custom `SongSpec`. |
+| `validate MIDI [--expect 80]` | Report issues and duration. |
+| `render MIDI AUDIO` | Export `.mp3`/`.ogg`/`.wav` with a SoundFont. |
 
-Recetas: `love_theme`, `battle`, `fanfarria`, `taverna`, `mazmorra`, `misterio`,
-`pueblo`, `epica`, `funebre`. Para criterio musical (estructuras, grooves,
-motivos, velocidades) lee `references/teoria-composicion.md` con `read_file`;
-para game-specific adjustments, `references/game-project.md`.
+Recipes: `love_theme`, `battle`, `fanfarria`, `taverna`, `mazmorra`, `misterio`,
+`pueblo`, `epica`, `funebre`. For musical criteria (structures, grooves,
+melodies, velocities), read `references/teoria-composicion.md` with `read_file`;
+for game-specific adjustments, read `references/game-project.md`.
 
-| Concepto | Valores |
+| Concept | Values |
 |---|---|
-| Escalas (`scale`) | `mayor`, `menor_natural`, `menor_armonica`, `menor_melodica`, `dorico`, `frigio`, `frigio_dominante`, `lidico`, `mixolidio`, `locrio`, `alterada`, `pentatonica_menor`, `pentatonica_mayor`, `blues` |
-| Acordes (`progression`) | cifrado anglo: `F`, `Am7`, `Fmaj7`, `C/E`, `G7sus4`, `Bb`, `Dm7`, `Bbmaj7`. Usa siempre `maj7` (no `Maj7`); el parser `_QUAL` distingue mayúsculas. Un acorde desnudo como `E` se interpreta como mayor. |
-| Patrones de acompañamiento | `arpeggio_up`, `arpeggio_down`, `arpeggio_updown`, `block_chords`, `bass_root`, `bass_pulse`, `alberti`, `waltz`, `pad`, `choir_pad`, `drum_metal` | 
-| Patrones melódicos | `salto_climax`, `arpegio_confiado`, `escala_ascendente`, `giro_ornacional`, `nota_repetida`, `descenso_cadencia`, `swagger`, `balada` |
-| Dinámicas | `pp`, `p`, `mp`, `mf`, `f`, `ff` |
-| Registro | `low`, `mid`, `high` (o `octave` explícito) |
-| Batería (`drum_grid`) | `grid = {kick, snare, hihat, cymbal, tom, ride}: [16]` con cada celda como `(intensity, offset_beats)` o un único `intensity`. `grid_threshold` (0..1) filtra por intensidad; `offset_beats` desplaza el tiempo. Si la clave es `ride` (pitch 51), el motor la genera en el canal 9 — `midi-rhythm-genre` agrupa pitch 51 dentro de la clase `cymbal`, así que la plantilla jazz `ride` se compara contra `grid["cymbal"]`; usa siempre la clave `ride` para patrones de jazz/blues. | 
-| Swing (`drum_grid`) | El motor `rhythm_genre.classify_genre` calcula swing sobre **todos** los onsets de la batería (kick+snare+ride+hihat+tom), no solo el ride. Fórmula exacta: `m = mean(offbeats); swing = round(clamp((m - 0.5) / 0.17, 0, 1))` donde `offbeats` = onsets cuyo `beat % 1.0` cae entre 0.15 y 0.85, y 0.5 = recto (mean de onsets en posición semicorazón). Como el kick/snare suelen estar en onbeats rectos (0.0/0.5), su presencia baja el promedio del swing **combinado** aunque el ride tenga el offset correcto. Swing target: 0.55–0.65 = jazz/blues (ride `x.xx.xx.x.xx.xx.` con offbeats retrasados ~0.2–0.3b), 0.05–0.20 = rock/pop/vals, ~0.0 = march/electronica four-on-floor. Para verificar swing real del ride, filtra pitch 51 (ride) antes de medir: el ride solo domina el promedio solo cuando es notoriamente más denso que el resto. Si el swing combinado es bajo pero el ride suena swing, reduce kicks rectos o añade más notas swing al piano_comp. |
+| `scale` (scales) | **Spanish identifiers, case-sensitive** — the engine's `SCALES` dict is keyed in Spanish. Valid: `mayor`, `menor_natural`, `menor_armonica`, `menor_melodica`, `dorico`, `frigio`, `frigio_dominante`, `lidio`, `mixolidio`, `locrio`, `alterado`, `pentatonica_menor`, `pentatonica_mayor`, `blues`. Do **not** write `major` or `minor_harmonic` — the engine rejects them. |
+| `progression` (chord) | Letter-name chord symbols: `F`, `Am7`, `Fmaj7`, `C/E`, `G7sus4`, `Bb`, `Dm7`, `Bbmaj7`. Always use `maj7` (not `Maj7`); the `_QUAL` parser is case-sensitive. A bare chord such as `E` resolves to major. |
+| `accompany` (pattern) | `arpeggio_up`, `arpeggio_down`, `arpeggio_updown`, `block_chords`, `bass_root`, `bass_pulse`, `alberti`, `waltz`, `pad`, `choir_pad`, `drum_metal` |
+| `melody` (pattern) | `salto_climax`, `arpegio_confiado`, `escala_ascendente`, `giro_ornacional`, `nota_repetida`, `descenso_cadencia`, `swagger`, `balada` |
+| `dynamics` | `pp`, `p`, `mp`, `mf`, `f`, `ff` |
+| `register` | `low`, `mid`, `high` (or explicit `octave`) |
+| `drums` (`drum_grid`) | `grid = {kick, snare, hihat, cymbal, tom, ride}: [16]` where each cell is `(intensity, offset_beats)` or a single `intensity`. `grid_threshold` (0..1) filters by intensity; `offset_beats` shifts timing. If the key is `ride` (pitch 51), the engine generates it on channel 9 — `midi-rhythm-genre` groups pitch 51 into the `cymbal` class, so the jazz `ride` template is compared against `grid["cymbal"]`; always use the key `ride` for jazz/blues drum patterns. |
+| `swing` (`drum_grid`) | The engine's `rhythm_genre.classify_genre` computes swing over **all** drum onsets (kick+snare+ride+hihat+tom), not just the ride. Exact formula: `m = mean(offbeats); swing = round(clamp((m - 0.5) / 0.17, 0, 1))` where `offbeats` = onsets whose `beat % 1.0` falls between 0.15 and 0.85, and 0.5 = straight (mean of onsets at the half-beat position). Because kick/snare usually sit on straight grid positions (0.0/0.5), their presence lowers the **combined** swing average even if the ride has the correct offset. Swing target: 0.55–0.65 = jazz/blues (ride `x.xx.xx.x.xx.xx.` with offbeats delayed ~0.2–0.3b); 0.05–0.20 = rock/pop/waltz; ~0.0 = march/electronic four-on-the-floor. To verify actual ride swing, filter pitch 51 (ride) before measuring: the ride only dominates the average when it is notably denser than the rest. If combined swing is low but the ride sounds swung, reduce straight kicks or add more swung notes to piano_comp. |
 
 ## Procedure
 
-Aplicar primero el protocolo obligatorio del inicio. Esta sección solo describe
-la API de bajo nivel; no sustituye lectura, plan ni gates.
+Apply the mandatory protocol from the start. This section only describes
+the low-level API; it does not replace reading, planning, or gates.
 
-1. **Elige la vía.** Para control fino, escribe
-   un `SongSpec` JSON (modelo en `references/reencuentro.spec.json`) o eventos
-   explícitos como `scripts/example_dense_arrangement.py`.
-2. **Define la pieza.** Claves de nivel raíz: `title`, `key`, `scale`, `tempo`,
-   `meter` y `humanize` (`seed`, `velocity`, `ticks`).
-3. **Escribe las secciones.** Cada sección es `name`, `bars`, `progression`
-   (lista de cifrados que se repiten por compás) y, si lleva melodía,
-   `melody` con notas explícitas (`{bar, beat, dur, note}`) o un `pattern`.
-4. **Añade acompañamiento.** En `tracks`, cada pista lleva `role`, `instrument`
-   (GM), `pattern`, `register` u `octave`, `dynamics` y, para percusión,
-   `is_drum: true` y `channel: 9`.
-5. **Genera mediante `composition_guard.py` y exige auditoría exit 0.** `validate_midi` es una comprobación estructural complementaria. Inspecciona roles indispensables (bajo, riffs, lead, percusión según estilo); no aceptes pistas vacías como «solos».
-6. **Exporta y escucha.** Añade `--audio salida.mp3` (o llama a `render`); compara el audio con referencias del género antes de declarar calidad/fidelidad.
+1. **Choose the approach.** For fine control, write
+   a `SongSpec` JSON (model in `references/reencuentro.spec.json`) or explicit events
+   as in `scripts/example_dense_arrangement.py`.
+2. **Define the piece.** Root-level keys: `title`, `key`, `scale`, `tempo`,
+   `meter`, and `humanize` (`seed`, `velocity`, `ticks`).
+3. **Write the sections.** Each section has `name`, `bars`, `progression`
+   (a list of chord symbols repeated across bars) and, if it has melody,
+   `melody` with explicit notes (`{bar, beat, dur, note}`) or a `pattern`.
+4. **Add accompaniment.** Under `tracks`, each track has `role`, `instrument`
+   (GM), `pattern`, `register` or `octave`, `dynamics`, and, for percussion,
+   `is_drum: true` and `channel: 9`.
+5. **Generate via `composition_guard.py` and require an exit-0 audit.** `validate_midi` is a
+   complementary structural check. Inspect essential roles (bass, riffs, lead, percussion per
+   style); do not accept empty tracks as “solos.”
+6. **Export and listen.** Add `--audio output.mp3` (or call `render`); compare the audio
+   against genre references before declaring quality/fidelity.
 
-### Modelo de `SongSpec`
+### `SongSpec` model
 
 ```json
 {
-  "title": "Pieza", "key": "F", "scale": "mayor", "tempo": 72, "meter": [4, 4],
+  "title": "Piece", "key": "F", "scale": "mayor", "tempo": 72, "meter": [4, 4],
   "humanize": {"seed": 42, "velocity": 0.08, "ticks": 4},
   "sections": [
     {"name": "A", "bars": 8, "progression": ["F", "C/E", "Dm7", "Bb"],
@@ -199,51 +197,43 @@ la API de bajo nivel; no sustituye lectura, plan ni gates.
 
 ## Pitfalls
 
-- **`validate_midi` agrupa notas abiertas por `(canal, pitch)`, no solo pitch.**
-  Dos notas del mismo pitch en canales distintos pueden solaparse legalmente;
-  con clave solo por pitch daba falsos positivos "re-disparo sin note_off".
-  Al tocar ese código, recuerda que `MetaMessage` no tiene `.channel`/`.note`
-  (guardar con `hasattr`/`is_meta` antes de construir la clave).
-- **No reimplementes el timing.** Usa `build_track` (absoluto → orden → delta).
-  Nunca escribas `max(0, delta)`: oculta el bug en vez de arreglarlo; el motor
-  levanta `ValueError` ante un delta negativo.
-- **`note` usa octava científica:** `C4` = Do central (MIDI 60). `Bb3` = 58.
-- **Percusión siempre en el canal 9** (`is_drum: true` fuerza el canal 9). Un
-  `program_change` en el canal 9 no aplica.
-- **`drum_grid` con tuples `(intensity, offset)`.** El motor (hermesmusic.py:501)
-  verifica `isinstance(val, (list, tuple))` ANTES de leer la intensidad. Si la
-  celda es un número plano, se interpreta como `(número, 0.0)` — no `(0.0, número)`.
-  Un error común: pasar `[0.9]` esperando offset; usa siempre `(0.9, offset)` para
-  desplazamientos. La clave `ride` (pitch 51) se mapea al `dmap` del motor y, a través
-  de `DRUM_CLASS` en rhythm_genre, se agrupa en la clase `cymbal` — usa la clave `ride`
-  en el grid para patrones jazz (la plantilla `jazz.ride = "x.xx.xx.x.xx.xx."` se
-  compara contra `grid["cymbal"]`).
-- **La melodía procedural es relativa al acorde.** Los grados del patrón se
-  suman al grado de la raíz del acorde dentro de la escala; no son grados
-  absolutos de la tonalidad.
-- **El `off` nunca va después del siguiente `on`.** `build_track` cierra solo el
-  pitch previo para que no queden notas solapadas ni sin cerrar.
-- **Un SoundFont con `-F` en `fluidsynth` no renderiza si el `.mid` está vacío:**
-  valida antes de exportar.
-- **`humanize.ticks` no debe superar ~10** (a 480 tpb) o desdibuja el pulso.
-- **Render: el tail de release añade 4–8 s.** La duración del `.mp3` es
-  `duration + tail`. Para una longitud fija, resta los segundos de tail a
-  `bars` de la sección final (o corta el `.mp3` con `ffmpeg -t N`).
-- **Registra los errores de duplicación de pistas:** `tracks_global` en todas
-  las secciones + `tracks` en cada una. Aplica una sola vez.
-- **`tracks_global` aplica a todas las secciones.** La batería o cualquier pista
-  declarada allí aparece en cada `bars`. Si una pista ya lleva un `pattern`
-  específico de una sección, no la repitas en `tracks_global` (duplica defectos).
-- **Voces reales no existen.** `voice_*` no está en el diccionario. Para la
-  armonía de 3 voces usa `choir_pad` (instrument 53, 3 capas) o
-  `choir` en los `tracks`; el resultado es un pad coral, no vocal real.
-- **Para guitarra eléctrica (30) y fiddle (40):** `block_chords` suena igual
-  que cuerdas; `arpeggio_up` es un pulso. No apliques `drum_metal` fuera del
-  canal 9.
+- **`validate_midi` groups open notes by `(channel, pitch)`, not pitch alone.**
+  Two notes on different channels with the same pitch can overlap legally;
+  pitch-only keys produced false positives: "re-trigger without note_off".
+  When touching that code, remember `MetaMessage` has no `.channel`/`.note`
+  (guard with `hasattr`/`is_meta` before building the key).
+- **Do not reimplement timing.** Use `build_track` (absolute → sort → delta).
+  Never write `max(0, delta)`: it hides the bug instead of fixing it; the engine
+  raises `ValueError` on a negative delta.
+- **`note` uses scientific pitch notation:** `C4` = middle C (MIDI 60). `Bb3` = 58.
+- **Percussion is always on channel 9** (`is_drum: true` forces channel 9). A
+  `program_change` on channel 9 does not apply.
+- **`drum_grid` with tuples `(intensity, offset)`.** The engine (hermesmusic.py:501)
+  checks `isinstance(val, (list, tuple))` BEFORE reading intensity. If the
+  cell is a scalar, it resolves to `(number, 0.0)` — not `(0.0, number)`.
+  A common error: passing `[0.9]` expecting an offset; always use `(0.9, offset)` for
+  offsets. The key `ride` (pitch 51) maps to the engine's `dmap`, and through
+  `DRUM_CLASS` in rhythm_genre, it falls into the `cymbal` class — use the key `ride`
+  in the grid for jazz patterns (the template `jazz.ride = "x.xx.xx.x.xx.xx."` is
+  compared against `grid["cymbal"]`).
+- **Programmatic melody is relative to the chord.** Pattern degrees are added to the root's degree within the scale; they are not
+  absolute scale degrees.
+- **`off` never comes after the next `on`.** `build_track` closes only the previous pitch so notes do not overlap or remain unclosed.
+- **A SoundFont with `-F` in `fluidsynth` does not render if the `.mid` is empty:** validate before exporting.
+- **`humanize.ticks` must not exceed ~10** (at 480 tpb) or it distorts the pulse.
+- **Rendering: the release tail adds 4-8 s.** Rendered duration is
+  `duration + tail`. For a fixed length, subtract the tail seconds from
+  the final section's `bars` (or trim the `.mp3` with `ffmpeg -t N`).
+- **Watch for track-duplication errors:** `tracks_global` across all
+  sections plus `tracks` in each section. Apply only once.
+- **`tracks_global` applies to all sections.** Drums or any track declared there appear in every bar. If a track already has a section-specific `pattern`, do not repeat it in `tracks_global` (duplicates defects).
+- **Real vocals are not available.** `voice_*` is not in the dictionary. For three-part harmony, use `choir_pad` (instrument 53, 3 layers) or
+  `choir` under `tracks`; the result is a choral pad, not real vocals.
+- **For electric guitar (30) and fiddle (40):** `block_chords` sounds like strings; `arpeggio_up` is a pulse. Do not apply `drum_metal` outside channel 9.
 
-## Planificador armónico experimental (NO acredita fidelidad al género)
+## Experimental harmonic planner (does NOT certify genre fidelity)
 
-`references/genre_profiles.json` cubre 100 etiquetas y 104 variantes (22 con fuente específica, 5 con fuente familiar y 73 provisionales). Los géneros paraguas exigen variante. Cada ficha detalla identidad, roles candidatos, métrica, estrategia armónica, diferencias y fuentes; no genera la instrumentación automáticamente. `scripts/genre_engine.py` organiza motivo A, contraste B, retornos A' y A'', puente y coda mediante permutaciones acotadas, semilla y puntuación explicable; exporta **solo una guía de acordes de piano**. Es heurístico: ni «gusto humano» ni ritmo/timbre de los 100 géneros están validados. El renderer actual sigue limitado para compases y grooves ajenos a 4/4.
+`references/genre_profiles.json` covers 100 labels and 104 variants (22 with a specific source, 5 with a family source, and 73 provisional). Umbrella genres require a variant. Each profile details identity, candidate roles, metrics, harmonic strategy, differences, and sources; it does not auto-generate instrumentation. `scripts/genre_engine.py` organizes motif A, contrast B, returns A' and A'', bridge, and coda through bounded permutations, a seed, and explainable scoring; it exports **only a piano chord guide**. It is heuristic: neither "human taste" nor rhythm/timbre across the 100 genres is validated. The current renderer is limited for non-4/4 bars and grooves.
 
 ```bash
 PY=python
@@ -254,50 +244,43 @@ ENGINE=scripts/genre_engine.py
 "$PY" -m unittest discover -s tests -q
 ```
 
-Fuentes y arquitectura: `docs/TEORIA-Y-ARQUITECTURA-2026-10-19.md`.
+Sources and architecture: `docs/TEORIA-Y-ARQUITECTURA-2026-10-19.md`.
 
-## Patrón genre_grid
+## genre_grid pattern
 
-El patrón `genre_grid` carga una **plantilla parcial de batería** desde `references/genre_configs.json` (100 etiquetas; solo 15 grids distintos). NO crea instrumentos, bajo, guitarra, melodía, solo ni forma: la lista `instruments` se guarda en `_genre_instruments`, pero el motor no la consume para generar pistas. Tener una etiqueta no acredita fidelidad al género. Investigación y matriz preliminar de las 100 etiquetas: `docs/AUDITORIA-GENEROS-2026-10-19.md`.
+The `genre_grid` pattern loads a **partial drum template** from `references/genre_configs.json` (100 labels; only 15 distinct grids). It does not create instruments, bass, guitar, melody, solo, or form: the `instruments` list is saved in `_genre_instruments`, but the engine does not consume it to generate tracks. Having a label does not certify genre fidelity. Research and preliminary matrix of the 100 labels: `docs/AUDITORIA-GENEROS-2026-10-19.md`.
 
-Uso en spec:
+Spec usage:
 ```json
 {"tracks_global": [{"role": "drums", "pattern": "genre_grid", "genre": "jazz"}]}
 ```
 
-El patrón transfiere kick/snare/hihat/ride/cymbal de una rejilla de 16 pasos y el rango de dinámica a esa pista; no valida ni impone el tempo/compás/densidad propios del género. Varias etiquetas comparten exactamente el grid, incluyendo tradiciones que requieren ciclos de varios compases o no admiten batería pop por defecto. Antes de llamar «composición de género X» a un resultado, escribir roles, células rítmicas, armonía, forma y variaciones del género en el `SongSpec`; inspeccionar pistas realmente pobladas, compás, duración y render final. Ver `scripts/hermesmusic.py` sección `genre_grid` y la auditoría indicada arriba.
+The pattern transfers kick/snare/hihat/ride/cymbal from a 16-step grid and the dynamic range to that track; it does not validate or impose the genre's tempo/meter/density. Several labels share exactly the same grid, including traditions that require multi-bar cycles or do not use pop drums by default. Before declaring a result a "genre X composition," write roles, rhythmic cells, harmony, form, and genre variations into the `SongSpec`; inspect populated tracks, meter, duration, and final render. See the `genre_grid` section of `scripts/hermesmusic.py` and the audit above.
 
-Géneros disponibles: rock, pop, blues, jazz, swing, bossa_nova, samba, funk, soul, rnb, disco, house, techno, trance, dubstep, drum_and_bass, hiphop, trap, reggae, ska, punk, metal, hardcore, grunge, indie, classical, baroque, romantic, electronic, ambient, lo_fi, synthwave, vaporwave, chillwave, folk, country, bluegrass, mariachi, flamenco, tango, salsa, rumba, mambo, cha_cha, bolero, reggaeton, bachata, cumbia, vallenato, afrobeat, highlife, gospel, doo_wop, calypso, soca, zydeco, polka, waltz, mazurka, tarantella, march, minuet, reel, jig, breakbeat, breaks, gabber, psybient, downtempo, idm, footwork, juke, trap_rock, nu_disco, chillout, new_age, meditation, mantra, industrial, darkwave, goth, post_rock, math_rock, prog_rock, post_metal, doom_metal, black_metal, death_metal, power_metal, thrash_metal, speed_metal, sludge_metal, stoner_metal, drone, spoken_word, comedy_music, alternative, trip_hop, drill, experimental.
+Available genres: rock, pop, blues, jazz, swing, bossa_nova, samba, funk, soul, rnb, disco, house, techno, trance, dubstep, drum_and_bass, hiphop, trap, reggae, ska, punk, metal, hardcore, grunge, indie, classical, baroque, romantic, electronic, ambient, lo_fi, synthwave, vaporwave, chillwave, folk, country, bluegrass, mariachi, flamenco, tango, salsa, rumba, mambo, cha_cha, bolero, reggaeton, bachata, cumbia, vallenato, afrobeat, highlife, gospel, doo_wop, calypso, soca, zydeco, polka, waltz, mazurka, tarantella, march, minuet, reel, jig, breakbeat, breaks, gabber, psybient, downtempo, idm, footwork, juke, trap_rock, nu_disco, chillout, new_age, meditation, mantra, industrial, darkwave, goth, post_rock, math_rock, prog_rock, post_metal, doom_metal, black_metal, death_metal, power_metal, thrash_metal, speed_metal, sludge_metal, stoner_metal, drone, spoken_word, comedy_music, alternative, trip_hop, drill, experimental.
 
-**Verificado con `rhythm_genre.classify_genre` (3 géneros):** jazz→jazz (ranking 1.º, swing 0.6), rock→rock (ranking 1.º, swing 0.05), bossa_nova→bossa (ranking 1.º, swing 0.2). La validación MIDI reporta `sin problemas` en los 3 casos. El `genre_grid` lee la config una vez por generación (cache implícito de Python por import); para 100 géneros el JSON ocupa ~12 KB.
+**Verified with `rhythm_genre.classify_genre` (3 genres):** jazz→jazz (rank 1, swing 0.6), rock→rock (rank 1, swing 0.05), bossa_nova→bossa (rank 1, swing 0.2). MIDI validation reports `no problems` in all 3 cases. `genre_grid` reads the config once per generation (implicit Python import cache); for 100 genres, the JSON is ~12 KB.
 
 ## Chaining
 
-Esta es la skill **única** para generar y renderizar MIDI. Otras skills la llaman en
-vez de duplicar el motor:
+This skill is the **only** one that generates and renders MIDI. Other skills invoke it instead of duplicating the engine:
 
-- **`audio-gen`** — SFX, tonos y pads con `ffmpeg`; para MIDI→audio usa el `render`
-  de `hermes-music`.
-- **`midi-pipeline`** — análisis, deduplicación y recomendación por
-  escena; para generar, llama a `hermes-music` (`gen`/`compose`).
-- **`musicxml-omr-parsing`** — partitura/imagen → MIDI; luego valida y renderiza con
-  `hermes-music`.
-- **`songwriting-and-ai-music`** — letras y prompts de Suno; dominio distinto.
-- **`ai-music-tech-finder`** — comparativa de herramientas de música con IA.
+- **`audio-gen`** — SFX, tones, and pads with `ffmpeg`; MIDI→audio uses `hermes-music`'s `render`.
+- **`midi-pipeline`** — analysis, deduplication, and scene-based recommendations; generation calls `hermes-music` (`gen`/`compose`).
+- **`musicxml-omr-parsing`** — sheet music/image → MIDI; then validates and renders with `hermes-music`.
+- **`songwriting-and-ai-music`** — lyrics and Suno prompts; a different domain.
+- **`ai-music-tech-finder`** — comparison of AI music tools.
 
-Patrón de encadenado: carga la otra skill con `skill_view`, y para la parte musical
-invoca este motor por ruta (`scripts/hermesmusic.py`).
+Chaining pattern: load the other skill with `skill_view`, and invoke this engine by path (`scripts/hermesmusic.py`) for the musical part.
 
 ## Verification
 
-Antes de dar por terminada la composición, la entrada obligatoria debe haber
-publicado el MIDI y su certificado. En una revisión independiente ejecutar:
+Before finishing composition, the mandatory entry point must have published the MIDI and its certificate. In an independent review, run:
 
 ```bash
 PY=python
 "$PY" scripts/audit_arrangement.py mi.mid
-python3 "$M" validate mi.mid --expect 80.0
+python3 "$M" validate my.mid --expect 80.0
 ```
 
-Si cualquiera devuelve código distinto de 0, abortar y corregir. Notas
-balanceadas y duración correcta por sí solas no aprueban un arreglo.
+If any command returns a nonzero code, abort and fix the issue. Balanced notes and correct duration alone do not approve an arrangement.

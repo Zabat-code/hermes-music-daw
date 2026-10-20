@@ -1,9 +1,9 @@
-"""Tests de regresión para validate_midi en hermesmusic.py.
+"""Regression tests for validate_midi in hermesmusic.py.
 
-Caso histórico: validate_midi usaba como clave de notas abiertas solo el
-pitch (msg.note), sin canal. Dos notas del mismo pitch en CANALES distintos
-solapadas (legal en MIDI) se reportaban como "re-disparo sin note_off".
-Corregido el 2026-10-19: la clave es (channel, note).
+Historical case: validate_midi keyed open notes only by
+pitch (msg.note), without the channel. Two overlapping notes of the same pitch
+on different CHANNELS (legal in MIDI) were reported as "retrigger without note_off".
+Fixed on 2026-10-19: the key is (channel, note).
 """
 import os
 import sys
@@ -29,7 +29,7 @@ def _save(msgs, path):
 
 
 def test_mismo_pitch_en_canales_distintos_no_es_error(tmp_path):
-    """Solape del mismo pitch en canales distintos es legal: sin problemas."""
+    """Overlapping notes of the same pitch on different channels are legal: no problems."""
     p = _save(
         [
             Message("note_on", note=60, velocity=80, channel=0, time=0),
@@ -44,7 +44,7 @@ def test_mismo_pitch_en_canales_distintos_no_es_error(tmp_path):
 
 
 def test_mismo_pitch_mismo_canal_solapado_si_es_error(tmp_path):
-    """Solape del mismo pitch en el MISMO canal debe seguir detectándose."""
+    """Overlapping notes of the same pitch on the SAME channel must still be detected."""
     p = _save(
         [
             Message("note_on", note=60, velocity=80, channel=0, time=0),
@@ -55,11 +55,11 @@ def test_mismo_pitch_mismo_canal_solapado_si_es_error(tmp_path):
         str(tmp_path / "samech.mid"),
     )
     problems, _ = validate_midi(p)
-    assert any("re-disparo" in x for x in problems), problems
+    assert any("retrigger" in x for x in problems), problems
 
 
 def test_archivo_con_metaeventos_no_revienta(tmp_path):
-    """MetaMessage no tiene .channel/.note: no debe lanzar AttributeError."""
+    """MetaMessage has no .channel/.note: must not raise AttributeError."""
     p = _save(
         [
             Message("note_on", note=64, velocity=90, channel=0, time=0),

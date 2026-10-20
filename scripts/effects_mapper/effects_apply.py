@@ -3,21 +3,21 @@
 Production Effects MIDI Mapper
 ===============================
 
-Aplica efectos de producción a archivos MIDI, basados en el análisis del
-video "MOTOMAMI: an in-depth musical analysis ft. Rosalía" de Jaime Altozano.
+Apply production effects to MIDI files, based on the analysis in
+Jaime Altozano's video "MOTOMAMI: an in-depth musical analysis ft. Rosalia".
 
-Efectos:
-- autotune: pitch correction agresiva (pitch bend + CC1)
-- pitch_shift: desplazamiento de tonalidad
-- filter: filtro pasa-baja/pasa-alta (CC74, CC71)
-- distortion: distorsión de saturación (CC11, velocity)
-- reverb: reverberación (CC91, CC94)
-- sidechain: ducking de acompañamiento (CC11)
-- vocoder: modulación de voz (CC10, CC73)
-- chorus: coros/eco espacial (CC66, CC58)
+Effects:
+- autotune: aggressive pitch correction (pitch bend + CC1)
+- pitch_shift: key transposition
+- filter: low-pass/high-pass filter (CC74, CC71)
+- distortion: saturation distortion (CC11, velocity)
+- reverb: reverberation (CC91, CC94)
+- sidechain: accompaniment ducking (CC11)
+- vocoder: voice modulation (CC10, CC73)
+- chorus: spatial chorus/echo (CC66, CC58)
 - flanger: flanger (CC11, CC106)
 
-Uso:
+Usage:
     python3 effects_apply.py input.mid output.mid --effect autotune --params "..."
     python3 effects_apply.py list
 """
@@ -29,7 +29,7 @@ from pathlib import Path
 import mido
 
 
-# ---------- Recetas de efectos ----------
+# ---------- Effect recipes ----------
 
 EFFECTS = {
     'autotune': {
@@ -38,11 +38,11 @@ EFFECTS = {
             'max_semitone': 50,
             'velocity': 0.8,
         },
-        'description': 'Autotune: pitch correction agresiva para voz',
+        'description': 'Autotune: aggressive pitch correction for vocals',
         'notes': [
-            'Aplica pitch bend a las notas (canal 1 voz)',
-            'Usa CC1 (modulation) con envolutura de 12-50 semicientos',
-            'Reduce reverb y coros para voz "seca"',
+            'Apply pitch bend to notes (channel 1 vocals)',
+            'Use CC1 (modulation) with a 12-50-cent envelope',
+            'Reduce reverb and chorus for "dry" vocals',
         ],
     },
     'pitch_shift': {
@@ -50,10 +50,10 @@ EFFECTS = {
             'semitones': 0,
             'velocity': 0.9,
         },
-        'description': 'Pitch shifting: subir/bajar tonalidad',
+        'description': 'Pitch shifting: transpose the key up/down',
         'notes': [
-            'Aplica pitch bend constante (semitones fijo)',
-            'Usa velocity para control de intensidad',
+            'Apply constant pitch bend (fixed semitones)',
+            'Use velocity to control intensity',
         ],
     },
     'filter': {
@@ -63,11 +63,11 @@ EFFECTS = {
             'resonance': 20,
             'velocity': 0.8,
         },
-        'description': 'Filtro pasa-baja/pasa-alta para textura',
+        'description': 'Low-pass/high-pass filter for texture',
         'notes': [
-            'Aplica CC74 (filter cutoff) desde cutoff_low hasta cutoff_high',
-            'CC71 (filter resonance) con valor de resonance',
-            'Quita frecuencias agudas (según análisis MOTOMAMI)',
+            'Apply CC74 (filter cutoff) from cutoff_low to cutoff_high',
+            'CC71 (filter resonance) with the resonance value',
+            'Remove high frequencies (per the MOTOMAMI analysis)',
         ],
     },
     'distortion': {
@@ -75,11 +75,11 @@ EFFECTS = {
             'intensity': 0.4,
             'velocity': 0.9,
         },
-        'description': 'Distorsión de saturación',
+        'description': 'Saturation distortion',
         'notes': [
-            'Aplica CC11 (expression) con intensidad de distancia',
-            'Añade velocity spikes para agresividad',
-            'Según análisis: "Ultra distorsionadas"',
+            'Apply CC11 (expression) with distortion intensity',
+            'Add velocity spikes for aggression',
+            'Per the analysis: "Heavily distorted"',
         ],
     },
     'reverb': {
@@ -89,11 +89,11 @@ EFFECTS = {
             'room': 30,
             'velocity': 0.8,
         },
-        'description': 'Reverberación espacial',
+        'description': 'Spatial reverberation',
         'notes': [
-            'Aplica CC91 (reverb depth) con nivel wet',
-            'CC94 (reverb damping) según room',
-            'Voz sin reverb (dry) según análisis MOTOMAMI',
+            'Apply CC91 (reverb depth) at the wet level',
+            'CC94 (reverb damping) based on room',
+            'Vocals without reverb (dry), per the MOTOMAMI analysis',
         ],
     },
     'sidechain': {
@@ -103,11 +103,11 @@ EFFECTS = {
             'release': 20,
             'velocity': 0.8,
         },
-        'description': 'Ducking de acompañamiento',
+        'description': 'Accompaniment ducking',
         'notes': [
-            'Aplica backmask (note_off) a acompañamiento cuando entra voz',
-            'CC11 (expression) con duck_amount de atenuación',
-            'Ataque rápido, release más largo',
+            'Apply backmask (note_off) to accompaniment when vocals enter',
+            'CC11 (expression) with duck_amount attenuation',
+            'Fast attack, longer release',
         ],
     },
     'vocoder': {
@@ -116,11 +116,11 @@ EFFECTS = {
             'modulation': 10,
             'velocity': 0.8,
         },
-        'description': 'Vocoder: voz como moduladora',
+        'description': 'Vocoder: voice as modulator',
         'notes': [
-            'Aplica CC73 (initial tempo) como carrier',
-            'CC10 (expression) como mod',
-            'Mapeo de formantes según análisis MOTOMAMI',
+            'Apply CC73 (initial tempo) as carrier',
+            'CC10 (expression) as mod',
+            'Formant mapping per the MOTOMAMI analysis',
         ],
     },
     'chorus': {
@@ -129,11 +129,11 @@ EFFECTS = {
             'rate': 0.3,
             'velocity': 0.8,
         },
-        'description': 'Coros/eco para espaciamiento',
+        'description': 'Chorus/echo for spatial width',
         'notes': [
-            'Aplica CC66 (chorus depth) con profundidad',
-            'CC58 (chorus rate) según tasa',
-            'Efecto de "mezclas loquísimas"',
+            'Apply CC66 (chorus depth) with depth',
+            'CC58 (chorus rate) based on rate',
+            '"Wild mixes" effect',
         ],
     },
     'flanger': {
@@ -142,27 +142,27 @@ EFFECTS = {
             'speed': 0.2,
             'velocity': 0.8,
         },
-        'description': 'Flanger: efecto de playateado',
+        'description': 'Flanger: sweeping effect',
         'notes': [
-            'Aplica CC11 (expression) con depth',
-            'CC106 (flanger speed) según velocidad',
-            'Para efecto de "giro" melódico',
+            'Apply CC11 (expression) with depth',
+            'CC106 (flanger speed) based on speed',
+            'For a melodic "swirl" effect',
         ],
     },
 }
 
 
-# ---------- Módulos de efecto ----------
+# ---------- Effect modules ----------
 
 def apply_autotune(track, params):
-    """Aplica autotune: pitch bend + CC1 para voz en canal 1."""
+    """Apply autotune: pitch bend + CC1 for vocals on channel 1."""
     min_semitone = params.get('min_semitone', 12)
     max_semitone = params.get('max_semitone', 50)
     velocity = params.get('velocity', 0.8)
 
     for msg in track:
         if msg.type == 'note_on' and msg.channel == 0:
-            # Pitch bend: pitch bend +12 to +50 semitones (voz agresiva)
+            # Pitch bend: pitch bend +12 to +50 semitones (aggressive vocals)
             bend = int(min_semitone + (max_semitone - min_semitone) * msg.velocity * 0.5)
             msg.pitchbend = bend
             msg.velocity = int(msg.velocity * velocity)
@@ -173,7 +173,7 @@ def apply_autotune(track, params):
 
 
 def apply_pitch_shift(track, params):
-    """Aplica pitch shift: desplazamiento constante."""
+    """Apply pitch shift: constant transposition."""
     semitones = params.get('semitones', 0)
     velocity = params.get('velocity', 0.9)
 
@@ -188,7 +188,7 @@ def apply_pitch_shift(track, params):
 
 
 def apply_filter(track, params):
-    """Aplica filtro: CC74 (cutoff) y CC71 (resonance)."""
+    """Apply filter: CC74 (cutoff) and CC71 (resonance)."""
     cutoff_low = params.get('cutoff_low', 80)
     cutoff_high = params.get('cutoff_high', 200)
     resonance = params.get('resonance', 20)
@@ -205,7 +205,7 @@ def apply_filter(track, params):
 
 
 def apply_distortion(track, params):
-    """Aplica distorsión: CC11 + velocity spikes."""
+    """Apply distortion: CC11 + velocity spikes."""
     intensity = params.get('intensity', 0.4)
     velocity = params.get('velocity', 0.9)
 
@@ -219,7 +219,7 @@ def apply_distortion(track, params):
 
 
 def apply_reverb(track, params):
-    """Aplica reverb: CC91 (wet) y CC94 (damping)."""
+    """Apply reverb: CC91 (wet) and CC94 (damping)."""
     wet = params.get('wet', 0.3)
     dry = params.get('dry', 0.7)
     room = params.get('room', 30)
@@ -236,7 +236,7 @@ def apply_reverb(track, params):
 
 
 def apply_sidechain(track, params):
-    """Aplica sidechain: backmask + CC11 ducking."""
+    """Apply sidechain: backmask + CC11 ducking."""
     duck_amount = params.get('duck_amount', -12)
     attack = params.get('attack', 5)
     release = params.get('release', 20)
@@ -247,13 +247,13 @@ def apply_sidechain(track, params):
             if msg.control == 11:
                 msg.value = int(duck_amount * 127)
         elif msg.type == 'note_on' and msg.channel == 1:
-            # Voz en canal 1; backmask (note_off) al acompañamiento en canales 0-8
+            # Vocals on channel 1; backmask (note_off) the accompaniment on channels 0-8
             if msg.channel != 1:
                 msg.note_off()
 
 
 def apply_vocoder(track, params):
-    """Aplica vocoder: CC73 (carrier) y CC10 (expression)."""
+    """Apply vocoder: CC73 (carrier) and CC10 (expression)."""
     carrier = params.get('carrier', 73)
     modulation = params.get('modulation', 10)
     velocity = params.get('velocity', 0.8)
@@ -269,7 +269,7 @@ def apply_vocoder(track, params):
 
 
 def apply_chorus(track, params):
-    """Aplica chorus: CC66 y CC58."""
+    """Apply chorus: CC66 and CC58."""
     depth = params.get('depth', 0.5)
     rate = params.get('rate', 0.3)
     velocity = params.get('velocity', 0.8)
@@ -285,7 +285,7 @@ def apply_chorus(track, params):
 
 
 def apply_flanger(track, params):
-    """Aplica flanger: CC11 y CC106."""
+    """Apply flanger: CC11 and CC106."""
     depth = params.get('depth', 0.5)
     speed = params.get('speed', 0.2)
     velocity = params.get('velocity', 0.8)
@@ -313,48 +313,48 @@ EFFECT_FUNCTORS = {
 }
 
 
-# ---------- Lógica principal ----------
+# ---------- Main logic ----------
 
 def apply_effects(midi_file, output_file, effect_name, params=None):
     """
-    Aplica un efecto a un archivo MIDI.
+    Apply an effect to a MIDI file.
 
     Args:
-        midi_file: Path al archivo MIDI de entrada
-        output_file: Path al archivo MIDI de salida
-        effect_name: Nombre del efecto
-        params: Dict de parámetros opcionales
+        midi_file: Path to the input MIDI file
+        output_file: Path to the output MIDI file
+        effect_name: Effect name
+        params: Optional parameter dictionary
 
     Returns:
-        int: Código de estado (0 = OK, 1 = error)
+        int: Status code (0 = OK, 1 = error)
     """
     if not Path(midi_file).exists():
-        print(f'ERROR: No se encontró {midi_file}', file=sys.stderr)
+        print(f'ERROR: File not found: {midi_file}', file=sys.stderr)
         return 1
 
     if effect_name not in EFFECT_FUNCTORS:
-        print(f'ERROR: Efecto desconocido "{effect_name}"', file=sys.stderr)
-        print(f'   Efectos disponibles: {", ".join(EFFECT_FUNCTORS.keys())}', file=sys.stderr)
+        print(f'ERROR: Unknown effect "{effect_name}"', file=sys.stderr)
+        print(f'   Available effects: {", ".join(EFFECT_FUNCTORS.keys())}', file=sys.stderr)
         return 1
 
     effect = EFFECT_FUNCTORS[effect_name]
     if params is None:
         params = EFFECTS[effect_name]['params']
 
-    # Leer MIDI
+    # Read MIDI
     try:
         mid = mido.MidiFile(midi_file)
     except Exception as e:
-        print(f'ERROR: No se pudo leer {midi_file}: {e}', file=sys.stderr)
+        print(f'ERROR: Could not read {midi_file}: {e}', file=sys.stderr)
         return 1
 
-    print(f'📀 Leyendo: {midi_file}')
-    print(f'   Tiempo: {mid.length:.2f}s | {len(mid.tracks)} pistas | tpb: {mid.ticks_per_beat}')
+    print(f'Reading: {midi_file}')
+    print(f'   Duration: {mid.length:.2f}s | {len(mid.tracks)} tracks | tpb: {mid.ticks_per_beat}')
 
-    # Aplicar efecto a cada pista
+    # Apply the effect to each track
     applied = []
     for i, track in enumerate(mid.tracks):
-        # Solo aplicar a pistas con notas
+        # Only apply to tracks with notes
         has_notes = any(msg.type in ('note_on', 'note_off') for msg in track)
         if not has_notes:
             continue
@@ -363,39 +363,39 @@ def apply_effects(midi_file, output_file, effect_name, params=None):
             effect(track, params)
             applied.append(i)
         except Exception as e:
-            print(f'   ⚠️  Error en pista {i}: {e}', file=sys.stderr)
+            print(f'   WARNING: Error on track {i}: {e}', file=sys.stderr)
 
-    print(f'   ✅ Efecto "{effect_name}" aplicado a {len(applied)}/{len(mid.tracks)} pistas')
+    print(f'   Effect "{effect_name}" applied to {len(applied)}/{len(mid.tracks)} tracks')
 
-    # Guardar
+    # Save
     try:
         mid.save(output_file)
-        print(f'💾 Guardado: {output_file}')
+        print(f'Saved: {output_file}')
         return 0
     except Exception as e:
-        print(f'ERROR: No se pudo guardar {output_file}: {e}', file=sys.stderr)
+        print(f'ERROR: Could not save {output_file}: {e}', file=sys.stderr)
         return 1
 
 
 def list_effects():
-    """Lista los efectos disponibles."""
-    print('🔧 Efectos disponibles:')
+    """List available effects."""
+    print('Available effects:')
     for name, data in EFFECTS.items():
         print(f'  {name:15s} | {data["description"]}')
-        print(f'    Parámetros: {json.dumps(data["params"], indent=4).replace(chr(10), chr(10)+"    ")}')
-        print(f'    Notas: {data["notes"]}')
+        print(f'    Parameters: {json.dumps(data["params"], indent=4).replace(chr(10), chr(10)+"    ")}')
+        print(f'    Notes: {data["notes"]}')
 
 
 def main():
     parser = argparse.ArgumentParser(
         description='Production Effects MIDI Mapper',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='Ejemplos:\n    python3 effects_apply.py input.mid output.mid --effect autotune\n    python3 effects_apply.py input.mid output.mid --effect filter --params \'{"cutoff_low": 60, "cutoff_high": 150}\'\n    python3 effects_apply.py list'
+        epilog='Examples:\n    python3 effects_apply.py input.mid output.mid --effect autotune\n    python3 effects_apply.py input.mid output.mid --effect filter --params \'{"cutoff_low": 60, "cutoff_high": 150}\'\n    python3 effects_apply.py list'
     )
-    parser.add_argument('input', help='Archivo MIDI de entrada')
-    parser.add_argument('output', help='Archivo MIDI de salida')
-    parser.add_argument('--effect', '-e', required=True, help='Nombre del efecto')
-    parser.add_argument('--params', '-p', help='Parámetros JSON (ej: {"cutoff_low": 60, "cutoff_high": 150})')
+    parser.add_argument('input', help='Input MIDI file')
+    parser.add_argument('output', help='Output MIDI file')
+    parser.add_argument('--effect', '-e', required=True, help='Effect name')
+    parser.add_argument('--params', '-p', help='JSON parameters (e.g.: {"cutoff_low": 60, "cutoff_high": 150})')
 
     args = parser.parse_args()
 
@@ -404,7 +404,7 @@ def main():
         try:
             params = json.loads(args.params)
         except json.JSONDecodeError as e:
-            print(f'ERROR: JSON inválido en --params: {e}', file=sys.stderr)
+            print(f'ERROR: Invalid JSON in --params: {e}', file=sys.stderr)
             sys.exit(1)
 
     sys.exit(apply_effects(args.input, args.output, args.effect, params))

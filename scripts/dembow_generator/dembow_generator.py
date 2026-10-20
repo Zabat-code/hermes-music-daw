@@ -3,15 +3,15 @@
 Reggaeton Dembow Pattern Generator
 ===================================
 
-Genera patrones de batería MIDI para reggaeton y dembow, basados en el
-análisis del video "MOTOMAMI: an in-depth musical analysis ft. Rosalía"
-de Jaime Altozano (5,700,000 vistas).
+Generate MIDI drum patterns for reggaeton and dembow, based on the
+analysis in the video "MOTOMAMI: an in-depth musical analysis ft. Rosalia"
+by Jaime Altozano (5,700,000 views).
 
-El patrón dembow clásico es:
-  - Kick: 1, e, &, a (1 e& a) con variación
-  - Snare: "&" de 2, y "&" de 4 (reggaeton "hop")
-  - Hi-hat: 8th notes, con ghost notes en & de 3
-  - 808: fondo persistente en nivel bajo
+The classic dembow pattern is:
+  - Kick: 1, e, &, a (1 e& a) with variation
+  - Snare: "&" of 2, and "&" of 4 (reggaeton "hop")
+  - Hi-hat: 8th notes, with ghost notes on & of 3
+  - 808: persistent background at a low level
 
 GM MIDI drum map:
   - Kick: 36 (0x24)
@@ -21,15 +21,15 @@ GM MIDI drum map:
   - 808: 41 (0x29)
   - Tambourine: 48 (0x30)
 
-Uso:
+Usage:
     python3 dembow_generator.py --genre reggaeton --bpm 92 --bars 8 --out out.mid
 
-    # Listar recetas
+    # List recipes
     python3 dembow_generator.py list
 
 Output:
-    - out.mid: archivo MIDI con las 4 pistas (kick, snare, hihat, 808)
-    - out_pattern.txt: descripción del patrón
+    - out.mid: MIDI file with all 4 tracks (kick, snare, hihat, 808)
+    - out_pattern.txt: pattern description
 """
 
 import argparse
@@ -40,17 +40,17 @@ from pathlib import Path
 import mido
 
 
-# ---------- Recetas de patrones ----------
+# ---------- Pattern recipes ----------
 
-# El patrón dembow clásico a 92-96 BPM
+# The classic dembow pattern at 92-96 BPM
 DEMBO_PATTERNS = {
     'reggaeton_basic': {
         'bpm': 92,
-        'description': 'Dembow básico de reggaeton, patrón estándar',
+        'description': 'Basic reggaeton dembow, standard pattern',
         'pitches': {
-            'kick': [36, 38, 40, 41],      # 1 e & a con kick
-            'snare': [38, 41],             # "&" de 2 y "&" de 4
-            'hihat': [42, 44, 46, 48],     # 8th notes ceros
+            'kick': [36, 38, 40, 41],      # 1 e & a with kick
+            'snare': [38, 41],             # "&" of 2 and "&" of 4
+            'hihat': [42, 44, 46, 48],     # eighth-note zeros
             '808': [41, 43, 45, 47],       # 808 pulse
         },
         'velocities': {
@@ -66,7 +66,7 @@ DEMBO_PATTERNS = {
     },
     'reggaeton_dembow_v2': {
         'bpm': 94,
-        'description': 'Dembow v2 con más groovy',
+        'description': 'Dembow v2 with more groove',
         'pitches': {
             'kick': [36, 38, 40, 41, 43],
             'snare': [38, 41],
@@ -82,7 +82,7 @@ DEMBO_PATTERNS = {
     },
     'reggaeton_melodic': {
         'bpm': 90,
-        'description': 'Dembow con melodía de acompañamiento',
+        'description': 'Dembow with an accompanying melody',
         'pitches': {
             'kick': [36, 38, 40, 41],
             'snare': [38, 41],
@@ -100,7 +100,7 @@ DEMBO_PATTERNS = {
     },
     'trap_fast': {
         'bpm': 140,
-        'description': 'Trap rápido con dembow variado',
+        'description': 'Fast trap with varied dembow',
         'pitches': {
             'kick': [36, 38, 40],
             'snare': [38, 41],
@@ -116,7 +116,7 @@ DEMBO_PATTERNS = {
     },
     'latin_cumbia': {
         'bpm': 100,
-        'description': 'Cumbia con patrón de acompañamiento',
+        'description': 'Cumbia with an accompaniment pattern',
         'pitches': {
             'kick': [36, 38, 40],
             'snare': [38],
@@ -133,10 +133,10 @@ DEMBO_PATTERNS = {
 }
 
 
-# ---------- Conversión a MIDI ----------
+# ---------- MIDI conversion ----------
 
 def create_dembow_track(title, pattern):
-    """Crea una pista MIDI con un patrón de dembow."""
+    """Create a MIDI track with a dembow pattern."""
     track = mido.MidiTrack()
     track.append(mido.MetaMessage('track_name', name=title, time=0))
     track.append(mido.MetaMessage('set_tempo', tempo=500000, time=0))
@@ -199,45 +199,45 @@ def create_dembow_track(title, pattern):
 
 
 def create_dembow_midi(pattern_name, output_file):
-    """Crea un archivo MIDI completo con un patrón de dembow."""
+    """Create a complete MIDI file with a dembow pattern."""
     if pattern_name not in DEMBO_PATTERNS:
-        print(f'ERROR: Patrón "{pattern_name}" no existe', file=sys.stderr)
-        print(f'   Disponibles: {", ".join(DEMBO_PATTERNS.keys())}', file=sys.stderr)
+        print(f'ERROR: Pattern "{pattern_name}" does not exist', file=sys.stderr)
+        print(f'   Available: {", ".join(DEMBO_PATTERNS.keys())}', file=sys.stderr)
         return 1
 
     pattern = DEMBO_PATTERNS[pattern_name]
 
-    print(f'🎵 Generando: {pattern_name}')
+    print(f'Generating: {pattern_name}')
     print(f'   BPM: {pattern["bpm"]}')
-    print(f'   Descripción: {pattern["description"]}')
-    print(f'   Notas: {len(pattern["pitches"]["kick"])} kicks, {len(pattern["pitches"]["snare"])} snares, {len(pattern["pitches"]["hihat"])} hi-hats')
+    print(f'   Description: {pattern["description"]}')
+    print(f'   Notes: {len(pattern["pitches"]["kick"])} kicks, {len(pattern["pitches"]["snare"])} snares, {len(pattern["pitches"]["hihat"])} hi-hats')
 
-    # Crear pistas
+    # Create tracks
     tracks = []
     tracks.append(create_dembow_track('Kick', pattern))
     tracks.append(create_dembow_track('Snare', pattern))
     tracks.append(create_dembow_track('Hi-hat', pattern))
     tracks.append(create_dembow_track('808', pattern))
 
-    # Crear archivo MIDI
+    # Create MIDI file
     mid = mido.MidiFile()
     mid.ticks_per_beat = 480
     mid.tracks = tracks
 
-    # Guardar
+    # Save
     mid.save(output_file)
 
-    print(f'   ✅ Guardado: {output_file}')
+    print(f'   Saved: {output_file}')
     return 0
 
 
 def list_patterns():
-    """Lista los patrones disponibles."""
-    print('🔥 Patrones de dembow disponibles:')
+    """List available patterns."""
+    print('Available dembow patterns:')
     for name, data in DEMBO_PATTERNS.items():
         print(f'  {name:25s} | BPM: {data["bpm"]:3d} | {data["description"]}')
 
-    print(f'\n   Notas MIDI (GM Drum Map):')
+    print(f'\n   MIDI notes (GM Drum Map):')
     print(f'   Kick: 36, Snare: 38, Hi-hat: 42, 808: 41')
 
 
@@ -246,15 +246,15 @@ def main():
         description='Reggaeton Dembow Pattern Generator',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-Ejemplos:
+Examples:
     python3 dembow_generator.py --genre reggaeton_basic --bpm 92 --bars 8 --out reggaeton.mid
     python3 dembow_generator.py list
         '''
     )
-    parser.add_argument('--genre', '-g', help='Nombre del patrón (reggaeton_basic, reggaeton_dembow_v2, reggaeton_melodic, trap_fast, latin_cumbia)')
-    parser.add_argument('--bpm', '-b', type=int, help='Tempo en BPM (sobrescribe la receta)')
-    parser.add_argument('--bars', '-n', type=int, default=8, help='Número de bares (default: 8)')
-    parser.add_argument('--out', '-o', help='Archivo de salida')
+    parser.add_argument('--genre', '-g', help='Pattern name (reggaeton_basic, reggaeton_dembow_v2, reggaeton_melodic, trap_fast, latin_cumbia)')
+    parser.add_argument('--bpm', '-b', type=int, help='Tempo in BPM (overrides the recipe)')
+    parser.add_argument('--bars', '-n', type=int, default=8, help='Number of bars (default: 8)')
+    parser.add_argument('--out', '-o', help='Output file')
 
     args = parser.parse_args()
 
@@ -263,14 +263,14 @@ Ejemplos:
         return
 
     if not args.genre:
-        print('ERROR: --genre es requerido', file=sys.stderr)
-        print('   Use --genre list para ver patrones disponibles', file=sys.stderr)
+        print('ERROR: --genre is required', file=sys.stderr)
+        print('   Use --genre list to view available patterns', file=sys.stderr)
         sys.exit(1)
 
     if args.out is None:
         args.out = f'reggaeton_{args.genre}.mid'
 
-    # Crear MIDI
+    # Create MIDI
     sys.exit(create_dembow_midi(args.genre, args.out))
 
 

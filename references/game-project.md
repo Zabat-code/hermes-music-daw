@@ -1,34 +1,34 @@
-# a game project — ajustes de proyecto
+# Game project — project adjustments
 
-Notas específicas del RPG **a game project** (Ren'Py). Todo lo demás (motor, patrones,
-validación, render) viene de la skill `hermes-music`; no dupliques el engine.
+Specific notes for the placeholder game project (a Ren'Py RPG). Everything else (engine, patterns,
+verification, render) comes from the `hermes-music` skill; do not duplicate the engine.
 
-## Tema de batalla
+## Battle Theme
 
-- **Receta base:** `battle` (`gen --recipe battle --key A`, 160 BPM).
-- **Duración objetivo:** exactamente **72 s** (≈73 compases a 160 BPM, 4/4).
-  Verifica con `validate` antes de exportar; el bug histórico producía 117 s.
-- **Instrumentos:** trompa/brass (61), timpani (47, canal 9), cuerdas (48),
-  bajo (32/33), flauta (73) — ajusta en el `SongSpec` con `instrument`.
-- Para forzar la duración, ajusta `bars` de las secciones hasta que `validate`
-  reporte ~72 s. El motor no recorta: la duración es consecuencia de `bars` y BPM.
+- **Base recipe:** `battle` (`gen --recipe battle --key A`, 160 BPM).
+- **Target duration:** exactly **72 s** (≈73 bars at 160 BPM, 4/4).
+  Verify with `validate` before exporting; the historical bug produced 117 s.
+- **Instruments:** horn/brass (61), timpani (47, channel 9), strings (48),
+  bass (32/33), flute (73) — adjust in `SongSpec` with `instrument`.
+- To force duration, adjust `bars` of the sections until `validate`
+  reports ~72 s. The engine does not cut: duration is a consequence of `bars` and BPM.
 
-## Render y export
+## Render and Export
 
-Usa el `render` de `hermes-music` (FluidR3_GM.sf2, `-g 0.8`). NO uses
-`default-GM.sf3` (141 MB, hace timeout).
+Use `hermes-music`'s `render` (FluidR3_GM.sf2, `-g 0.8`). Do not use
+`default-GM.sf3` (141 MB, times out).
 
-Los `.ogg` van en `game/audio/` del proyecto y se reproducen con:
+The `.ogg` files go in `game/audio/` of the project and play with:
 
 ```renpy
 $ renpy.music.play("audio/battle.ogg", channel="music", loop=True)
 ```
 
-**MIDI→OGG añade 4–8 s de release tail.** Si necesitas un corte exacto:
+**MIDI→OGG adds 4–8 s of release tail.** If you need an exact cut:
 ```bash
 ffmpeg -y -i out.ogg -t 72 -c copy out_cortado.ogg
 ```
 
-## Preferencia del usuario
+## User Preference
 
-No generar música salvo que se pida explícitamente.
+Do not generate music unless explicitly requested.

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Entrada manual al índice de skills — delega en el plugin ``skills-index``.
+"""Manual entry point for the skills index - delegates to the ``skills-index`` plugin.
 
-El dueño canónico de ``<HERMES_HOME>/skills/INDEX.json`` es el plugin
-``~/.hermes/plugins/skills-index/``, que además lo auto-mantiene
-(``on_session_start`` + ``on_skill_lifecycle`` + fingerprint). Este script se
-conserva solo como entrada manual por compatibilidad con ``ENSAMBLE.md``.
+The canonical owner of ``<HERMES_HOME>/skills/INDEX.json`` is the plugin
+``~/.hermes/plugins/skills-index/``, which also maintains it automatically
+(``on_session_start`` + ``on_skill_lifecycle`` + fingerprint). This script is
+retained only as a manual entry point for compatibility with ``ENSAMBLE.md``.
 
-Uso:
+Usage:
     python3 build_index.py [--force]
 """
 from __future__ import annotations
@@ -23,9 +23,9 @@ def _plugin_indexer():
     path = home / "plugins" / "skills-index" / "indexer.py"
     if not path.is_file():
         raise SystemExit(
-            f"no se encontró el plugin skills-index en {path}\n"
-            "Instálalo/habilítalo (hermes plugins enable skills-index) o reconstruye con "
-            "el comando /skills-index rebuild."
+            f"skills-index plugin not found at {path}\n"
+            "Install/enable it (hermes plugins enable skills-index) or rebuild with "
+            "the /skills-index rebuild command."
         )
     spec = importlib.util.spec_from_file_location("skills_index_autoindex", path)
     module = importlib.util.module_from_spec(spec)

@@ -4,6 +4,8 @@ Python MIDI composition with executable arrangement checks, plus a headless
 MCP server for offline mixing and mastering. CPU only; no DAW window, audio
 interface, GPU, model download or cloud account required.
 
+**Español:** [README.es.md](README.es.md)
+
 **Start here:** [agent protocol](PROTOCOL.md) · [architecture](docs/ARCHITECTURE.md) ·
 [documentation index](docs/README.md) · [contributing](CONTRIBUTING.md).
 

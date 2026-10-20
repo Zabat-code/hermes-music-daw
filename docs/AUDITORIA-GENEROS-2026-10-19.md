@@ -1,156 +1,157 @@
-# HermesMusic: auditoría musical y mapa de géneros (19 oct 2026)
+# HermesMusic: musical audit and genre map (19 Oct 2026)
 
-## Alcance y honestidad
-Análisis estático de `~/.hermes/skills/hermes-music/{SKILL.md,scripts/hermesmusic.py,references/genre_configs.json}`, `~/.hermes/skills/midi-rhythm-genre/rhythm_genre.py`, el MIDI `~/.hermes/cache/scratch/power_metal_ddm.mid` y el OGG `~/Desktop/power_metal_dancing_mad.ogg`. No se re-renderizó ni se hizo escucha crítica en esta auditoría. Los apuntes por género de abajo son **especificaciones candidatas**; no son 100 géneros ya implementados, ni rasgos universales, ni 100 validaciones etnomusicológicas independientes. Musicalmente, BPM y timbre por sí solos no definen un género.
+## Scope and honesty
+Static analysis of the skill sources (`SKILL.md`, `scripts/hermesmusic.py`, `references/genre_configs.json`), `rhythm_genre.py`, a scratch MIDI, and an output OGG. No re-rendering or critical listening was performed in this audit. The per-genre notes below are **candidate specifications**; they are not 100 implemented genres, universal traits, or 100 independent ethnomusicological validations. Musically, BPM and timbre alone do not define a genre.
 
-## Evidencia dura del artefacto
-- El MIDI existente tiene **42 compases de 4/4 a 140 BPM, 72 s, 7 pistas**. El OGG dura **76.37 s** incluyendo cola de render. El comentario del script `compose_power_metal.py` dice «5–6 minutos», incompatible con esa duración; además ese script apunta a un archivo *enhanced* ausente, por lo que **no debe atribuirse su arreglo detallado al OGG presente**.
-- Pistas MIDI: drums 1092 notas, piano_comp 336, rhythm_guitar 336, strings 141, brass_booster 144, `MT_Epic_Lead` **0 notas**. No hay pista de bajo ni solo de guitarra con notas. Guitarra rítmica = arpegio `arpeggio_up`, no riffs de palm mute/power chords; su densidad es 8 notas por compás, siempre igual. Batería repite 26 ataques por compás en los 42 compases. En `MT_Epic_Lead` solo hay metaeventos y cambio de programa: una pista con nombre no es una melodía.
-- El script *enhanced* en scratch describe `lead_guitar` y `choir`, pero **no hay MIDI/OGG *enhanced* producido** en las rutas previstas. `add_mt_melody` solo copia eventos de la pista 0 en canal 0 del archivo MT y omite tiempos relativos de otros mensajes; esa ruta requiere prueba real antes de prometer lead.
-- El metadato `genre=power_metal` solo modifica `drum_grid`, registra `instruments` en `_genre_instruments` (sin ningún lector posterior), y no impone `tempo`, `meter`, `density_per_bar`, armonía, voces, bajo, riffs, secciones ni solos. `tracks` los define la persona/autora en el JSON de composición. `midi-rhythm-genre` clasifica una huella rítmica, no certifica la estética musical completa.
-- **100 etiquetas** en `genre_configs.json`, pero solo **15 plantillas de batería distintas** y **40 combinaciones distintas de plantilla + lista de instrumentos**. Ninguna plantilla usa `cymbal`; no hay columna `tom`. `classical`, `romantic`, `waltz` y `comedy_music` comparten el patrón pop kick-snare-hihat. Incluso `baroque` tiene kick/snare/hihat; no se puede interpretar como orquestación barroca. `power_metal` comparte plantilla con `samba`, `bachata`, `vallenato`, `prog_rock` y otras.
-- **Veredicto:** el usuario tiene razón en el problema central. El archivo es una pieza instrumental con timbres metal/orquestales, NO una realización convincente de power metal; no basta cambiar BPM ni GM program. Tampoco todo metal requiere compás aditivo: eso es especialmente útil para **prog/math**, no un requisito del power metal.
+## Hard evidence from the artifact
+- The existing MIDI has **42 bars of 4/4 at 140 BPM, 72 s, 7 tracks**. The OGG runs **76.37 s**, including the render tail. The `compose_power_metal.py` script comment says "5–6 minutes," incompatible with that duration; the script also points to a missing *enhanced* file, so **its detailed arrangement must not be attributed to the available OGG**.
+- MIDI tracks: drums 1092 notes, piano_comp 336, rhythm_guitar 336, strings 141, brass_booster 144, `MT_Epic_Lead` **0 notes**. There is no bass track and no populated guitar solo. Rhythm guitar = `arpeggio_up` arpeggio, not palm mute/power chord riffs; its density is always 8 notes per bar. Drums repeat 26 attacks per bar across all 42 bars. `MT_Epic_Lead` contains only meta-events and a program change: a named track is not a melody.
+- The *enhanced* script in scratch describes `lead_guitar` and `choir`, but **no *enhanced* MIDI/OGG was produced** at the expected paths. `add_mt_melody` only copies events from track 0 to channel 0 of the MT file and skips other messages' relative timings; that path needs real testing before promising a lead part.
+- The `genre=power_metal` metadata only modifies `drum_grid`, records `instruments` in `_genre_instruments` (with no later reader), and does not impose `tempo`, `meter`, `density_per_bar`, harmony, voices, bass, riffs, sections, or solos. `tracks` are defined by the composer in the composition JSON. `midi-rhythm-genre` classifies a rhythmic fingerprint; it does not certify the complete musical aesthetic.
+- **100 labels** in `genre_configs.json`, but only **15 distinct drum templates** and **40 distinct template + instrument-list combinations**. No template uses `cymbal`; there is no `tom` column. `classical`, `romantic`, `waltz`, and `comedy_music` share the pop kick-snare-hihat pattern. Even `baroque` has kick/snare/hihat; it cannot be interpreted as baroque orchestration. `power_metal` shares a template with `samba`, `bachata`, `vallenato`, `prog_rock`, and others.
+- **Verdict:** the user is right about the central problem. The file is an instrumental piece with metal/orchestral timbres; it is not a convincing power metal realization. Changing BPM or GM program is insufficient. Nor does all metal require additive meter; that is especially useful for **prog/math**, not a power metal requirement.
 
-## Contrato de género propuesto
-Para cada etiqueta: (1) núcleo identificable — ritmo/célula y acentos sobre 1–4 compases, no solo 16 pulsos; (2) roles: percusión, bajo, acompañamiento, melodía/voz y espacio; (3) lenguaje armónico/melódico y articulaciones; (4) forma con variaciones, fills, silencios, contraste y transiciones; (5) estilos excluidos y variantes legítimas; (6) pruebas MIDI + render + escucha. Reglas **parametrizables y de familia**, no estereotipos obligatorios. Vocales no se pueden verificar con MIDI instrumental; si el género depende fuertemente de canto/letra, declarar «instrumental inspirado en…», no «reproducción fiel».
+## Proposed genre contract
+For each label: (1) an identifiable core — rhythm/cell with accents over 1–4 bars, not just 16 pulses; (2) roles: percussion, bass, accompaniment, melody/voice, and space; (3) harmonic/melodic language and articulations; (4) form with variations, fills, silences, contrast, and transitions; (5) excluded styles and legitimate variants; (6) MIDI + rendering + listening tests. **Parametric, family-based rules**, not mandatory stereotypes. Vocals cannot be verified with instrumental MIDI; if the genre depends heavily on singing/lyrics, declare "instrumental inspired by…," not "faithful reproduction."
 
-### Catálogo completo: 100 etiquetas → núcleo a investigar/implementar
-Estas son hipótesis de arreglo, no presets que ya existan. Significado de `/`: variantes válidas, no combinaciones obligatorias.
+### Full catalog: 100 labels → core to investigate/implement
+These are arrangement hypotheses, not existing presets. Meaning of `/`: valid variants, not mandatory combinations.
 
-**Metal y derivados**
-- `metal`: riffs distorsionados, bajo alineado/contrapunto, kit acústico y contraste de secciones.
-- `power_metal`: impulso de doble bombo cuando corresponda, riffs/power chords, bajo real, melodía destacada con desarrollos y harmonías de guitarras, coros o lead instrumental, solo compuesto y clímax; no limitar a menor armónica. La investigación de Boddington et al. encuentra color dórico y dominantes secundarias/disminuidos en su muestra, no una ley universal [1].
-- `speed_metal`: pulsación rápida, riffs precisos, leads y ataque sostenido; no idéntico a power por velocidad.
-- `thrash_metal`: riff sincopado/entrecortado, picking y cortes de acento, batería cambiante.
-- `death_metal`: riff extremo y contrastes técnicos, blast/doble bombo opcionales por variante, bajo y voz específicos si hay vocal.
-- `black_metal`: tremolo picking/textura densa; modalismo menor y acordes no diatónicos para atmósfera [1].
-- `doom_metal`: riffs graves lentos con espacio, peso armónico, no patrón backbeat pop.
-- `sludge_metal`: arrastre pesado, riffs saturados/disonancia y acentos hardcore.
-- `stoner_metal`: riff repetitivo con groove y textura psicodélica; variación gradual.
-- `post_metal`: desarrollo largo por capas, tensión y contraste dinámico; clímax estructural.
+**Metal and derivatives**
+- `metal`: distorted riffs, aligned/contrapuntal bass, acoustic kit, section contrast.
+- `power_metal`: double kick drive where applicable, riffs/power chords, an actual bass part, prominent melody with development and guitar harmonies, vocals or instrumental lead, composed solo and climax; do not restrict harmony to minor. Boddington et al. find Dorian color and secondary/diminished dominants in their sample, not a universal law [1].
+- `speed_metal`: fast pulse, precise riffs, leads, and sustained attack; speed alone does not make it identical to power metal.
+- `thrash_metal`: syncopated/choppy riffs, picking and accent breaks, changing drums.
+- `death_metal`: extreme riffs and technical contrasts, blast beats/double kick optional by variant, specific bass and vocal roles when vocals are present.
+- `black_metal`: tremolo picking/dense texture; minor modality and non-diatonic chords for atmosphere [1].
+- `doom_metal`: slow, low riffs with space, harmonic weight, no pop backbeat pattern.
+- `sludge_metal`: heavy, dragging feel, saturated/dissonant riffs, hardcore accents.
+- `stoner_metal`: repetitive riffs with groove and psychedelic texture; gradual variation.
+- `post_metal`: extended layered development, tension, and dynamic contrast; structural climax.
 
-**Rock, guitarras e híbridos**
-- `rock`: backbeat, bajo/guitarra en diálogo y riff/hook con forma.
-- `hardcore`: ataque punk agresivo, cambios de acento/breakdowns según variante; no es `speed_metal`.
-- `punk`: riff simple y directo, batería incisiva, forma breve y energía; complejidad no obligatoria.
-- `grunge`: dinámica quiet/loud, guitarras rugosas y fraseo menos pulido.
-- `alternative`: etiqueta paraguas: exigir subestilo de referencia antes de fijar reglas.
-- `indie`: etiqueta de escena/producción, no ritmo único; pedir referencia de arreglo.
-- `prog_rock`: secciones contrastantes, desarrollo temático y métricas irregulares cuando aporten.
-- `math_rock`: acentos desplazados, células asimétricas, ostinati entrelazados.
-- `post_rock`: crecimiento tímbrico y formal, repetición con transformación y clímax.
-- `trap_rock`: 808/hats o diseño trap articulado con riff/bajo/guitarra rock; dos tradiciones distinguibles.
-- `blues`: fraseo con inflexión blues, call-response y bajo/acompañamiento acordes con el subestilo; 12 compases es frecuente, no universal.
+**Rock, guitars, and hybrids**
+- `rock`: backbeat, bass/guitar dialogue, and riff/hook with form.
+- `hardcore`: aggressive punk attack, accent/breakdown changes by variant; not `speed_metal`.
+- `punk`: simple, direct riffs, incisive drums, short form, and energy; complexity is not mandatory.
+- `grunge`: quiet/loud dynamics, rough guitars, less polished phrasing.
+- `alternative`: umbrella label; require a reference substyle before setting rules.
+- `indie`: scene/production label, not a unique rhythm; request an arrangement reference.
+- `prog_rock`: contrasting sections, thematic development, irregular meters when they contribute.
+- `math_rock`: displaced accents, asymmetric cells, interwoven ostinatos.
+- `post_rock`: timbral and formal growth, repetition with transformation and climax.
+- `trap_rock`: 808/hi-hats or trap production integrated with rock riffs/bass/guitar; two distinguishable traditions.
+- `blues`: blues-inflected phrasing, call-and-response, bass/accompaniment consistent with the substyle; 12 bars is common, not universal.
 
-**Jazz, R&B y canción**
-- `jazz`: elegir subestilo; voz melódica, interacción rítmica, reharmonización/improvisación simulada solo si compuesta musicalmente.
-- `swing`: ride/hi-hat articulados y walking bass/comping, subdivisión swing no swing=valor fijo [2].
-- `funk`: bajo sincopado como eje, batería con ghost notes y stabs/cortes de guitarra/teclado.
-- `soul`: fraseo expresivo/call-response, bajo, órgano/piano y metales opcionales; no confundir con backbeat genérico.
-- `rnb`: especificar época/subestilo; pocket, voz/lead y armonías/síncopas.
-- `gospel`: llamada-respuesta, armonías corales y desarrollo dinámico; instrumento depende tradición.
-- `doo_wop`: voces armonizadas y bajo vocal/melodía; MIDI sin voces solo imita disposición.
-- `pop`: hook reconocible y cambios de textura entre verso/estribillo; no existe un único patrón pop.
+**Jazz, R&B, and song**
+- `jazz`: choose a substyle; melodic voice, rhythmic interaction, reharmonization/improvisation simulated only when musically composed.
+- `swing`: articulated ride/hi-hat, walking bass/comping, swing or straight subdivision (do not treat swing as a fixed value) [2].
+- `funk`: syncopated bass as the center, drums with ghost notes, guitar/keyboard stabs and accent breaks.
+- `soul`: expressive phrasing/call-and-response, bass, organ/piano, optional brass; do not confuse it with generic backbeat.
+- `rnb`: specify era/substyle; pocket, voice/lead, harmonies/syncopation.
+- `gospel`: call-and-response, choral harmonies, dynamic development; instrumentation depends on tradition.
+- `doo_wop`: harmonized voices and bass vocal/melody; MIDI without vocals only imitates the arrangement.
+- `pop`: recognizable hook and texture changes between verse/chorus; there is no single pop pattern.
 
-**Electrónica de baile y breaks**
-- `disco`: pulso cuatro-al-piso, bajo con movimiento, contratiempos de guitarra/strings.
-- `nu_disco`: cita disco con diseño de synth/bajo moderno y arreglo de producción.
-- `house`: bombo estable, clap/snares, hats a contratiempo y groove de bajo/acordes.
-- `techno`: repetición hipnótica con automatización/timbre, reducción armónica deliberada.
-- `trance`: arpegios/pads, builds y releases, sidechain/energía programada.
-- `electronic`: paraguas; requiere rama de producción antes de declarar identidad.
-- `breakbeat`: break recortado/reordenado como material principal, no four-on-floor renombrado [3].
-- `breaks`: variante de breakbeat con fraseo de pista y bajo; definir referencia concreta.
-- `drum_and_bass`: breaks rápidos y sub-bass con espacio y fills, relaciones kick/snare variables [3].
-- `dubstep`: pulso percibido a medio tiempo, sub-bass y diseño de bajos/espacios; no basta BPM.
-- `gabber`: distorsión de bombo como motor y pulsación intensa; diseño sonoro decisivo.
-- `industrial`: percusión mecánica/timbres abrasivos y arreglo según subtradición.
-- `idm`: experimentación estructural del ritmo/timbre; no patrón fijo generalizable.
-- `footwork`: ritmo sincopado fragmentado con cambios frecuentes, samples/voz opcionales.
-- `juke`: célula percusiva rápida y cortes/samples; separar de footwork con referencias de escena.
-- `synthwave`: timbres retro, bajo/arpegios y batería electrónica con forma de canción.
+**Electronic dance music and breaks**
+- `disco`: four-on-the-floor pulse, moving bass, guitar/string syncopation.
+- `nu_disco`: disco references with modern synth/bass design and production arrangement.
+- `house`: steady kick, claps/snares, offbeat hi-hats, bass/accompaniment groove.
+- `techno`: hypnotic repetition with automation/timbre, deliberate harmonic reduction.
+- `trance`: arpeggios/pads, builds and releases, sidechain/programmed energy.
+- `electronic`: umbrella; require a production substyle before declaring identity.
+- `breakbeat`: chopped/reordered breaks as the main material, not renamed four-on-the-floor [3].
+- `breaks`: breakbeat variant with dance-track phrasing and bass; define a concrete reference.
+- `drum_and_bass`: fast breaks and sub-bass with space and fills, variable kick/snare relationships [3].
+- `dubstep`: perceived half-time pulse, sub-bass, and bass/space design; BPM is insufficient.
+- `gabber`: distorted kick as the driving force, intense pulse; sound design is decisive.
+- `industrial`: mechanical percussion, abrasive timbres, arrangement by subgenre.
+- `idm`: structural experimentation with rhythm/timbre; no fixed generalizable pattern.
+- `footwork`: fragmented, syncopated rhythm with frequent changes, optional samples/voice.
+- `juke`: fast percussive cells and cuts/samples; distinguish it from footwork using scene references.
+- `synthwave`: retro timbres, bass/arpeggios, electronic drums with song form.
 
-**Hip-hop y Caribe urbano**
-- `hiphop`: pocket de break/beat, bajo y espacio para rap; no rellenar todas las subdivisiones.
-- `trap`: hats articulados/rolls, 808 afinado y bombo/silencios; variación sobre el loop.
-- `drill`: sub-bass/808 glides y acentos de beat desplazados; especificar drill UK/Chicago/Brooklyn.
-- `trip_hop`: beat pausado con breaks, bajo oscuro y capas espaciales; no es solo tempo lento.
-- `lo_fi`: estética de producción/imperfección intencional, no ritmo único.
-- `reggae`: bajo central, offbeat de skank, espacio/dub y batería según one-drop/rockers/steppers.
-- `ska`: contratiempo rápido de guitarra/teclado, bajo caminante e impulso rítmico.
-- `reggaeton`: dembow y bajo articulados en ciclos; breaks y acentos varían según época; no four-on-floor ni confundir con salsa.
+**Hip-hop and urban Caribbean music**
+- `hiphop`: break/beat pocket, bass, and space for rap; do not fill every subdivision.
+- `trap`: articulated hi-hats/rolls, tuned 808, kick/silences; variation over the loop.
+- `drill`: sub-bass/808 glides and displaced beat accents; specify UK/Chicago/Brooklyn drill.
+- `trip_hop`: relaxed beats with breaks, dark bass, spatial layers; not just slow tempo.
+- `lo_fi`: intentional production aesthetic/imperfection, not a unique rhythm.
+- `reggae`: central bass, offbeat skank, space/dub, drums according to one-drop/rockers/steppers.
+- `ska`: fast offbeat guitar/keyboard, walking bass, rhythmic drive.
+- `reggaeton`: dembow and articulated bass in cycles; breaks and accents vary by era; not four-on-the-floor and not to be confused with salsa.
 
-**Latinoamericano y Brasil**
-- `salsa`: elegir son/clave 2-3 o 3-2 y orientar bajo (tumbao), piano (montuno), conga/campana/metales; frase de al menos dos compases; no invertir la clave arbitrariamente [4].
-- `mambo`: interacción montunos, secciones de metales y patrones afro-cubanos [4].
-- `cha_cha`: marcar pulsación/danza y güiro/campana/piano, con estructura afro-cubana; no usar clave automática sin determinar variante.
-- `rumba`: especificar rumba cubana/flamenca/otra; son tradiciones diferentes, no un preset.
-- `bossa_nova`: patrón sutil de guitarra y bajo/pandereta o kit suave, síncopa brasileña; no plantilla samba con BPM menor [2].
-- `samba`: articulación de múltiples percusiones y bajo/surdo, ciclos/acento de danza; variantes pagode/enredo distintas [2].
-- `bachata`: interacción de requinto/guitarra rítmica, bajo, bongó y güira; secuencias y remates por sección.
-- `bolero`: acompañamiento lento con fraseo cantabile, bajo/percusión adecuados a bolero cubano/mexicano.
-- `cumbia`: elegir tradición colombiana/andina/villera/etc.; percusión y bajo cíclicos, acordeón opcional.
-- `vallenato`: diálogo entre acordeón, caja y guacharaca; elegir aire (paseo/merengue/son/puya), no equiparar a cumbia.
-- `tango`: fraseo y acentos de orquesta/guitarras/bandoneón; rubato y marcato según arreglo.
-- `mariachi`: trompetas y cuerdas con vihuela/guitarrón y métrica acorde al son/ranchera/huapango.
-- `flamenco`: escoger palo y compás antes de programar guitarra/palmas/cajón; no imponer 4/4 y backbeat al azar.
+**Latin America and Brazil**
+- `salsa`: choose 2-3 or 3-2 son clave and orient bass (tumbao), piano (montuno), congas/cowbell/brass; phrases of at least two bars; do not arbitrarily reverse the clave [4].
+- `mambo`: interacting montunos, brass sections, Afro-Cuban patterns [4].
+- `cha_cha`: mark the dance pulse, güiro/cowbell/piano, with Afro-Cuban structure; do not apply a clave automatically without determining the variant.
+- `rumba`: specify Cuban/flamenco/other rumba; these are different traditions, not one preset.
+- `bossa_nova`: subtle guitar pattern, bass/pandeiro or soft kit, Brazilian syncopation; not a samba template with lower BPM [2].
+- `samba`: articulated percussion ensemble, bass/surdo, dance cycles/accents; distinguish pagode/enredo variants [2].
+- `bachata`: interaction between requinto and rhythm guitar, bass, bongos, and güira; sequences and endings by section.
+- `bolero`: slow accompaniment with cantabile phrasing, bass/percussion appropriate to Cuban/Mexican bolero.
+- `cumbia`: choose Colombian/Andean/villera/etc. tradition; cyclic percussion and bass, optional accordion.
+- `vallenato`: dialogue between accordion, caja drum, and guacharaca; choose the rhythmic style (paseo/merengue/son/puya), rather than equating it with cumbia.
+- `tango`: orchestral/guitar/bandoneon phrasing and accents; rubato and marcato according to the arrangement.
+- `mariachi`: trumpets and strings with vihuela/guitarrón, meter consistent with son/ranchera/huapango.
+- `flamenco`: choose the palo and rhythmic cycle before programming guitar/handclaps/cajón; do not arbitrarily impose 4/4 and backbeat.
 
-**África, Caribe y criollo**
-- `afrobeat`: ostinati interdependientes, bajo, batería, percusión/guitarras/metales; crecimiento por capas, no patrón de cuatro golpes [4].
-- `highlife`: guitarras entrelazadas, bajo y percusión bailable; elegir tradición/época.
-- `calypso`: fraseo vocal narrativo (si no hay voz: inspirado), percusión y acompañamiento caribeño.
-- `soca`: producción de carnaval, percusión/bajo motriz y hooks; no reutilizar highlife por tempo.
-- `zydeco`: acordeón, frottoir y groove de baile con bajo/kit; contexto de Luisiana.
+**Africa, the Caribbean, and Creole traditions**
+- `afrobeat`: interdependent ostinatos, bass, drums, percussion/guitars/brass; layered growth, not a four-beat pattern [4].
+- `highlife`: interwoven guitars, bass, danceable percussion; choose tradition/era.
+- `calypso`: narrative vocal phrasing (without vocals: inspired by), Caribbean percussion and accompaniment.
+- `soca`: carnival production, driving percussion/bass, hooks; do not reuse highlife by changing tempo.
+- `zydeco`: accordion, frottoir, dance groove with bass/kit; Louisiana context.
 
-**Folk, country y danzas europeas**
-- `folk`: paraguas regional, exigir origen/instrumentación antes de generar.
-- `country`: groove, guitarra/steel/fiddle y fraseo según honky-tonk/bluegrass/contemporáneo.
-- `bluegrass`: banjo/mandolina/guitarra, bajo y breaks solistas acústicos; batería no obligatoria.
-- `reel`: melodía de danza en 4/4 de fiddle/instrumento regional, fraseo repetido.
-- `jig`: fraseo ternario compuesto frecuente (6/8), no 4/4 a BPM alterado.
-- `waltz`: tres tiempos por compás y fraseos de baile, no backbeat 4/4.
-- `mazurka`: tres tiempos con acento desplazado característico, diferente del vals.
-- `minuet`: danza en triple y estructura formal/fraseo de época, no kick/snare.
-- `polka`: baile binario con bajo/contratiempo (oom-pah), timbre según tradición.
-- `tarantella`: danza viva de subdivisión compuesta según tradición; programar fraseos reales.
-- `march`: métrica y acentuación de marcha, caja/bombo/metales si banda; no un único tempo.
+**Folk, country, and European dances**
+- `folk`: regional umbrella; require origin/instrumentation before generating.
+- `country`: groove, guitar/steel guitar/fiddle, phrasing according to honky-tonk/bluegrass/contemporary style.
+- `bluegrass`: banjo/mandolin/guitar, bass, acoustic soloists; drums are not mandatory.
+- `reel`: dance melody in 4/4 on fiddle/regional instruments, repeated phrasing.
+- `jig`: composed compound phrasing (6/8), not 4/4 at an altered BPM.
+- `waltz`: three beats per bar, dance phrases, no 4/4 backbeat.
+- `mazurka`: three beats with characteristic displaced accents, distinct from the waltz.
+- `minuet`: triple-meter dance, formal structure/period phrasing, no kick/snare.
+- `polka`: duple-meter dance with bass/offbeat accompaniment (oom-pah), timbre according to tradition.
+- `tarantella`: lively dance with compound subdivision according to tradition; program actual phrases.
+- `march`: march meter and accents, snare/bass drum/brass for a band; not a single tempo.
 
-**Histórico, contemplativo y etiquetas funcionales**
-- `classical`: etiqueta de época/uso ambiguo: si clasicismo, forma temática/función tonal/orquestación; percusión solo si pide partitura.
-- `baroque`: contrapunto/continuo y organización formal según danza/fuga/concierto; prohibir kit pop como default.
-- `romantic`: desarrollo temático/cromatismo/dinámica y rubato según obra, no pop con cuerdas.
-- `ambient`: texturas largas y espacio con baja actividad; bombo no obligatorio.
-- `drone`: nota/acorde sostenido y evolución espectral, no loop de bombo por defecto.
-- `meditation`: finalidad funcional; pedir timbre/duración/dinámica deseada, no género musical verificable.
-- `mantra`: repetición vocal/textual o referente instrumental explícito; sin voz, transparencia sobre limitación.
-- `new_age`: timbres suaves y desarrollo sencillo, pero etiqueta amplia y variable.
-- `psybient`: capas ambientales con producción psicodélica/micro-ritmos, no ambient renombrado.
-- `downtempo`: rango de producción más que género único; seleccionar patrón de referencia.
-- `chillout`: finalidad/escena, no reglas musicales únicas; definir subestilo.
-- `chillwave`: texturas nostálgicas lo-fi/synth y estructura pop/electrónica según referencia.
-- `vaporwave`: manipulación de muestras y tiempo/timbre; no realizable fielmente solo con GM MIDI.
-- `darkwave`: synth/guitarras y atmósfera oscura; elegir vertiente post-punk/electrónica.
-- `goth`: etiqueta de escena: escoger goth rock/darkwave/etc. antes de componer.
-- `experimental`: no hay plantilla identitaria; pedir restricción/idea formal y evaluar frente a ella.
-- `comedy_music`: efecto narrativo de incongruencia/humor, no patrón fijo de batería.
-- `spoken_word`: voz/texto y acompañamiento que deja espacio; MIDI instrumental no representa el elemento esencial.
+**Historical, contemplative, and functional labels**
+- `classical`: ambiguous era/usage label; if referring to the Classical period, thematic form/tonal function/orchestration; percussion only when called for by the score.
+- `baroque`: counterpoint/continuo and formal organization according to dance/fugue/concerto; prohibit a pop kit by default.
+- `romantic`: thematic development/chromaticism/dynamics and rubato according to the work, not pop with strings.
+- `ambient`: long textures and space with low activity; kick is not mandatory.
+- `drone`: sustained note/chord and spectral evolution, not a kick loop by default.
+- `meditation`: functional purpose; request desired timbre/length/dynamics, not a verifiable musical genre.
+- `mantra`: explicit vocal/textual repetition or an instrumental reference; without vocals, disclose the limitation.
+- `new_age`: soft timbres, simple development, but a broad and variable label.
+- `psybient`: ambient layers with psychedelic/microrhythmic production, not renamed ambient.
+- `downtempo`: production range rather than a single genre; select a reference pattern.
+- `chillout`: purpose/scene, not unique musical rules; define a substyle.
+- `chillwave`: nostalgic lo-fi/synth textures and pop/electronic structure according to the reference.
+- `vaporwave`: manipulation of samples' time/timbre; not faithfully realizable with GM MIDI alone.
+- `darkwave`: synths/guitars, dark atmosphere; choose a post-punk/electronic direction.
+- `goth`: scene label; choose goth rock/darkwave/etc. before composing.
+- `experimental`: no identity template; request a constraint/formal idea and evaluate against it.
+- `comedy_music`: narrative effect of incongruity/humor, no fixed drum pattern.
+- `spoken_word`: voice/text with accompaniment that leaves space; instrumental MIDI does not represent the essential element.
 
-## Pruebas de aceptación propuestas (antes de declarar que un género «funciona»)
-1. Validador de **roles** por género: `power_metal` exige bombo/caja/platos, bajo, guitarra rítmica con riffs, lead/coro/tema; solo solo si la sección se llama solo. No permitir pistas vacías ni roles descritos pero ausentes.
-2. Validador **rítmico y formal**: diferencias observables intro/verso/puente/solo/clímax; alternancia de patrones/fills; fraseos de 2–8 compases según género; lectura de compás real; clave no invertida y swing/células compuestas si se declararon.
-3. Validador **armónico/melódico**: riffs vs arpegios, motivos recurrentes transformados, notas de lead realmente presentes, bajo que dialogue con bombo/guitarra. No imponer solos o métricas aditivas a todo metal.
-4. Validación de **render**: ejecutar composición y render, inspeccionar pistas, BPM/compases/duración, ausencias y audición A/B con referencias autorizadas; MIDI con timbre GM es prototipo, no garantía de calidad final.
-5. **Semáforo:** catálogo de etiquetas = soportado en metadatos; plantilla rítmica = parcial; perfil completo + pruebas = implementado; escucha humana = aceptado. Nunca llamar «100 géneros fieles» al estado actual.
+## Proposed acceptance tests (before declaring a genre "works")
+1. **Roles** validator per genre: `power_metal` requires kick/snare/cymbals, bass, rhythm guitar with riffs, lead/vocals/theme; a section named solo must contain one. Do not allow empty tracks or described-but-absent roles.
+2. **Rhythmic/formal** validator: observable intro/verse/bridge/solo/climax differences; alternation of patterns/fills; 2–8 bar phrases by genre; bar reading in actual time; correctly oriented clave, swing/compound cells when declared.
+3. **Harmonic/melodic** validator: riffs vs arpeggios, transformed recurring motifs, actual lead notes, bass in dialogue with kick/guitar. Do not impose solos or additive meters on all metal.
+4. **Rendering** validation: run composition and rendering, inspect tracks, BPM/bars/duration, missing elements, A/B listening with authorized references; MIDI with GM timbre is a prototype, not a final-quality guarantee.
+5. **Status levels:** label catalog = metadata support; rhythmic template = partial; full profile + tests = implemented; human listening = accepted. Never describe the current state as "100 faithful genres."
 
-## Prioridad técnica
-1. Corregir descripción engañosa de skill y lista de `genre` como metadatos/plantillas; añadir advertencia en composición/render.
-2. Reparar la canción power metal en prototipo separado: bajo real, riff palm mute/power chords, batería con variaciones y fills, lead compuesto con articulaciones, forma comprobada; no reutilizar el título/pista MT vacía como evidencia de solo.
-3. Implementar arquitectura de perfiles por **familias musicales** más capas por género y variante, con validators y fixtures de 4–8 compases; comenzar por power metal + salsa + jazz swing + bossa + house para forzar soluciones realmente diferentes.
-4. Extender después a las 100 etiquetas con fuentes por tradición y muestras auditivas; etiquetas no documentadas permanecen «experimental/no verificado».
+## Technical priority
+1. Correct the misleading skill description and present the `genre` list as metadata/templates; add a warning during composition/rendering.
+2. Repair the power metal song in a separate prototype: actual bass, palm mute/power chord riffs, drums with variations and fills, composed lead with articulations, verified form; do not reuse the empty MT title/track as evidence of a solo.
+3. Implement profile architecture by **musical families** with more layers per genre and variant, validators, and 4–8 bar fixtures; start with power metal + salsa + jazz swing + bossa + house to force different solutions.
+4. Then extend to the 100 labels with sources per tradition and listening samples; undocumented labels remain "experimental/unverified."
 
-## Fuentes primarias consultadas
-[1] Boddington, Jordan y Herbst, *Harmonic structures in twenty-first-century metal music*, Metal Music Studies 9(1), 2023, DOI 10.1386/mms_00093_1, portal de investigación University of Huddersfield: https://pure.hud.ac.uk/en/publications/harmonic-structures-in-twenty-first-century-metal-music-a-harmoni
-[2] Antonio J. García, docente de jazz, *Basic Swing & Bossa/Samba Drumming* (demostración y patrones): https://garciamusic.com/educator/articles/swing.bossa.samba.drum.html
-[3] Ableton, entrevista de producción y programación de breaks a Paradox: https://www.ableton.com/en/blog/paradox-breakbeat-mastery/ y tutorial de DJ Fracture sobre DnB/sub-bass: https://www.ableton.com/en/blog/dnb-beats-and-sub-bass-tutorial-dj/
-[4] Smithsonian Folkways, *Braiding Rhythms*, material didáctico original sobre rumba clave, cáscara y patrones de campana 6/8: https://folkways.si.edu/braiding-rhythms-the-role-of-bell-patterns-in-west-african-and-afro-caribbean-music/tools-for-teaching/smithsonian
-**Límite de fuentes:** los apuntes de los otros géneros son propuestas preliminares de diseño; no atribuirlos falsamente a [1]–[4]. Para declararlos validados falta investigación de cada tradición y escucha comparativa.
+## Primary sources consulted
+[1] Boddington, Jordan, and Herbst, *Harmonic structures in twenty-first-century metal music*, Metal Music Studies 9(1), 2023, DOI 10.1386/mms_00093_1, University of Huddersfield research portal: https://pure.hud.ac.uk/en/publications/harmonic-structures-in-twenty-first-century-metal-music-a-harmoni
+[2] Antonio J. Garcia, jazz educator, *Basic Swing & Bossa/Samba Drumming* (demonstration and patterns): https://garciamusic.com/educator/articles/swing.bossa.samba.drum.html
+[3] Ableton, production and break programming interview with Paradox: https://www.ableton.com/en/blog/paradox-breakbeat-mastery/ and DJ Fracture tutorial on DnB/sub-bass: https://www.ableton.com/en/blog/dnb-beats-and-sub-bass-tutorial-dj/
+[4] Smithsonian Folkways, *Braiding Rhythms*, original educational material on rumba clave, shell percussion, and 6/8 bell patterns: https://folkways.si.edu/braiding-rhythms-the-role-of-bell-patterns-in-west-african-and-afro-caribbean-music/tools-for-teaching/smithsonian
+
+**Source limitation:** notes on other genres are preliminary design proposals; do not falsely attribute them to [1]–[4]. Validating them requires research on each tradition and comparative listening.

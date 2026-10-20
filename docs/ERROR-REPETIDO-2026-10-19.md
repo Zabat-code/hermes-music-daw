@@ -1,69 +1,71 @@
-# ERROR REPETIDO: composición densa sin consultar la documentación auditada
+# REPEATED ERROR: dense composition without consulting audited documentation
 
-**Fecha:** 2026-10-19
-**Herramienta:** skill `hermes-music` (motor `hermesmusic.py`)
-**Severidad:** alta — el error ocurrió **dos veces** y la corrección estaba documentada pero no aplicada.
+**Date:** 2026-10-19
+**Tool:** `hermes-music` skill (`hermesmusic.py` engine)
+**Severity:** high — the error occurred **twice**, and the correction was documented but not applied.
 
 ---
 
-## Qué pasó (hechos, no interpretación)
+## What happened (facts, not interpretation)
 
-El usuario pidió una canción power metal para gym (3:00, 2 guitarras, bajo, batería, piano sintético).
-Generé una v1 con `render_song()` + `drum_grid`. El usuario la rechazó por escucha con cinco quejas.
-Todas eran correctas y **todas ya estaban diagnosticadas** en `~/.hermes/documentacion/hermesmusic/`
-desde ese mismo día (trabajo previo sobre la pieza "Ash to Dawn").
+The user requested a power metal workout song (3:00, 2 guitars, bass, drums, synth piano).
+I generated v1 with `render_song()` + `drum_grid`. The user rejected it after listening, with five complaints.
+All were correct, and **all had already been diagnosed** in `~/.hermes/documentacion/hermesmusic/`
+earlier that day (previous work on the piece "Ash to Dawn").
 
-### Ocurrencia 1 — "Ash to Dawn" (misma fecha, antes)
-- Pieza generada con el mismo enfoque (`render_song` + rejilla de batería).
-- Diagnóstico documentado en `COMPARATIVA-BATERIA-METAL-2026-10-19.md`:
-  - 68 compases densos con **exactamente 8 bombos y 8 rides por compás**, ambos disparados juntos.
-  - Patrón más repetido: 45 de 78 compases. Sin huecos ni síncopas.
-  - Fills idénticos cada 4 compases, sin reaccionar a cadencias.
-- Corrección propuesta en el mismo documento (4 puntos) — **NO aplicada al motor**.
-- Se hizo una v2 de esa pieza (`ash_to_dawn_drums_v2.py`) con grooves escritos a mano,
-  pero **como archivo suelto del proyecto, no como regla del motor ni de la skill**.
+### Occurrence 1 — "Ash to Dawn" (earlier the same day)
 
-### Ocurrencia 2 — "Iron Determination" (esta sesión)
-- Generé v1 con el mismo `render_song` + `drum_grid` → **repitió los mismos defectos**.
-- El usuario lo detectó de nuevo por escucha.
+- Piece generated with the same approach (`render_song` + drum grid).
+- Diagnosis documented in `COMPARATIVA-BATERIA-METAL-2026-10-19.md`:
+  - 68 dense bars with **exactly 8 kick and 8 ride hits per bar**, both triggered together.
+  - Most repeated pattern: 45 of 78 bars. No gaps or syncopation.
+  - Identical fills every 4 bars, without responding to cadences.
+- Correction proposed in the same document (4 points) — **NOT applied to the engine**.
+- A v2 of that piece (`ash_to_dawn_drums_v2.py`) was created with handwritten grooves,
+  but **as a standalone project file, not as an engine or skill rule**.
 
-## Por qué se repitió (causa raíz)
+### Occurrence 2 — "Iron Determination" (this session)
 
-1. **La corrección vive en un `.md` que nadie lee.** `COMPARATIVA-BATERIA-METAL-2026-10-19.md`
-   y `documentacion/hermesmusic/HALLAZGOS.md` contienen el diagnóstico, pero **nada en el flujo
-   de trabajo obliga a abrirlos** antes de componer.
-2. **La skill `hermes-music` no menciona esos documentos.** Su `SKILL.md` y sus `references/`
-   no enlazan `documentacion/hermesmusic/`, así que un agente que carga la skill no se entera.
-3. **El motor no cambió.** `drum_grid` sigue produciendo rejilla mecánica; `render_song` sigue
-   sin reglas de registro, de espacio entre instrumentos ni de variación dinámica.
-4. **El "éxito" se declaró por métricas que no detectan el problema.** `validate_midi` no tiene
-   notas huérfanas ni duración mal → "sin problemas". El clasificador dijo "metal". Nada de eso
-   mide si la batería se solapa, si hay espacio o si el timbre suena a 8-bit.
-5. **La v2 de la ocurrencia 1 no se generalizó.** Fue un parche para una pieza, no una regla
-   reutilizable; la siguiente pieza partió de cero con el patrón defectuoso.
+- I generated v1 with the same `render_song` + `drum_grid` → **repeated the same defects**.
+- The user detected it again by listening.
 
-## Defectos medidos (v1 de Iron Determination, 120 compases)
+## Why it recurred (root cause)
 
-| Síntoma audible (usuario) | Medición objetiva | Causa en el código |
+1. **The correction lives in an unread `.md`.** `COMPARATIVA-BATERIA-METAL-2026-10-19.md`
+   and `HALLAZGOS.md` contain the diagnosis, but **nothing in the
+   workflow requires opening them** before composing.
+2. **The `hermes-music` skill does not mention those documents.** Its `SKILL.md` and `references/`
+   do not link to `documentacion/hermesmusic/`, so an agent loading the skill never sees them.
+3. **The engine did not change.** `drum_grid` still produces a mechanical grid; `render_song` still
+   has no rules for register, space between instruments, or dynamic variation.
+4. **"Success" was declared using metrics that do not detect the problem.** `validate_midi` finds
+   no orphan notes or incorrect duration → "no problems." The classifier said "metal." None of that
+   measures whether drums overlap, whether there is space, or whether the timbre sounds 8-bit.
+5. **Occurrence 1's v2 was not generalized.** It was a patch for one piece, not a reusable
+   rule; the next piece started from scratch with the defective pattern.
+
+## Measured defects (Iron Determination v1, 120 bars)
+
+| Audible symptom (user) | Objective measurement | Cause in code |
 |---|---|---|
-| «las baterías se solapan» | 960 ticks con 2–3 golpes simultáneos | `drum_grid` emite kick+hihat+crash en el mismo paso |
-| «la intensidad no es adecuada» | 27.0 notas/compás **idénticas** en los 120 compases; solo 2 velocidades (90/110) | `sdyn` plano por sección, sin variación por función |
-| «no se aprecian las guitarras» | guitarra rítmica con `arpeggio_up` | arpegios en vez de power chords |
-| «un sonido agudo que no cuadra» | `lead_guitar` alcanzaba MIDI 102 | sin tope de registro |
-| «es más música de 8-bit que metal» | 5 instrumentos sonando el 100% del tiempo | sin reglas de espacio / silencios |
+| “the drums overlap” | 960 ticks with 2–3 simultaneous hits | `drum_grid` emits kick+hihat+crash in the same step |
+| “the intensity is inappropriate” | **Identical** 27.0 notes/bar across all 120 bars; only 2 velocities (90/110) | flat `sdyn` per section, no variation by function |
+| “the guitars do not come through” | rhythm guitar with `arpeggio_up` | arpeggios instead of power chords |
+| “a piercing sound that does not fit” | `lead_guitar` reached MIDI 102 | no register cap |
+| “it sounds more like 8-bit music than metal” | 5 instruments playing 100% of the time | no space / silence rules |
 
-## Qué NO detectó el pipeline de validación
+## What the validation pipeline did NOT detect
 
-- `validate_midi` → "sin problemas" (solo mira notas huérfanas y duración).
-- `classify_genre` → "metal" (mira onsets y tempo, no solapamiento ni espacio).
-- `ffprobe`/`astats` → duración y pico correctos.
-- **Ninguna de estas pruebas mide los cinco defectos reales.** El pipeline decía "listo" en todo.
+- `validate_midi` → "no problems" (only checks orphan notes and duration).
+- `classify_genre` → "metal" (checks onsets and tempo, not overlap or space).
+- `ffprobe`/`astats` → correct duration and peak.
+- **None of these checks measures the five actual defects.** The entire pipeline reported "ready."
 
-## Corrección aplicada en esta sesión
+## Correction applied in this session
 
-- v2 con **autoría nota a nota** (`compose_gym_power_metal_v2.py`), grooves por función de sección,
-  velocidades separadas por pieza del kit, fills solo en bordes, power chords dobles paneados,
-  piano que calla en versos/solo, lead limitado a 76–88.
-- Se añadieron reglas a `references/teoria-composicion.md` (sección "Arreglo: dar espacio").
-- **Pendiente:** que esas reglas sean un **guardarraíl obligatorio** dentro de la skill,
-  no un párrafo más que un agente puede no leer.
+- v2 **written note by note** (`compose_gym_power_metal_v2.py`), grooves by section function,
+  separate velocities per kit piece, fills only at boundaries, double-tracked panned power chords,
+  piano silent during verses and the solo, lead limited to 76–88.
+- Rules added to `references/teoria-composicion.md` (section "Arrangement: Making Space").
+- **Pending:** make those rules a **mandatory guardrail** within the skill,
+  rather than another paragraph an agent might skip.

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Motor de mezcla headless — base del MCP DAW.
+"""Headless mixing engine - foundation of the DAW MCP.
 
-Toma stems WAV y aplica una cadena de mezcla profesional por rol (HPF, EQ,
-compresión), balance estéreo, y un bus master con EQ tonal + compresión de
-bus + limitador de muestras. Todo con Pedalboard (Spotify), 100% headless.
+Takes WAV stems and applies a professional mixing chain per role (HPF, EQ,
+compression), stereo balance, and a master bus with tonal EQ + bus
+compression + sample limiter. All using Pedalboard (Spotify), 100% headless.
 
-Uso:
+Usage:
     python3 mix_engine.py --stems <dir> --out mix.wav [--profile power_metal]
 """
 from __future__ import annotations
@@ -26,9 +26,9 @@ else:
 
 SR = 44100
 
-# --- perfiles por género: valores de partida de ingeniería, no verdad absoluta ---
-# Basados en práctica común: HPF por rol para evitar enmascaramiento, presencia
-# en guitarras, compresión de bus suave, limitador de muestras a -1 dBFS.
+# --- genre profiles: engineering starting points, not absolute truth ---
+# Based on common practice: HPF per role to avoid masking, guitar
+# presence, gentle bus compression, sample limiter at -1 dBFS.
 PROFILES = {
     'power_metal': {
         'roles': {
@@ -94,7 +94,7 @@ def build_master_chain(cfg: dict) -> Pedalboard:
         PeakFilter(cutoff_frequency_hz=mf, gain_db=mg, q=0.8),
         HighShelfFilter(cutoff_frequency_hz=af, gain_db=ag),
         Compressor(threshold_db=t, ratio=r, attack_ms=a, release_ms=rel),
-        # Margen antes del limitador; la suma float puede superar 0 dBFS.
+        # Headroom before the limiter; the floating-point sum can exceed 0 dBFS.
         Gain(gain_db=cfg.get('trim', -3.0)),
         Limiter(threshold_db=cfg['limiter'], release_ms=80),
     ])
@@ -113,19 +113,19 @@ def mix(stems_dir: Path, out_path: Path, profile: str = 'power_metal',
         duration: float | None = None) -> dict:
     prof = PROFILES.get(profile)
     if prof is None:
-        raise ValueError(f'perfil desconocido: {profile!r}; hay {sorted(PROFILES)}')
+        raise ValueError(f'unknown profile: {profile!r}; available profiles: {sorted(PROFILES)}')
 
     files = {p.stem: p for p in wav_files(stems_dir)}
     known = [n for n in prof['roles'] if n in files]
     unknown = [n for n in files if n not in prof['roles']]
     if not known:
-        raise ValueError(f'ningún stem coincide con el perfil; hay {sorted(files)}')
+        raise ValueError(f'no stems match the profile; available stems: {sorted(files)}')
     if unknown:
         raise ValueError(f'Stems not in profile {profile!r}: {sorted(unknown)}; '
                          f'expected roles: {sorted(prof["roles"])}. Rename or define a profile; no stems are silently dropped.')
     output_path(out_path, *files.values())
 
-    # duración común
+    # shared duration
     if duration is None:
         lengths = []
         for path in files.values():
@@ -163,8 +163,8 @@ def mix(stems_dir: Path, out_path: Path, profile: str = 'power_metal',
         'peak_db': round(20 * np.log10(peak + 1e-12), 2),
         'rms_db': round(20 * np.log10(rms + 1e-12), 2),
         'chain': applied,
-        'note': 'El perfil son valores de partida de ingeniería, no una verdad '
-                'absoluta. La decisión final es de escucha humana.',
+        'note': 'The profile provides engineering starting points, not an absolute '
+                'truth. The final decision requires human listening.',
     }
 
 

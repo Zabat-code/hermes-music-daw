@@ -1,76 +1,76 @@
-# Arquitectura vigente
+# Current architecture
 
-El repositorio contiene dos componentes que comparten archivos como interfaz:
-composición MIDI auditada y procesamiento offline de audio. No hay servidor de
-audio en tiempo real. `daw_mcp.py` expone funciones por FastMCP/stdio sin cambiar
-las funciones Python originales.
+The repository contains two components that use files as their interface:
+audited MIDI composition and offline audio processing. There is no real-time
+server. `daw_mcp.py` exposes functions through FastMCP/stdio without changing
+the original Python functions.
 
 ```mermaid
 flowchart TD
-  R[Lecturas locales + plan JSON] --> G[composition_guard]
-  G --> C[Compositor subprocess / borrador temporal]
+  R[Local readings + plan JSON] --> G[composition_guard]
+  G --> C[Compositor subprocess / temporary draft]
   C --> A[audit_arrangement: 8 gates]
-  A --> V[Verificar MIDI contra plan]
+  A --> V[Verify MIDI against plan]
   V --> P[MIDI exacto + receipt SHA-256]
   P --> F[FluidSynth + SoundFont por pista]
   F --> S[Stems WAV]
   S --> M[mix_engine: DSP por rol, balance, suma, bus]
   M --> T[daw_mcp.master: bus + loudnorm dos pasadas]
   T --> E[Exportación WAV/OGG]
-  E --> Q[release_check + escucha humana]
+  E --> Q[release_check + human listening]
 ```
 
-## Módulos y responsabilidad
+## Modules and responsibilities
 
-| Módulo | Entradas → salidas / propiedad |
+| Module | Inputs → outputs / responsibility |
 | --- | --- |
-| `hermesmusic.py` | SongSpec o eventos → MIDI; vocabulario de notas, escalas, acordes, patrones y timing absoluto→delta. `render_song` audita antes de publicar; `render_performance` es reconstrucción de material ajeno. |
-| `audit_arrangement.py` | MIDI → informe de estructura, dinámica, registro, espacio, solapamiento, patrones, densidad y fills. `ArrangementError`/exit 1 bloquean un arreglo defectuoso. |
-| `composition_guard.py` | Lecturas + plan + comando de compositor → MIDI y certificado solo tras gates y comparación con el plan. `--verify` repite auditoría y comprueba hashes. |
-| `example_dense_arrangement.py` | Referencia original corregida: 120 compases, autoría nota a nota. Se preservan sus decisiones musicales. |
-| `genre_engine.py` | Metadatos y semilla → plan armónico, o guía de piano. No implementa 100 géneros completos. |
-| `mix_engine.py` | WAVs por nombre de rol → estéreo 44100 Hz. HPF/EQ/compresión por rol, balance lineal, niveles, suma float y bus master. Dos perfiles explícitos. |
-| `daw_mcp.py` | Diez herramientas Python registradas por `build_server`. Render, medición, procesado, mezcla, master, comparación, verificación. |
-| `audio_utils.py` | Validación de audio y destino, escritura por reemplazo temporal, discovery de binarios/SoundFont, subprocess con timeout y errores, medición FFmpeg. |
-| `check_install.py` | Comprobaciones de dependencias y recursos, sin proyecto musical externo. |
+| `hermesmusic.py` | SongSpec or events → MIDI; vocabulary for notes, scales, chords, patterns, and absolute→delta timing. `render_song` audits before publishing; `render_performance` reconstructs third-party material. |
+| `audit_arrangement.py` | MIDI → report on structure, dynamics, register, space, overlap, patterns, density, and fills. `ArrangementError`/exit 1 block a defective arrangement. |
+| `composition_guard.py` | Readings + plan + composer command → MIDI and certificate only after gates and comparison against the plan. `--verify` reruns the audit and checks hashes. |
+| `example_dense_arrangement.py` | Corrected original reference: 120 bars, written note by note. Its musical decisions are preserved. |
+| `genre_engine.py` | Metadata and seed → harmonic plan or piano guide. Does not implement 100 complete genres. |
+| `mix_engine.py` | WAVs named by role → 44100 Hz stereo. Per-role HPF/EQ/compression, linear pan, levels, floating-point summing, and master bus. Two explicit profiles. |
+| `daw_mcp.py` | Ten Python tools registered by `build_server`. Rendering, measurement, processing, mixing, mastering, comparison, verification. |
+| `audio_utils.py` | Audio and destination validation, writes via temporary-file replacement, binary/SoundFont discovery, subprocesses with timeout and error handling, FFmpeg measurement. |
+| `check_install.py` | Dependency and resource checks, without an external music project. |
 
-## Invariantes conservadas
+## Preserved invariants
 
-Eventos MIDI se construyen en ticks absolutos, se ordenan y se convierten a delta.
-Nunca ocultar deltas negativos. `validate_midi` es complementario: no reemplaza
-los gates. El guard usa archivos temporales y enlaces sin sobrescritura para
-publicar MIDI/certificado. El certificado vincula MIDI, plan guardado, lecturas
-y tres archivos de motor/auditor/guard; no es una firma ni cubre todo el software
-o las dependencias. No vincula todavía los bytes del compositor ejecutado.
+MIDI events are built in absolute ticks, sorted, and converted to delta times.
+Never hide negative deltas. `validate_midi` is complementary: it does not replace
+the arrangement gates. The composition guard uses temporary files and links that prevent overwrites to
+publish MIDI/certificates. The certificate binds the MIDI, saved plan, readings,
+and three engine/auditor/guard files; it is not a signature and does not cover all software
+or dependencies. It does not yet bind the bytes of the executed composer.
 
-Se preserva el auditor. Los cambios al guard son rutas locales, imports de paquete
-y mensajes accionables. No se refactorizó el motor de composición monolítico.
+The auditor is preserved. Guard changes cover local paths, package imports,
+and actionable messages. The monolithic composition engine was not refactored.
 
-Audio se carga como `float32`, mono/estéreo, sin frames vacíos, NaN/inf ni silencio
-total. La mezcla convierte mono a estéreo y remuestrea; duración por defecto es
-la del stem más largo. Roles desconocidos abortan. Los archivos completos se
-cargan en RAM: coste aproximadamente proporcional a muestras × canales × stems.
+Audio is loaded as `float32`, mono/stereo, with no empty frames, NaN/inf, or total
+silence. Mixing converts mono to stereo and resamples; default duration matches
+the longest stem. Unknown roles abort. Complete files are
+loaded into RAM: cost is roughly proportional to samples × channels × stems.
 
-La suma float puede superar 0 dBFS internamente sin cuantización; eso no equivale
-por sí solo a clipping de un archivo PCM. Hay trim antes del limitador de muestras
-y se mide el archivo escrito. El master usa FFmpeg para LUFS/TP reales; la
-salida con pérdida se mide de nuevo. No confundir limitador de muestras con una
-garantía de true peak.
+Floating-point summing can exceed 0 dBFS internally without quantization; this does not
+by itself imply clipping in a PCM file. Trim precedes the sample limiter,
+and the written file is measured. Mastering uses FFmpeg for actual LUFS/TP;
+lossy output is measured again. Do not confuse a sample limiter with a
+true peak guarantee.
 
-## Límites de frontera
+## Interface boundaries
 
-El MCP no expone composición ni exige recibo al renderizar: el agente debe seguir
-PROTOCOL.md y verificarlo primero. El renderer separa una pista nominal por canal;
-no reconstruye programas/controladores repartidos entre pistas. Nombres de pista
-no pueden convertirse en rutas arbitrarias. Las herramientas trabajan con los
-permisos del proceso anfitrión; no son un sandbox.
+MCP does not expose composition or require a receipt when rendering: the agent must follow
+PROTOCOL.md and verify it first. The renderer separates one named track per channel;
+it does not reconstruct programs/controllers distributed across tracks. Track names
+cannot become arbitrary paths. Tools operate with the
+host process's permissions; they are not a sandbox.
 
-Los recibos incluyen rutas absolutas y son sensibles a cambios de lectura/código;
-la muestra empaquetada se audita de nuevo y se vuelve a certificar localmente
-reproduciendo el ejemplo. El OGG está enlazado por hashes en sus notas de muestra,
-pero el guard MIDI no certifica el audio.
+Receipts include absolute paths and are sensitive to reading/code changes;
+the packaged sample is audited and recertified locally by
+rerunning the example. The OGG is linked by hashes in its sample notes,
+but the MIDI guard does not certify audio.
 
-Pruebas: se mantienen las 33 regresiones de composición y 100 subtests de catálogo,
-con fixtures reproducibles. Las nuevas pruebas procesan WAVs sintéticos reales,
-ejecutan el DSP y llaman a las diez herramientas mediante cliente MCP stdio.
-CI instala binarios y SoundFont; no necesita audio físico ni GPU.
+Tests: the 33 composition regressions and 100 catalog subtests are retained,
+with reproducible fixtures. New tests process real synthetic WAVs,
+execute DSP, and call the ten tools through an MCP stdio client.
+CI installs binaries and a SoundFont; it requires neither physical audio hardware nor a GPU.

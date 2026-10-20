@@ -1,129 +1,129 @@
-# Teoría de composición (integrada)
+# Composition Theory (Integrated)
 
-Extracto consolidado de la antigua skill `music-composition-patterns`. Es guía de
-criterio, no código: el motor ya implementa el vocabulario (escalas, cifrados,
-patrones). Úsalo para **elegir** tonalidad, progresión, estructura y dinámicas.
+Consolidated excerpt from the former `music-composition-patterns` skill. It provides musical
+guidance, not code: the engine already implements the vocabulary (scales, chord shapes,
+patterns). Use it to **choose** key, progression, structure, and dynamics.
 
-## La regla fundamental
+## The Fundamental Rule
 
-La música es coordinar sonido en el tiempo mediante **patrones**. Hace falta:
-1. grooves que se repiten y varían; 2. estructura narrativa; 3. motivos que se
-desarrollan; 4. sinergia entre instrumentos (diálogo, no capas independientes).
+Music coordinates sound in time through **patterns**. It requires:
+1. repeating and varying grooves; 2. narrative structure; 3. motifs that develop;
+   4. synergy between instruments (dialogue, not independent layers).
 
-## Escalas y progresiones por emoción
+## Scales and Progressions by Emotion
 
-| Emoción | Escala | Progresión de referencia |
+| Emotion | Scale | Reference Progression |
 |---|---|---|
-| Tristeza | menor natural (Dm, Am) | `i - VI - III - VII` → Dm - Bb - F - A |
-| Romance | mayor (C, F) | `I - V - vi - IV` → C - G - Am - F |
-| Fúnebre | menor natural (Dm) | `i - iv - V - i` → Dm - Gm - A - Dm |
-| Épico | mayor/dorico (G, D) | `I - V - vi - iii - IV` → C - G - Am - Em - F |
-| Heroico | mixolidio (A) | `I - V - vi - IV` con cuerdas y metales |
-| Tensión | frigio (D, E) | `i - bII - i` estancado, sin resolución |
+| Sad | natural minor (Dm, Am) | `i - VI - III - VII` → Dm - Bb - F - A |
+| Romantic | major (C, F) | `I - V - vi - IV` → C - G - Am - F |
+| Funeral | natural minor (Dm) | `i - iv - V - i` → Dm - Gm - A - Dm |
+| Epic | major/Dorian (G, D) | `I - V - vi - iii - IV` → C - G - Am - Em - F |
+| Heroic | Mixolydian (A) | `I - V - vi - IV` with strings and brass |
+| Tension | Phrygian (D, E) | `i - bII - i` stalled, no resolution |
 
-En el `SongSpec` basta con `"key"` + `"scale"` y la `"progression"` como cifrados.
-El motor resuelve los grados relativos a la raíz de cada acorde.
+In `SongSpec`, "key" + "scale" and "progression" as chord symbols are sufficient.
+The engine resolves degrees relative to each chord's root.
 
-## Estructura de secciones por emoción
+## Section Structure by Emotion
 
-| Emoción | Secciones (proporción / intensidad) |
+| Emotion | Sections (proportion / intensity) |
 |---|---|
-| Triste | intro .15/.3 · desarrollo .35/.6 · clímax .25/.9 · resolución .25/.4 |
-| Romántica | intro .12/.4 · tema A .25/.6 · tema B .25/.7 · clímax .20/.9 · coda .18/.3 |
-| Fúnebre | intro .20/.2 · lamento .30/.5 · tributo .25/.8 · final .25/.3 |
-| Épica | intro .10/.3 · desarrollo .30/.6 · clímax .30/1.0 · resolución .30/.5 |
+| Sad | intro .15/.3 · development .35/.6 · climax .25/.9 · resolution .25/.4 |
+| Romantic | intro .12/.4 · theme A .25/.6 · theme B .25/.7 · climax .20/.9 · coda .18/.3 |
+| Funeral | intro .20/.2 · lament .30/.5 · tribute .25/.8 · finale .25/.3 |
+| Epic | intro .10/.3 · development .30/.6 · climax .30/1.0 · resolution .30/.5 |
 
-Traduce proporciones a `bars` (a 4/4, 1 compás = 4 negras). La intensidad se mapea
-a `dynamics` (`pp`…`ff`).
+Translate proportions into `bars` (in 4/4, 1 bar = 4 eighth notes). Intensity maps to
+`dynamics` (`pp`…`ff`).
 
-## Grooves (16 pasos = 1 compás a 4/4)
+## Grooves (16 steps = 1 bar in 4/4)
 
-`1` = nota, `0` = silencio. Se aplican por instrumento; el motor los abstrae en
-patrones de acompañamiento equivalentes.
+`1` = note, `0` = silence. Applied per instrument; the engine abstracts them into
+equivalent accompaniment patterns.
 
 ```
-Triste:    piano [1,0,1,0,1,0,1,0,...]   cello [1,0,0,0,0,0,0,0,...]
-Romántico: harp  [1,0,0,1,0,0,1,0,...]   violin[0,0,1,0,0,0,1,0,...]
-Fúnebre:   strings[1,0,0,0,...]          timpani[1,0,0,0,...]
-Épico:     strings[1,1,0,1,...]          brass [1,0,0,1,...]
+Sad:       piano [1,0,1,0,1,0,1,0,...]   cello [1,0,0,0,0,0,0,0,...]
+Romantic:  harp  [1,0,0,1,0,0,1,0,...]   violin[0,0,1,0,0,0,1,0,...]
+Funeral:   strings[1,0,0,0,...]          timpani[1,0,0,0,...]
+Epic:      strings[1,1,0,1,...]          brass [1,0,0,1,...]
 Ambient:   pad   [1,0,0,0,...]           arp   [1,0,1,0,...]
 ```
 
-Equivalencias directas en el motor: `block_chords`, `bass_root`, `bass_pulse`,
+Direct equivalents in the engine: `block_chords`, `bass_root`, `bass_pulse`,
 `arpeggio_up/down/updown`, `alberti`, `waltz`, `pad`.
 
-## Motivos melódicos
+## Melodic Motifs
 
-Un motivo son 2–4 notas que: (1) aparecen al inicio, (2) se desarrollan, (3)
-retornan transformadas. Reglas prácticas:
-- Empezar en tónica (grado 0) o dominante (grado 4/5 según escala).
-- Movimiento por grados, no saltos grandes (usa `escala_ascendente`,
+A motif is 2-4 notes that: (1) appear at the start, (2) develop, (3) return transformed.
+Rules of thumb:
+- Start on the tonic (degree 0) or dominant (degree 4/5 depending on the scale).
+- Move stepwise rather than in large leaps (use `escala_ascendente`,
   `giro_ornacional`, `descenso_cadencia`).
-- Variar cambiando 1–2 notas, invirtiendo la dirección o cambiando el ritmo.
-- El motivo de la sección A reaparece en el clímax; el motor no lo encadena solo,
-  así que repite el patrón o duplícalo con otra `octave`/`instrument`.
+- Vary by changing 1-2 notes, reversing direction, or changing rhythm.
+- Section A's motif returns at the climax; the engine does not connect it automatically,
+  so repeat or duplicate the pattern with another `octave`/`instrument`.
 
-## Sinergia entre instrumentos
+## Instrument Synergy
 
-1. **Melodía** en un solo instrumento (usar `melody.track`).
-2. **Respuesta** con otro instrumento en los huecos (patrón distinto).
-3. **Acompañamiento**: bajo + armonía.
-4. La melodía necesita silencios; no todos los instrumentos suenan siempre.
+1. **Melody** on a single instrument (use `melody.track`).
+2. **Response** from another instrument in the gaps (different pattern).
+3. **Accompaniment**: bass + harmony.
+4. Melody needs silence; not all instruments play all the time.
 
-## Arreglo: dar espacio (verificado 2026-10-19)
+## Arrangement: Making Space (verified 2026-10-19)
 
-`drum_grid` y los patrones de acompañamiento son cómodos pero producen resultados
-**mecánicos** si se usan para toda una canción. Defectos medidos en una pieza real
-generada solo con `render_song` + `drum_grid` (120 compases):
+`drum_grid` and accompaniment patterns are convenient but produce
+**mechanical results** when used for an entire song. Measured defects in an actual piece
+generated only with `render_song` + `drum_grid` (120 bars):
 
-| Síntoma audible | Medición | Causa |
+| Audible symptom | Measurement | Cause |
 |---|---|---|
-| «batería que se solapa» | 960 ticks con 2–3 golpes simultáneos | `drum_grid` dispara kick+hat+crash en el mismo paso |
-| «intensidad inadecuada» | 27.0 notas/compás **idénticas** en los 120 compases | `sdyn` plano, sin variación por función |
-| «no se aprecian las guitarras» | guitarra en `arpeggio_up` | arpegios ≠ power chords; timbre tipo 8-bit |
-| «sonido agudo que no cuadra» | lead alcanzaba MIDI 102 | sin tope de registro |
-| «suena a 8-bit, no a metal» | todos los instrumentos el 100% del tiempo | sin espacio entre instrumentos |
+| “overlapping drums” | 960 ticks with 2-3 simultaneous hits | `drum_grid` fires kick+hat+crash in the same step |
+| “inappropriate intensity” | 27.0 identical notes/bar across 120 bars | flat `sdyn`, no variation by function |
+| “guitars do not come through” | guitar in `arpeggio_up` | arpeggios ≠ power chords; 8-bit timbre |
+| “shrill lead that does not fit” | lead reached MIDI 102 | no register cap |
+| “8-bit, not metal” | all instruments playing 100% of the time | no space between instruments |
 
-### Reglas para material denso (metal, orquesta, rock)
+### Rules for Dense Material (metal, orchestra, rock)
 
-1. **Grooves por función de sección**, no una rejilla única: escribe patrones
-distintos para intro / verso / pre-estribillo / estribillo / solo / outro.
-2. **Separa dinámica por pieza de batería:** bombo en pulsos fuertes ≠ hi-hat en
-corcheas. No uses una sola velocidad para todo el kit.
-3. **Fills SOLO en bordes de sección**, nunca cada 4 compases por contador.
-4. **Guitarras = power chords** (raíz + 5ta + 8va) con palm mute y doble pista
-paneada, no arpegios. Octava 3 (48–71) es el cuerpo; octava 2 (36–59) se
-embarra con el bajo.
-5. **Deja callar instrumentos.** El piano/teclado debe tener secciones de
-**silencio** para que respiren las guitarras.
-6. **Tope explícito de registro** por pista: filtra `if p <= N` en vez de confiar
-en la octava base del acorde. Un `r5+12` se escapa fácil por encima de 90.
+1. **Grooves by section function**, not a single grid: write different patterns
+   for intro / verse / pre-chorus / chorus / solo / outro.
+2. **Separate dynamics per kit piece:** kick on strong beats ≠ hi-hat on
+   eighth notes. Do not use one velocity for the whole kit.
+3. **Fills only at section boundaries**, never every 4 bars by counter.
+4. **Guitars = power chords** (root + fifth + octave) with palm mute and double
+   tracking, not arpeggios. Octave 3 (48-71) provides body; octave 2 (36-59)
+   doubles the bass.
+5. **Silence instruments.** Piano/keyboard should have sections of
+   **silence** so guitars can breathe.
+6. **Explicit register cap** per track: filter with `if p <= N` rather than relying
+   on the chord's base octave. An `r5+12` can easily exceed 90.
 
-Para material así, escribe los eventos **nota a nota** con un script propio
-(referencia autónoma dentro de la skill: `scripts/example_dense_arrangement.py`)
-en lugar de depender solo de los patrones de `render_song`.
+For this material, write events **note by note** with your own script
+(self-contained reference within the skill: `scripts/example_dense_arrangement.py`)
+instead of relying solely on `render_song` patterns.
 
-Aplicación ejecutable obligatoria: `scripts/composition_guard.py` abre las
-lecturas, valida decisiones, ejecuta el compositor y exige
-`scripts/audit_arrangement.py` antes de publicar. El ejemplo interno corrige
-además ataques triples y notas de duración cero presentes en la v2 histórica.
-Los ataques dobles no demuestran enmascaramiento acústico: bombo+platillo está
-permitido. Los topes, silencios y densidades del protocolo son un contrato local
-para arreglos densos; calidad de timbre y fidelidad estilística requieren escucha.
+Mandatory application step: `scripts/composition_guard.py` opens the required
+readings, validates decisions, runs the composer, and requires
+`scripts/audit_arrangement.py` before publishing. The internal example also
+corrects triple attacks and zero-duration notes present in
+historical v2. Double attacks do not demonstrate acoustic masking: kick+hi-hat is
+allowed. The protocol's register cap, silence, and density rules are a local contract
+for dense arrangements; timbre quality and stylistic fidelity require listening.
 
-**Antes de componer:** leer `docs/`
-(COMPARATIVA-BATERIA-METAL, TEORIA-Y-ARQUITECTURA) — ahí están los diagnósticos
-ya verificados; no repetirlos.
+**Before composing:** read `docs/`
+(COMPARATIVA-BATERIA-METAL, TEORIA-Y-ARQUITECTURA) — the verified diagnoses
+are there; do not repeat those errors.
 
-## Dinámicas y render
+## Dynamics and Rendering
 
-Velocidades del motor: `pp`=20, `p`=35, `mp`=50, `mf`=70, `f`=90, `ff`=110.
-Con muchas notas simultáneas conviene quedarse en `pp`–`mf` para evitar distorsión
-interna de FluidSynth. `render` ya aplica `-g 0.8`; para material denso puedes bajar
-la ganancia, la API `render_audio(..., gain=0.55)` lo expone; la CLI conserva 0.8.
-El flujo por stems de PROTOCOL.md usa 0.5 y mide antes/después.
+Engine velocities: `pp`=20, `p`=35, `mp`=50, `mf`=70, `f`=90, `ff`=110.
+With many simultaneous notes, stay at `pp`–`mf` to avoid internal distortion
+in FluidSynth. `render` already applies `-g 0.8`; for dense material, you can lower
+gain through the `render_audio(..., gain=0.55)` API; the CLI retains 0.8.
+PROTOCOL.md's stems workflow uses 0.5 and measures before/after.
 
-Normalización de audio (opcional, fuera del motor):
+Audio normalization (optional, outside the engine):
 ```bash
 ffmpeg -y -i out.wav -af "loudnorm=I=-16:TP=-1.5:LRA=11" -c:a libvorbis -q:a 5 out.ogg
 ```

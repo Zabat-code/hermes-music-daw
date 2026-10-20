@@ -56,7 +56,7 @@ def test_load_stem_padding_is_silent(make_wav):
 
 
 def test_bad_profile(tmp_path):
-    with pytest.raises(ValueError, match='perfil desconocido'):
+    with pytest.raises(ValueError, match='unknown profile'):
         mix(tmp_path, tmp_path / 'out.wav', 'unlisted')
 
 
@@ -69,7 +69,7 @@ def test_empty_and_missing_directory(tmp_path):
 
 def test_unmatched_and_partially_matched_stems_abort(make_wav, tmp_path):
     make_wav('stems/unknown.wav')
-    with pytest.raises(ValueError, match='ningún stem coincide'):
+    with pytest.raises(ValueError, match='no stems match the profile'):
         mix(tmp_path / 'stems', tmp_path / 'out.wav')
     make_wav('stems/drums.wav')
     with pytest.raises(ValueError, match='not in profile'):

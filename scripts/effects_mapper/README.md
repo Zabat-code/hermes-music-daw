@@ -1,71 +1,71 @@
 ---
 name: effects_mapper
-description: Mapea efectos de producción (autotune, filtro, distorsión, reverb, sidechain, vocoder, pitch shift) a eventos MIDI. Basado en análisis del canal de Jaime Altozano.
+description: Maps production effects (autotune, filter, distortion, reverb, sidechain, vocoder, pitch shift) to MIDI events. Based on Jaime Altozano's channel analysis.
 version: 1.0.0
 platform: linux
 inputs:
   - midi_file: path | .mid/.midi
   - effect_name: string | autotune | pitch_shift | filter | distortion | reverb | sidechain | vocoder | chorus | flanger
   - output_file: string | path .mid
-  - params: dict | opcional
+  - params: dict | optional
 dependencies: [mido, music21]
 triggers:
-  - aplicar efectos a MIDI
-  - mapeo de producción
-  - efectos de voz
+  - apply effects to MIDI
+  - production mapping
+  - vocal effects
 ---
 
 # Production Effects MIDI Mapper
 
-Motor de efectos de producción para MIDI, basado en el análisis del video
+Production effects engine for MIDI, based on the analysis of the video
 **MOTOMAMI: an in-depth musical analysis ft. Rosalía** (Jaime Altozano).
-Extrae de la transcripción 10 técnicas de producción que se pueden mapear a
-eventos MIDI.
+Extracts from the transcription 10 production techniques that can be mapped to
+MIDI events.
 
-## Efectos Implementados
+## Implemented Effects
 
-| Efecto | Tecnología | Eventos MIDI generados |
+| Effect | Technology | Generated MIDI events |
 |--------|------------|------------------------|
 | `autotune` | Auto-Tune (pitch correction) | pitch bend, CC1 |
 | `pitch_shift` | Pitch shifting | pitch bend, velocity |
-| `filter` | Filtro pasa-baja/aguda | CC74, CC71 |
-| `distortion` | Distorsión | CC11, velocity spikes |
-| `reverb` | Reverberación | CC91, CC94 |
-| `sidechain` | Ducking de acompañamiento | CC11, backmask |
+| `filter` | Low-pass filter | CC74, CC71 |
+| `distortion` | Distortion | CC11, velocity spikes |
+| `reverb` | Reverberation | CC91, CC94 |
+| `sidechain` | Ducking of accompaniment | CC11, backmask |
 | `vocoder` | Vocoder | CC10 (expression), CC73 |
-| `chorus` | Coros/eco | CC66, CC58 |
+| `chorus` | Chorus/echo | CC66, CC58 |
 | `flanger` | Flanger | CC11, CC106 |
 
-## Uso
+## Usage
 
 ```bash
-python3 ~/.hermes/skills/hermes-music/scripts/effects_mapper/effects_apply.py input.mid output.mid --effect autotune --params "{velocity: 0.8}"
+python3 the skill's scripts/effects_mapper/effects_apply.py input.mid output.mid --effect autotune --params "{velocity: 0.8}"
 
-# Lista recetas disponibles
-python3 ~/.hermes/skills/hermes-music/scripts/effects_mapper/effects_apply.py list
+# List available recipes
+python3 the skill's scripts/effects_mapper/effects_apply.py list
 ```
 
-## Recetas
+## Recipes
 
 ```python
 RECIPES = {
     'motomami': {
         'effect': 'autotune',
         'params': {'min_semitone': 12, 'max_semitone': 50, 'velocity': 0.8},
-        'description': 'Voz con autotune agresivo, voz seca, filtro en agudos'
+        'description': 'Voice with aggressive autotune, dry voice, filter on highs'
     },
     'drum_loop': {
         'effect': 'filter',
         'params': {'cutoff_low': 80, 'cutoff_high': 200},
-        'description': 'Batería con filtro que enfría los agudos'
+        'description': 'Drums with filter that cools the highs'
     }
 }
 ```
 
-## Efectos Músicales desde el Video
+## Musical Effects from the Video
 
-- **Voz:** sin reverb, sin coros, voz desnuda (channel 1)
-- **Filtro:** quitar frecuencias agudas para textura
-- **Distorsión:** agresiva, sature la voz
-- **Producción minimalista:** usar pocos instrumentos, canal 1 voz
-- **Autotune:** pitch correction agresivo para efecto
+- **Voice:** no reverb, no backing vocals, dry voice (channel 1)
+- **Filter:** remove high frequencies for texture
+- **Distortion:** aggressive, saturates the voice
+- **Minimalist production:** use few instruments, channel 1 voice
+- **Autotune:** aggressive pitch correction for effect

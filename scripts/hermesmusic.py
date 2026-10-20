@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""hermesmusic — motor unificado de composición y render MIDI.
+"""hermesmusic - unified MIDI composition and rendering engine.
 
-Una sola regla de timing: los eventos se construyen en TICKS ABSOLUTOS, se
-ordenan (meta < program < note_off < note_on) y se convierten a DELTA por pista.
-Nunca se usa ``max(0, delta)``: un delta negativo es un ERROR, no se oculta.
+One timing rule: events are built in ABSOLUTE TICKS,
+sorted (meta < program < note_off < note_on) and converted to DELTA per track.
+Never use ``max(0, delta)``: a negative delta is an ERROR, never hidden.
 
-Dependencias:
-  - ``mido`` (obligatoria).
-  - ``fluidsynth`` + ``ffmpeg`` + un SoundFont (solo para exportar audio).
+Dependencies:
+  - ``mido`` (required).
+  - ``fluidsynth`` + ``ffmpeg`` + a SoundFont (only for audio export).
 
 CLI:
   hermesmusic.py recipes
-  hermesmusic.py gen --recipe love_theme --key F --title Reencuentro -o r.mid
+  hermesmusic.py gen --recipe love_theme --key F --title Reunion -o r.mid
   hermesmusic.py compose r.spec.json -o r.mid [--audio r.mp3]
   hermesmusic.py validate r.mid
   hermesmusic.py render r.mid r.mp3
 
-Compatibilidad con las skills antiguas: ``deg``, ``acorde_desde_grado``,
-``eventos_a_pista`` y ``validar_seccion`` se mantienen como envoltorios.
+Compatibility with legacy skills: ``deg``, ``acorde_desde_grado``,
+``eventos_a_pista`` and ``validar_seccion`` are retained as wrappers.
 """
 from __future__ import annotations
 
@@ -35,10 +35,10 @@ import tempfile
 import mido
 from mido import Message, MetaMessage, MidiFile, MidiTrack
 
-TPB = 480  # ticks por negra
+TPB = 480  # ticks per quarter note
 
 # ============================================================================
-# PITCH  —  notas, escalas, acordes
+# PITCH  -  notes, scales, chords
 # ============================================================================
 
 NOTE_PC = {
@@ -75,10 +75,10 @@ MOOD_SCALE = {
 
 
 def name_to_midi(name: str) -> int:
-    """'F4' -> 65 ; 'Bb3' -> 58  (C4 = 60, Do central)."""
+    """'F4' -> 65 ; 'Bb3' -> 58  (C4 = 60, middle C)."""
     m = re.match(r"^([A-Ga-g])([#b]?)(-?\d+)$", name.strip())
     if not m:
-        raise ValueError(f"nota inválida: {name!r}")
+        raise ValueError(f"invalid note: {name!r}")
     pitch = m.group(1).upper() + m.group(2)
     octave = int(m.group(3))
     return 12 * (octave + 1) + NOTE_PC[pitch]
@@ -90,9 +90,9 @@ def midi_to_name(note: int) -> str:
 
 
 def build_scale(tonic: str, scale_name: str = "mayor", octave: int = 4) -> list:
-    """Escala de una octava en notas MIDI (semántica compatible con deg())."""
+    """One-octave scale in MIDI notes (semantics compatible with deg())."""
     if scale_name not in SCALES:
-        raise ValueError(f"escala desconocida: {scale_name!r}")
+        raise ValueError(f"unknown scale: {scale_name!r}")
     base = 12 * (octave + 1) + NOTE_PC[tonic]
     return [base + s for s in SCALES[scale_name]]
 
@@ -102,7 +102,7 @@ def scale_pcs(tonic: str, scale_name: str = "mayor") -> list:
 
 
 def deg(scale: list, degree: int, transpose: int = 0) -> int:
-    """Grado de escala -> nota MIDI. Usar SIEMPRE para melodía procedural."""
+    """Scale degree -> MIDI note. ALWAYS use for procedural melodies."""
     length = len(scale)
     return scale[degree % length] + 12 * (degree // length) + transpose
 
@@ -111,7 +111,7 @@ def transcribe_to_midi(name: str) -> int:
     return name_to_midi(name)
 
 
-# ---- acordes por cifrado: Fmaj7, Am7, C/E, Dm7, G7sus4, Bb, C6 ... ----------
+# ---- chords from symbols: Fmaj7, Am7, C/E, Dm7, G7sus4, Bb, C6 ... ----------
 _QUAL = {
     "": [0, 4, 7], "maj": [0, 4, 7], "major": [0, 4, 7],
     "min": [0, 3, 7], "m": [0, 3, 7], "minor": [0, 3, 7],
@@ -125,7 +125,7 @@ _QUAL = {
     "add9": [0, 4, 7, 14], "9": [0, 4, 7, 10, 14],
     "maj9": [0, 4, 7, 11, 14], "m9": [0, 3, 7, 10, 14],
 }
-# 'M7' -> maj7 y séptima mayor por defecto para símbolo desnudo + 7 ya está en '7'
+# 'M7' -> maj7; a bare symbol + 7 already has its default seventh defined in '7'
 _QUAL["maj7"] = [0, 4, 7, 11]
 _CHORD_RE = re.compile(r"^([A-Ga-g])([#b]?)(.*)$")
 
@@ -141,10 +141,10 @@ def parse_chord(symbol: str):
             bass_pc = NOTE_PC.get(bass.strip()[:1].upper() + bass.strip()[1:], None)
     m = _CHORD_RE.match(symbol)
     if not m:
-        raise ValueError(f"acorde inválido: {symbol!r}")
+        raise ValueError(f"invalid chord: {symbol!r}")
     root = (m.group(1).upper() + m.group(2))
     if root not in NOTE_PC:
-        raise ValueError(f"raíz inválida: {root!r}")
+        raise ValueError(f"invalid root: {root!r}")
     quality = m.group(3).strip()
     if quality not in _QUAL:
         for k in sorted(_QUAL, key=len, reverse=True):
@@ -152,12 +152,12 @@ def parse_chord(symbol: str):
                 quality = k
                 break
         else:
-            raise ValueError(f"calidad desconocida {quality!r} en {symbol!r}")
+            raise ValueError(f"unknown chord quality {quality!r} in {symbol!r}")
     return NOTE_PC[root], _QUAL[quality], bass_pc
 
 
 def chord_midis(symbol: str, octave: int = 4, inversion: int = 0) -> list:
-    """Notas MIDI del acorde, con inversión y bajo opcional una octava abajo."""
+    """MIDI chord notes, with inversion and optional bass one octave below."""
     root_pc, intervals, bass_pc = parse_chord(symbol)
     base = 12 * (octave + 1) + root_pc
     notes = [base + i for i in intervals]
@@ -169,7 +169,7 @@ def chord_midis(symbol: str, octave: int = 4, inversion: int = 0) -> list:
 
 
 def _chord_degree_index(pcs: list, root_pc: int) -> int:
-    """Índice del grado de la escala más cercano a la raíz del acorde."""
+    """Index of the scale degree closest to the chord root."""
     root_pc %= 12
     for i, pc in enumerate(pcs):
         if pc == root_pc:
@@ -179,10 +179,10 @@ def _chord_degree_index(pcs: list, root_pc: int) -> int:
 
 
 # ============================================================================
-# PATRONES — melódicos (grados relativos al acorde) y de acompañamiento
+# PATTERNS - melodic (chord-relative degrees) and accompaniment
 # ============================================================================
 
-# Melódicos: 8 corcheas por compás, offsets de grado relativos a la raíz.
+# Melodic: 8 eighth notes per bar, degree offsets relative to the root.
 MELODIC_PATTERNS = {
     "arpegio_confiado":  [0, 2, 4, 7, 6, 5, 4, 2],
     "escala_ascendente": [0, 1, 2, 3, 4, 3, 2, 0],
@@ -253,25 +253,25 @@ def _pad(symbol, octave):
 
 
 def _drum_metal(symbol, octave=None, tpb=TPB):
-    """Batería power-metal: kick en 1/8, snare en 2&4, ride en corcheas.
-    Devuelve (beat_offset, dur, pitch_midi, velocity) — channel 9 (batería)."""
+    """Power-metal drums: eighth-note kick, snare on 2&4, eighth-note ride.
+    Return (beat_offset, dur, pitch_midi, velocity) - channel 9 (drums)."""
     steps = []
     for beat in range(4):
-        # ride/crash on every corchea
+        # ride/crash on every eighth note
         for s in range(2):
             b = beat + s * 0.5
             steps.append((b, 0.25, 51, 100))  # ride (51)
-        # hi-hat suave en corcheas (mas bajo)
+        # soft eighth-note hi-hat (quieter)
         for s in range(2):
             b = beat + s * 0.5
-            if s == 1:  # offbeat hi-hat mas suave
+            if s == 1:  # softer offbeat hi-hat
                 steps.append((b, 0.15, 42, 70))  # closed hi-hat (42)
-        # kick en 1 y 3 (y offbeat)
-        steps.append((beat, 0.4, 36, 110))  # kick (36) fuerte
+        # kick on 1 and 3 (and offbeat)
+        steps.append((beat, 0.4, 36, 110))  # strong kick (36)
         steps.append((beat + 0.5, 0.3, 36, 90))  # kick offbeat
-        # snare en 2 y 4
+        # snare on 2 and 4
         if beat % 2 == 1:
-            steps.append((beat, 0.4, 38, 115))  # snare (38) fuerte
+            steps.append((beat, 0.4, 38, 115))  # strong snare (38)
             steps.append((beat + 0.5, 0.3, 38, 100))  # snare offbeat
         else:
             steps.append((beat + 0.5, 0.35, 38, 95))  # snare ghost
@@ -279,18 +279,18 @@ def _drum_metal(symbol, octave=None, tpb=TPB):
 
 
 def _choir_pad(symbol, octave):
-    """Voz coro: acorde pad sostenido con movimiento de arpa en capas vocales."""
+    """Choir voice: sustained pad chord with harp-like motion in vocal layers."""
     root_pc, intervals, bass_pc = parse_chord(symbol)
     notes = chord_midis(symbol, octave)
     steps = []
-    # voz principal (alto)
+    # main voice (alto)
     for n in notes:
         steps.append((0.0, 4.0, n, 60))
-    # voz segunda un 3ra/5ta arriba
+    # second voice a 3rd/5th above
     steps.append((0.0, 4.0, notes[0] + 4, 55))
-    # voz tercera un 6ta arriba (armonía de 3 voces)
+    # third voice a 6th above (3-part harmony)
     steps.append((0.0, 4.0, notes[0] + 7, 55))
-    # movimiento arpegiado suave en voces altas
+    # gentle arpeggiated motion in upper voices
     pool = notes + [n + 12 for n in notes]
     for i, p in enumerate(pool[:8]):
         steps.append((i * 0.5, 0.4, p, 65))
@@ -313,7 +313,7 @@ ACCOMPANIMENT = {
 
 
 # ============================================================================
-# TRACK BUILDER — el único lugar que convierte absoluto -> delta
+# TRACK BUILDER - the only place that converts absolute -> delta
 # ============================================================================
 
 def ticks(beats: float, tpb: int = TPB) -> int:
@@ -322,16 +322,16 @@ def ticks(beats: float, tpb: int = TPB) -> int:
 
 def build_track(name: str, notes, program: int, channel: int,
                 tpb: int = TPB, is_drum: bool = False) -> MidiTrack:
-    """notes: lista de (start_beats, dur_beats, pitch, velocity).
+    """notes: list of (start_beats, dur_beats, pitch, velocity).
 
-    Orden en el mismo tick: note_off antes que note_on (evita notas pegadas y
-    permite re-disparar el mismo pitch). Un delta negativo levanta error.
+    Order at the same tick: note_off before note_on (prevents stuck notes and
+    allows retriggering the same pitch). A negative delta raises an error.
     """
     track = MidiTrack()
     track.append(MetaMessage("track_name", name=name, time=0))
     if not is_drum:
         if not 0 <= program <= 127:
-            raise ValueError(f"programa fuera de rango: {program}")
+            raise ValueError(f"program out of range: {program}")
         track.append(Message("program_change", program=program,
                              channel=channel, time=0))
 
@@ -339,12 +339,12 @@ def build_track(name: str, notes, program: int, channel: int,
     for (start, dur, pitch, vel) in notes:
         pitch, vel = int(round(pitch)), int(round(vel))
         if not 0 <= pitch <= 127:
-            raise ValueError(f"pitch fuera de rango MIDI: {pitch}")
+            raise ValueError(f"pitch outside MIDI range: {pitch}")
         if not 0 <= vel <= 127:
-            raise ValueError(f"velocity fuera de rango MIDI: {vel}")
+            raise ValueError(f"velocity outside MIDI range: {vel}")
         on, off = ticks(start, tpb), ticks(start + dur, tpb)
         if off < on:
-            raise ValueError(f"duración negativa en {name}: {dur}")
+            raise ValueError(f"negative duration in {name}: {dur}")
         events.append((on, 3, "on", pitch, vel))
         events.append((off, 2, "off", pitch, 0))
 
@@ -356,7 +356,7 @@ def build_track(name: str, notes, program: int, channel: int,
         nonlocal last
         delta = tick - last
         if delta < 0:
-            raise ValueError(f"delta negativo en {name} ({tick} < {last})")
+            raise ValueError(f"negative delta in {name} ({tick} < {last})")
         last = tick
         if kind == "on":
             track.append(Message("note_on", note=pitch, velocity=vel,
@@ -367,12 +367,12 @@ def build_track(name: str, notes, program: int, channel: int,
 
     for (tick, _order, kind, pitch, vel) in events:
         if kind == "on":
-            if pitch in open_pitches:  # re-disparo del mismo pitch: cerrar antes
+            if pitch in open_pitches:  # retrigger of the same pitch: close first
                 emit("off", pitch, 0, tick)
             open_pitches.add(pitch)
             emit("on", pitch, vel, tick)
         else:
-            if pitch not in open_pitches:  # off sobrante (jitter): se descarta
+            if pitch not in open_pitches:  # extra note-off (jitter): discard it
                 continue
             open_pitches.discard(pitch)
             emit("off", pitch, 0, tick)
@@ -380,9 +380,9 @@ def build_track(name: str, notes, program: int, channel: int,
     return track
 
 
-# ---- envoltorios de compatibilidad con las skills antiguas ------------------
+# ---- compatibility wrappers for legacy skills ------------------
 def eventos_a_pista(nombre_pista, notas, program, channel, tpb=TPB):
-    """Compat: notas = (tick_inicio, pitch, dur_ticks, velocity)."""
+    """Compatibility: notes = (start_tick, pitch, dur_ticks, velocity)."""
     beats = [(s / tpb, d / tpb, p, v) for (s, d, p, v) in notas]
     return build_track(nombre_pista, beats, program, channel, tpb,
                        is_drum=(channel == 9))
@@ -394,16 +394,16 @@ def acorde_desde_grado(scale, grado_raiz, transpose=0):
 
 def validar_seccion(nombre, chords, patts, patterns_dict=None):
     assert len(chords) == len(patts), (
-        f"{nombre}: {len(chords)} acordes vs {len(patts)} patrones")
+        f"{nombre}: {len(chords)} chords vs {len(patts)} patterns")
     if patterns_dict is not None:
         for p in patts:
             if isinstance(p, str) and p not in patterns_dict:
-                raise AssertionError(f"{nombre}: patrón '{p}' no existe")
+                raise AssertionError(f"{nombre}: pattern '{p}' does not exist")
     return True
 
 
 # ============================================================================
-# RENDER — SongSpec -> MidiFile
+# RENDER - SongSpec -> MidiFile
 # ============================================================================
 
 def _humanize(vel, tick, rng, hum):
@@ -415,7 +415,7 @@ def _humanize(vel, tick, rng, hum):
 
 
 def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
-    title = spec.get("title", "Sin Título")
+    title = spec.get("title", "Untitled")
     key = spec.get("key", "C")
     scale_name = spec.get("scale", "mayor")
     tempo = int(round(spec.get("tempo", spec.get("tempo_bpm", 120))))
@@ -434,11 +434,11 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
         start += length
     total = start
 
-    # ---- melodías (por pista nombrada) ----
+    # ---- melodies (per named track) ----
     melody = {}  # track_name -> {"instrument","channel","notes":[...]}
     for sec, sec_start, _len in spans:
-        # una sección puede llevar "melody" (una voz) y/o "melodies" (varias voces
-        # simultáneas: p. ej. violín + flauta). Retrocompatible con "melody".
+        # a section can contain "melody" (one voice) and/or "melodies" (multiple
+        # simultaneous voices, e.g. violin + flute). Backward compatible with "melody".
         mels = []
         if sec.get("melody"):
             mels.append(sec["melody"])
@@ -461,7 +461,7 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
             elif "pattern" in mel:
                 pat = MELODIC_PATTERNS.get(mel["pattern"])
                 if pat is None:
-                    raise ValueError(f"patrón melódico desconocido: {mel['pattern']!r}")
+                    raise ValueError(f"unknown melodic pattern: {mel['pattern']!r}")
                 prog = sec.get("progression", [key])
                 for b in range(sec.get("bars", 4)):
                     chord = prog[b % len(prog)]
@@ -473,24 +473,24 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
                         slot["notes"].append((when, 0.5,
                                               deg(scale, cdeg + off, oct_shift), dyn))
 
-    # ---- tracks de acompañamiento (por pista) ----
+    # ---- accompaniment tracks (per track) ----
     accomp = {}  # name -> {"instrument","channel","notes":[], "is_drum"}
-    # tracks_global aplica a TODAS las secciones
+    # tracks_global applies to ALL sections
     all_track_entries = list(spec.get("tracks_global", [])) + list(spec.get("tracks", []))
     for t in all_track_entries:
         patname = t.get("pattern")
         if not patname:
             continue
-        # --- patrón de batería por rejilla (16 pasos/compás) ---
-        # t["grid"] = {"kick":[...16], "snare":[...], "hihat":[...], ...} fracciones 0..1
+        # --- grid-based drum pattern (16 steps/bar) ---
+        # t["grid"] = {"kick":[...16], "snare":[...], "hihat":[...], ...} fractions 0..1
         if patname == "drum_grid":
             grid = t.get("grid") or {}
             thr = float(t.get("grid_threshold", 0.4))
             dyn = DYNAMICS.get(t.get("dynamics", "mp"), 50)
             dmap = [("kick", 36), ("snare", 38), ("hihat", 42),
                     ("cymbal", 49), ("ride", 51), ("tom", 45)]
-            # Gate ANTES de humanizar: el jitter no puede ocultar 3 piezas.
-            # Comprobar pasos y ticks efectivos (los offsets pueden colisionar).
+            # Gate BEFORE humanization: jitter cannot hide 3 kit pieces.
+            # Check steps and effective ticks (offsets can collide).
             grid_steps, grid_ticks = {}, {}
             for cls, _pitch in dmap:
                 for i, val in enumerate((grid.get(cls) or [])[:16]):
@@ -499,15 +499,15 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
                         grid_steps.setdefault(i, []).append(cls)
                         at = ticks(i * bar_beats / 16.0 + offb, tpb)
                         grid_ticks.setdefault(at, []).append(cls)
-            for kind, positions in (("paso", grid_steps), ("tick efectivo", grid_ticks)):
+            for kind, positions in (("step", grid_steps), ("effective tick", grid_ticks)):
                 for position, pieces in positions.items():
                     if len(pieces) >= 3:
                         raise ValueError(
-                            f"drum_grid rechazado: {len(pieces)} piezas en {kind} "
-                            f"{position}: {'+'.join(pieces)}. Máximo 2; redistribuye "
-                            "los ataques y ejecuta audit_arrangement.py.")
-            want = t.get("sections")          # opcional: limitar a secciones por nombre
-            dyn_map = t.get("dyn_map") or {}  # opcional: dinámica por sección
+                            f"drum_grid rejected: {len(pieces)} kit pieces at {kind} "
+                            f"{position}: {'+'.join(pieces)}. Maximum 2; redistribute "
+                            "the attacks and run audit_arrangement.py.")
+            want = t.get("sections")          # optional: restrict to named sections
+            dyn_map = t.get("dyn_map") or {}  # optional: dynamics per section
             dnotes = []
             for sec, sec_start, _l in spans:
                 if want and sec.get("name") not in want:
@@ -518,7 +518,7 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
                     for cls, pitch in dmap:
                         steps = grid.get(cls) or []
                         for i, val in enumerate(steps[:16]):
-                            # val puede ser: (intensity, offset_beats) o solo intensity
+                            # val can be: (intensity, offset_beats) or just intensity
                             if isinstance(val, (list, tuple)) and len(val) >= 2:
                                 on, offb = val
                             else:
@@ -529,27 +529,27 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
             accomp[t.get("role", "drums")] = {
                 "instrument": 0, "channel": 9, "notes": dnotes, "is_drum": True}
             continue
-        # --- patrón de género: auto-configura drum_grid + instruments ---
-        # t["genre"] = "jazz" | "rock" | "reggae" | ... (ver genre_configs.json)
+        # --- genre pattern: automatically configure drum_grid + instruments ---
+        # t["genre"] = "jazz" | "rock" | "reggae" | ... (see genre_configs.json)
         if patname == "genre_grid":
             genre_name = t.get("genre", "").lower().replace("-", "_").replace(" ", "_")
-            # Cargar config de género
+            # Load genre configuration
             _gc_path = os.path.join(os.path.dirname(__file__), "..", "references", "genre_configs.json")
             try:
                 with open(os.path.normpath(_gc_path), "r", encoding="utf-8") as _f:
                     _gc = json.load(_f)
             except (FileNotFoundError, json.JSONDecodeError) as _e:
-                raise ValueError(f"No se pudo cargar genre_configs.json: {_e}")
+                raise ValueError(f"Could not load genre_configs.json: {_e}")
             if genre_name not in _gc:
-                raise ValueError(f"Género desconocido: {genre_name!r}. Géneros disponibles: {sorted(_gc.keys())}")
+                raise ValueError(f"Unknown genre: {genre_name!r}. Available genres: {sorted(_gc.keys())}")
             gcfg = _gc[genre_name]
-            # Configurar drum_grid desde el género
+            # Configure drum_grid from the genre
             _grid = gcfg["drum_grid"]
             thr = float(t.get("grid_threshold", 0.4))
             dyn_lo, dyn_hi = gcfg.get("dyn_range", [50, 90])
-            # Escalar dinámica al rango del género
+            # Scale dynamics to the genre range
             _base_dyn = DYNAMICS.get(t.get("dynamics", "mp"), 50)
-            _scale = (dyn_hi - dyn_lo) / 40.0  # normalizar
+            _scale = (dyn_hi - dyn_lo) / 40.0  # normalize
             _sdyn = max(dyn_lo, min(dyn_hi, int(_base_dyn * _scale + dyn_lo * 0.5)))
             dmap = [("kick", 36), ("snare", 38), ("hihat", 42),
                     ("cymbal", 49), ("ride", 51), ("tom", 45)]
@@ -569,7 +569,7 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
                         # grid cells are simple 0/1 (no explicit offsets),
                         # apply swing to offbeat positions (odd 16th steps)
                         # so the rhythm sounds genuinely swung.
-                        # Fórmula: offset_beats = (swing - 0.5) * 0.34
+                        # Formula: offset_beats = (swing - 0.5) * 0.34
                         _sw = gcfg.get("swing", 0.0)
                         _apply_swing = _sw > 0.3 and (not steps or isinstance(steps[0], (int, float)))
                         _swing_off = (_sw - 0.5) * 0.34 if _apply_swing else 0.0
@@ -585,20 +585,20 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
                                                0.1, pitch, _sdyn2))
             accomp[t.get("role", "drums")] = {
                 "instrument": 0, "channel": 9, "notes": dnotes, "is_drum": True}
-            # Auto-configurar instruments si no se especificaron
+            # Automatically configure instruments if not specified
             if not t.get("instruments") and gcfg.get("instruments"):
-                # Los instruments se usan a nivel de spec, no de track
-                # Guardar referencia para que el spec los use
+                # instruments are used at spec level, not track level
+                # Save a reference for the spec to use
                 t["_genre_instruments"] = gcfg["instruments"]
             continue
         gen = ACCOMPANIMENT.get(patname)
         if gen is None:
-            raise ValueError(f"patrón de acompañamiento desconocido: {patname!r}")
+            raise ValueError(f"unknown accompaniment pattern: {patname!r}")
         octv = t.get("octave", REGISTER_OCTAVE.get(t.get("register", "mid"), 4))
         dyn = DYNAMICS.get(t.get("dynamics", "mp"), 50)
         notes = []
-        want = t.get("sections")          # opcional: limitar a secciones por nombre
-        dyn_map = t.get("dyn_map") or {}  # opcional: dinámica por sección
+        want = t.get("sections")          # optional: restrict to named sections
+        dyn_map = t.get("dyn_map") or {}  # optional: dynamics per section
         for sec, sec_start, _len in spans:
             if want and sec.get("name") not in want:
                 continue
@@ -616,17 +616,17 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
             "is_drum": t.get("is_drum", False),
         }
 
-    # ---- ensamblar ----
+    # ---- assemble ----
     mid = MidiFile(type=1, ticks_per_beat=tpb)
     meta = MidiTrack()
     meta.append(MetaMessage("track_name", name=title, time=0))
     meta.append(MetaMessage("set_tempo", tempo=mido.bpm2tempo(tempo), time=0))
     meta.append(MetaMessage("time_signature", numerator=num, denominator=den, time=0))
-    # La auditoría compara densidades por sección real, no por ventanas supuestas.
+    # The audit compares densities by actual section, not assumed windows.
     previous_marker = 0
     for index, (section, section_start, _length) in enumerate(spans):
         at = ticks(section_start, tpb)
-        meta.append(MetaMessage("marker", text=section.get("name", f"seccion_{index + 1}"),
+        meta.append(MetaMessage("marker", text=section.get("name", f"section_{index + 1}"),
                                 time=at - previous_marker))
         previous_marker = at
     meta.append(MetaMessage("end_of_track", time=ticks(total, tpb) - previous_marker))
@@ -657,9 +657,9 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
         mid.tracks.append(build_track(name, notes, slot["instrument"], ch,
                                       tpb, is_drum))
 
-    # Toda composición del motor se audita antes de publicar el archivo.
-    # Mantiene la firma pública; las composiciones defectuosas ahora ABORTAN.
-    # No afecta a render_performance (reconstrucción fiel de material ajeno).
+    # Every engine composition is audited before the file is published.
+    # Preserves the public signature; flawed compositions now ABORT.
+    # Does not affect render_performance (faithful reconstruction of external material).
     if __package__:
         from .audit_arrangement import require_arrangement
     else:
@@ -674,33 +674,33 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
 
 
 # ============================================================================
-# VALIDACIÓN (solo mido)
+# VALIDATION (mido only)
 # ============================================================================
 
 def validate_midi(path: str, expected_duration=None, tol=0.5):
     mid = MidiFile(path)
     problems = []
     if mid.type == 2:
-        problems.append("Type 2: secuencias independientes, no una canción")
+        problems.append("Type 2: independent sequences, not a song")
     for i, tr in enumerate(mid.tracks):
-        name = tr.name or f"pista {i}"
+        name = tr.name or f"track {i}"
         tick, open_notes, notes = 0, {}, 0
         has_ctl = False
         for msg in tr:
             tick += msg.time
-            # La clave incluye el canal: en MIDI dos notas del mismo pitch en
-            # canales distintos pueden solaparse sin ser un error. Con clave
-            # solo por pitch esto daba falsos positivos "re-disparo".
-            # Los MetaMessage no tienen .channel/.note: solo aplica a notas.
+            # The key includes the channel: in MIDI two notes of the same pitch on
+            # different channels can overlap without error. Using a key
+            # based only on pitch caused false "retrigger" positives.
+            # MetaMessage objects have no .channel/.note: only applies to notes.
             key = (msg.channel, msg.note) if msg.is_meta is False and hasattr(msg, "note") else None
             if key is not None and msg.type == "note_on" and msg.velocity > 0:
                 if open_notes.get(key):
-                    problems.append(f"[{name}] re-disparo sin note_off ({msg.note})")
+                    problems.append(f"[{name}] retrigger without note_off ({msg.note})")
                 open_notes[key] = open_notes.get(key, 0) + 1
                 notes += 1
             elif msg.type == "note_off" or (msg.type == "note_on" and msg.velocity == 0):
                 if open_notes.get(key, 0) <= 0:
-                    problems.append(f"[{name}] note_off sin note_on ({msg.note})")
+                    problems.append(f"[{name}] note_off without note_on ({msg.note})")
                 else:
                     open_notes[key] -= 1
                     if open_notes[key] == 0:
@@ -709,17 +709,17 @@ def validate_midi(path: str, expected_duration=None, tol=0.5):
                 has_ctl = True
         if open_notes:
             pend = sorted({n for (_ch, n) in open_notes})
-            problems.append(f"[{name}] notas sin cerrar: {pend}")
+            problems.append(f"[{name}] unclosed notes: {pend}")
         if notes == 0 and i > 0 and not has_ctl:
-            problems.append(f"[{name}] no tiene notas")
+            problems.append(f"[{name}] has no notes")
     duration = mid.length
     if expected_duration is not None and abs(duration - expected_duration) > tol:
-        problems.append(f"duración {duration:.2f}s != esperada {expected_duration:.2f}s")
+        problems.append(f"duration {duration:.2f}s != expected {expected_duration:.2f}s")
     return problems, duration
 
 
 # ============================================================================
-# AUDIO — fluidsynth -> wav -> mp3/ogg
+# AUDIO - fluidsynth -> wav -> mp3/ogg
 # ============================================================================
 
 def find_soundfont():
@@ -766,18 +766,18 @@ def render_audio(mid_path: str, out_path: str, soundfont: str = None,
 
 
 # ============================================================================
-# PERFORMANCE — reconstrucción FIEL de un MIDI real (sin pérdida)
+# PERFORMANCE - FAITHFUL reconstruction of an actual MIDI (lossless)
 # ============================================================================
-# A diferencia de `render_song` (SongSpec: composición nueva), aquí se reescribe
-# una `performance` extraída con miditrack_extract.py conservando TODO:
-# mapa de tempo, mapa de compás, por pista: programa, notas+velocidad y CC7.
+# Unlike `render_song` (SongSpec: new composition), this rewrites
+# a `performance` extracted with miditrack_extract.py, preserving EVERYTHING:
+# tempo map, meter map, and per track: program, notes+velocity and CC7.
 
 def render_performance(perf: dict, out_path: str, tpb: int = None) -> str:
-    """Reconstruye un MIDI fiel desde un dict 'performance' (sin pérdida)."""
+    """Reconstruct a faithful MIDI from a 'performance' dict (lossless)."""
     tpb = tpb or perf.get("tpb", TPB)
     mid = MidiFile(type=1, ticks_per_beat=tpb)
 
-    # ---- pista meta: tempo_map + meter_map + key_signature ----
+    # ---- metadata track: tempo_map + meter_map + key_signature ----
     meta = MidiTrack()
     meta.append(MetaMessage("track_name", name=perf.get("filename", "performance"),
                             time=0))
@@ -805,7 +805,7 @@ def render_performance(perf: dict, out_path: str, tpb: int = None) -> str:
     meta.append(MetaMessage("end_of_track", time=0))
     mid.tracks.append(meta)
 
-    # ---- pistas reales ----
+    # ---- actual tracks ----
     for t in perf.get("tracks", []):
         ch = int(t.get("channel", 0))
         is_drum = bool(t.get("is_drum")) or ch == 9
@@ -817,11 +817,11 @@ def render_performance(perf: dict, out_path: str, tpb: int = None) -> str:
         if not is_drum:
             ev.append((0, 1, "prog", int(t.get("program", 0)), 0))
         cc = t.get("cc")
-        if cc:  # TODOS los controladores (CC1, CC7, CC10, CC11, CC64...) [str|int keys]
+        if cc:  # ALL controllers (CC1, CC7, CC10, CC11, CC64...) [str|int keys]
             for ctrl, evs in cc.items():
                 for ctick, cval in evs:
                     ev.append((int(ctick), 2, "cc", int(ctrl), int(cval)))
-        else:   # performances antiguas: solo CC7
+        else:   # legacy performances: CC7 only
             for ctick, cval in t.get("cc7") or []:
                 ev.append((int(ctick), 2, "cc", 7, int(cval)))
         for btick, bval in t.get("bend") or []:
@@ -857,7 +857,7 @@ def render_performance(perf: dict, out_path: str, tpb: int = None) -> str:
                                   time=d))
                 last = tick
             else:  # on
-                if a in openp:  # re-disparo: cerrar en el mismo tick
+                if a in openp:  # retrigger: close at the same tick
                     tr.append(Message("note_off", note=a, velocity=0, channel=ch,
                                       time=d))
                     openp.discard(a)
@@ -868,7 +868,7 @@ def render_performance(perf: dict, out_path: str, tpb: int = None) -> str:
                 openp.add(a)
                 tr.append(Message("note_on", note=a, velocity=b, channel=ch,
                                   time=d))
-        for pitch in sorted(openp):  # cerrar colgadas
+        for pitch in sorted(openp):  # close dangling notes
             tr.append(Message("note_off", note=pitch, velocity=0, channel=ch,
                               time=0))
         tr.append(MetaMessage("end_of_track", time=0))
@@ -879,11 +879,11 @@ def render_performance(perf: dict, out_path: str, tpb: int = None) -> str:
 
 
 # ============================================================================
-# RECETAS — devuelven un SongSpec
+# RECIPES - return a SongSpec
 # ============================================================================
 
 def _love_theme_spec(key="F", tempo=72):
-    """Tema de amor estilo FF4 (Rosa y Cecil). 24 compases = 1:20 a 72 BPM."""
+    """FF4-style love theme (Rosa and Cecil). 24 bars = 1:20 at 72 BPM."""
     intro = ["Fmaj7", "Am7", "Bb", "C"]
     a = ["F", "C/E", "Dm7", "Bb", "Gm7", "C7", "F", "C"]
     b = ["Dm", "Bb", "F", "C", "Dm", "Gm7", "Bb", "C"]
@@ -915,7 +915,7 @@ def _love_theme_spec(key="F", tempo=72):
                           for (ba, be, du, no) in notes]}
 
     return {
-        "title": "Reencuentro", "key": key, "scale": "mayor",
+        "title": "Reunion", "key": key, "scale": "mayor",
         "tempo": tempo, "meter": [4, 4],
         "humanize": {"seed": 42, "velocity": 0.08, "ticks": 4},
         "sections": [
@@ -940,7 +940,7 @@ def _love_theme_spec(key="F", tempo=72):
 
 def _battle_spec(key="A", tempo=160):
     return {
-        "title": "Batalla", "key": key, "scale": "menor_armonica",
+        "title": "Battle", "key": key, "scale": "menor_armonica",
         "tempo": tempo, "meter": [4, 4],
         "humanize": {"seed": 7, "velocity": 0.1, "ticks": 6},
         "sections": [
@@ -962,61 +962,61 @@ def _battle_spec(key="A", tempo=160):
 
 
 def _game_spec(title, key, scale, tempo, progression, lead, accomp, bars=16, seed=11):
-    """Constructor compacto de piezas de juego (melodía procedural por patrón)."""
+    """Compact builder for game music (pattern-based procedural melody)."""
     lead_instr, lead_pattern, lead_dyn = lead
     return {
         "title": title, "key": key, "scale": scale, "tempo": tempo, "meter": [4, 4],
         "humanize": {"seed": seed, "velocity": 0.08, "ticks": 5},
         "sections": [
             {"name": "intro", "bars": 4, "progression": progression, "dynamics": "mp"},
-            {"name": "tema", "bars": bars, "progression": progression, "dynamics": lead_dyn,
+            {"name": "theme", "bars": bars, "progression": progression, "dynamics": lead_dyn,
              "melody": {"pattern": lead_pattern, "instrument": lead_instr, "track": "lead"}},
         ],
         "tracks": accomp,
     }
 
 
-# Recetas de género: parámetros -> spec. Añade aquí para exponer en `gen --recipe`.
+# Genre recipes: parameters -> spec. Add here to expose via `gen --recipe`.
 _GAME = {
-    "fanfarria": dict(t="Fanfarria", k="A", s="mixolidio", bpm=132, seed=3,
+    "fanfarria": dict(t="Fanfare", k="A", s="mixolidio", bpm=132, seed=3,
         prog=["A", "E", "F#m", "D", "A", "D", "E", "A"],
         lead=(56, "salto_climax", "f"),
         acc=[{"role": "brass", "instrument": 61, "pattern": "block_chords", "register": "mid", "dynamics": "f"},
              {"role": "strings", "instrument": 48, "pattern": "pad", "register": "high", "dynamics": "mf"},
              {"role": "bass", "instrument": 32, "pattern": "bass_pulse", "register": "low", "dynamics": "f"},
              {"role": "timpani", "instrument": 47, "pattern": "bass_root", "register": "low", "dynamics": "mf", "is_drum": True, "channel": 9}]),
-    "taverna": dict(t="Taverna", k="G", s="dorico", bpm=120, seed=5,
+    "taverna": dict(t="Tavern", k="G", s="dorico", bpm=120, seed=5,
         prog=["G", "Em", "C", "D", "G", "C", "D", "G"],
         lead=(73, "giro_ornacional", "mf"),
         acc=[{"role": "guitar", "instrument": 24, "pattern": "block_chords", "register": "mid", "dynamics": "mf"},
              {"role": "pluck", "instrument": 45, "pattern": "arpeggio_up", "register": "high", "dynamics": "mp"},
              {"role": "bass", "instrument": 32, "pattern": "bass_root", "register": "low", "dynamics": "mf"}]),
-    "mazmorra": dict(t="Mazmorra", k="D", s="frigio", bpm=80, seed=13,
+    "mazmorra": dict(t="Dungeon", k="D", s="frigio", bpm=80, seed=13,
         prog=["Dm", "Bb", "Gm", "A", "Dm", "Bb", "A", "Dm"],
         lead=(42, "descenso_cadencia", "mp"),
         acc=[{"role": "strings", "instrument": 48, "pattern": "pad", "register": "low", "dynamics": "mp"},
              {"role": "choir", "instrument": 52, "pattern": "pad", "register": "mid", "dynamics": "p"},
              {"role": "bass", "instrument": 32, "pattern": "bass_root", "register": "low", "dynamics": "mp"}]),
-    "misterio": dict(t="Misterio", k="A", s="menor_natural", bpm=70, seed=17,
+    "misterio": dict(t="Mystery", k="A", s="menor_natural", bpm=70, seed=17,
         prog=["Am", "Dm", "E", "Am", "F", "Dm", "E", "Am"],
         lead=(11, "giro_ornacional", "mp"),
         acc=[{"role": "pad", "instrument": 89, "pattern": "pad", "register": "mid", "dynamics": "p"},
              {"role": "harp", "instrument": 46, "pattern": "arpeggio_updown", "register": "high", "dynamics": "p"},
              {"role": "bass", "instrument": 32, "pattern": "bass_root", "register": "low", "dynamics": "p"}]),
-    "pueblo": dict(t="Pueblo", k="C", s="mayor", bpm=100, seed=19,
+    "pueblo": dict(t="Village", k="C", s="mayor", bpm=100, seed=19,
         prog=["C", "G", "Am", "F", "C", "F", "G", "C"],
         lead=(68, "escala_ascendente", "mf"),
         acc=[{"role": "guitar", "instrument": 24, "pattern": "block_chords", "register": "mid", "dynamics": "mf"},
              {"role": "pluck", "instrument": 45, "pattern": "arpeggio_up", "register": "high", "dynamics": "mp"},
              {"role": "bass", "instrument": 32, "pattern": "bass_root", "register": "low", "dynamics": "mf"}]),
-    "epica": dict(t="Epica", k="D", s="dorico", bpm=90, seed=23,
+    "epica": dict(t="Epic", k="D", s="dorico", bpm=90, seed=23,
         prog=["Dm", "Bb", "F", "C", "Dm", "Gm", "Bb", "C"],
         lead=(60, "salto_climax", "f"),
         acc=[{"role": "strings", "instrument": 48, "pattern": "pad", "register": "high", "dynamics": "mf"},
              {"role": "brass", "instrument": 61, "pattern": "block_chords", "register": "mid", "dynamics": "mf"},
              {"role": "bass", "instrument": 32, "pattern": "bass_pulse", "register": "low", "dynamics": "f"},
              {"role": "timpani", "instrument": 47, "pattern": "bass_root", "register": "low", "dynamics": "mf", "is_drum": True, "channel": 9}]),
-    "funebre": dict(t="Funebre", k="D", s="menor_natural", bpm=60, seed=29,
+    "funebre": dict(t="Funereal", k="D", s="menor_natural", bpm=60, seed=29,
         prog=["Dm", "Gm", "A", "Dm", "Bb", "Gm", "A", "Dm"],
         lead=(42, "descenso_cadencia", "p"),
         acc=[{"role": "strings", "instrument": 48, "pattern": "pad", "register": "mid", "dynamics": "p"},
@@ -1046,7 +1046,7 @@ for _name, _params in _GAME.items():
 # ============================================================================
 
 def _cmd_recipes(_args):
-    print("Recetas disponibles:")
+    print("Available recipes:")
     for name in RECIPES:
         print(f"  - {name}")
 
@@ -1054,7 +1054,7 @@ def _cmd_recipes(_args):
 def _cmd_gen(args):
     recipe = RECIPES.get(args.recipe)
     if recipe is None:
-        sys.exit(f"receta desconocida: {args.recipe} (usa 'recipes')")
+        sys.exit(f"unknown recipe: {args.recipe} (use 'recipes')")
     spec = recipe(key=args.key, tempo=args.tempo) if args.tempo else recipe(key=args.key)
     if args.title:
         spec["title"] = args.title
@@ -1073,11 +1073,11 @@ def _finish(spec, out, audio):
     render_song(spec, out)
     problems, duration = validate_midi(out)
     if problems:
-        print("PROBLEMAS:")
+        print("PROBLEMS:")
         for p in problems:
             print("  -", p)
         sys.exit(1)
-    print(f"OK MIDI y arreglo auditados -> {out}  ({duration:.2f}s, {len(spec['sections'])} secciones)")
+    print(f"OK MIDI and arrangement audited -> {out}  ({duration:.2f}s, {len(spec['sections'])} sections)")
     if audio:
         render_audio(out, audio)
         print(f"Audio -> {audio}")
@@ -1090,7 +1090,7 @@ def _cmd_validate(args):
         for p in problems:
             print("  -", p)
         sys.exit(1)
-    print("  sin problemas")
+    print("  no problems")
 
 
 def _cmd_render(args):
@@ -1103,7 +1103,7 @@ def _cmd_rebuild(args):
         perf = json.load(fh)
     render_performance(perf, args.out)
     problems, duration = validate_midi(args.out)
-    print(f"OK -> {args.out}  ({duration:.2f}s, {len(perf.get('tracks', []))} pistas)")
+    print(f"OK -> {args.out}  ({duration:.2f}s, {len(perf.get('tracks', []))} tracks)")
     for p in problems:
         print("  -", p)
     if args.audio:
@@ -1113,12 +1113,12 @@ def _cmd_rebuild(args):
 
 def main(argv=None):
     p = argparse.ArgumentParser(prog="hermesmusic",
-                                description="Motor unificado de composición MIDI")
+                                description="Unified MIDI composition engine")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     sub.add_parser("recipes").set_defaults(func=_cmd_recipes)
 
-    g = sub.add_parser("gen", help="generar desde una receta")
+    g = sub.add_parser("gen", help="generate from a recipe")
     g.add_argument("--recipe", required=True)
     g.add_argument("--key", default="C")
     g.add_argument("--title", default=None)
@@ -1127,7 +1127,7 @@ def main(argv=None):
     g.add_argument("--audio", default=None)
     g.set_defaults(func=_cmd_gen)
 
-    c = sub.add_parser("compose", help="generar desde un SongSpec JSON")
+    c = sub.add_parser("compose", help="generate from a SongSpec JSON")
     c.add_argument("spec")
     c.add_argument("-o", "--out", default=None)
     c.add_argument("--audio", default=None)
@@ -1143,8 +1143,8 @@ def main(argv=None):
     r.add_argument("audio")
     r.set_defaults(func=_cmd_render)
 
-    rb = sub.add_parser("rebuild", help="reconstruir fiel desde una performance JSON")
-    rb.add_argument("perf", help="JSON de performance (miditrack_extract)")
+    rb = sub.add_parser("rebuild", help="reconstruct faithfully from a performance JSON")
+    rb.add_argument("perf", help="Performance JSON (miditrack_extract)")
     rb.add_argument("-o", "--out", required=True)
     rb.add_argument("--audio", default=None)
     rb.set_defaults(func=_cmd_rebuild)

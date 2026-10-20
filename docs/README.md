@@ -1,32 +1,36 @@
-# Índice de documentación
+# Documentation index
 
-Guías vigentes, en orden de lectura:
+Current guides, in reading order:
 
-1. [README en inglés](../README.md): instalación, uso, MCP, límites y licencia.
-2. [PROTOCOL](../PROTOCOL.md): recorrido obligatorio y reparación de errores.
-3. [Arquitectura](ARCHITECTURE.md): módulos, flujo e invariantes.
-4. [Perfiles de mezcla](MIX_PROFILES.md): valores exactos y significado.
-5. [Render](../references/rendering.md) y [teoría](../references/teoria-composicion.md).
-6. [SKILL](../SKILL.md): detalles de autoría y API MIDI.
-7. [ENSAMBLE](../ENSAMBLE.md): integración Hermes; algunas utilidades requieren
-   otros plugins y no forman parte de la instalación autónoma.
+1. [English README](../README.md): installation, usage, MCP, limitations, and licensing.
+2. [PROTOCOL](../PROTOCOL.md): mandatory workflow and error recovery.
+3. [Architecture](ARCHITECTURE.md): modules, flow, and invariants.
+4. [Mix profiles](MIX_PROFILES.md): exact values and their meaning.
+5. [Rendering](../references/rendering.md) and [theory](../references/teoria-composicion.md).
+6. [SKILL](../SKILL.md): composition details and MIDI API.
+7. *(the Hermes integration guide is kept out of this repository — it references private projects)*: Hermes integration; some utilities require
+   other plugins and are not part of the standalone installation.
 8. [Example](../examples/README.md) with a runnable sample.
 
-## Evidencia histórica conservada
+## Preserved historical evidence
 
-Los documentos fechados describen sesiones previas, con rutas personales,
-dependencias o pendientes que pueden haber cambiado. Sus rutas externas son
-procedencia histórica; no son requisitos de instalación.
+Dated documents describe earlier sessions with personal paths,
+dependencies, or pending tasks that may have changed. Their external paths record
+historical provenance; they are not installation requirements.
 
-- Design rationale and the incident history are kept out of this repository.
-  y [comparativa de batería](COMPARATIVA-BATERIA-METAL-2026-10-19.md): origen de los gates.
+- Design rationale and incident history are kept outside this repository,
+  and [drum comparison](COMPARATIVA-BATERIA-METAL-2026-10-19.md): origin of the gates.
 - [Theory and architecture](TEORIA-Y-ARQUITECTURA-2026-10-19.md),
-  [investigación de power metal](INVESTIGACION-POWER-METAL-2026-10-19.md).
-- [Auditoría de géneros](AUDITORIA-GENEROS-2026-10-19.md): evidencia y límites del catálogo.
-- [Investigación MCP DAW](INVESTIGACION-MCP-DAW-2026-10-19.md): prototipo inicial,
-  no descripción autoritativa de las garantías actuales de loudness o paneo.
-- Historical session logs are kept out of this repository.
+  [power metal research](INVESTIGACION-POWER-METAL-2026-10-19.md).
+- [Genre audit](AUDITORIA-GENEROS-2026-10-19.md): catalog evidence and limitations.
+- [MCP DAW research](INVESTIGACION-MCP-DAW-2026-10-19.md): initial prototype,
+  not an authoritative description of current loudness or panning guarantees.
+- Historical session logs remain outside this repository.
 
-El estado actualizado y las excepciones pendientes están en la validación del
-pulido. Los originales se conservan para no convertir planes históricos en
-afirmaciones nuevas de trabajo terminado.
+Current status and pending exceptions are recorded in the refinement
+validation. Originals are retained to avoid turning historical plans into
+new claims of completed work.
+
+## Share-ready
+
+- [Presentation (English/Spanish)](PRESENTATION.es.md) — post text for forums.

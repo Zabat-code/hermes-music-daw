@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
-"""hermes-daw-mcp — MCP de mezcla y masterización headless.
+"""hermes-daw-mcp - headless mixing and mastering MCP.
 
-Asistente de ingeniería de audio: mide, aplica cadenas conocidas y VUELVE A MEDIR.
-No juzga estética; deja la mezcla en un punto de partida medible y consistente.
+Audio engineering assistant: measure, apply known chains, and MEASURE AGAIN.
+Does not judge aesthetics; brings the mix to a measurable, consistent starting point.
 
 Tools:
-  list_profiles        perfiles de mezcla disponibles
-  render_stems         separa un MIDI en WAV por instrumento
-  analyze_audio        pico, RMS, espectro, correlación estéreo, banda por octava
-  analyze_masking      qué pares de stems se tapan (solapamiento de bandas)
-  auto_mix             aplica la cadena del perfil y devuelve métricas de salida
-  apply_eq             EQ puntual sobre un archivo
-  apply_comp           compresión puntual sobre un archivo
-  master               cadena de master con objetivo de loudness
-  compare_to_reference compara dos archivos (loudness, balance tonal, estéreo)
-  release_check        veredicto listo/necesita trabajo
+  list_profiles        available mix profiles
+  render_stems         split a MIDI file into a WAV per instrument
+  analyze_audio        peak, RMS, spectrum, stereo correlation, octave bands
+  analyze_masking      which stem pairs mask each other (band overlap)
+  auto_mix             apply the profile chain and return output metrics
+  apply_eq             targeted EQ on a file
+  apply_comp           targeted compression on a file
+  master               mastering chain with a loudness target
+  compare_to_reference compare two files (loudness, tonal balance, stereo)
+  release_check        ready/needs-work verdict
 
-Uso: python3 daw_mcp.py  (stdio)   |   --selftest (prueba sin MCP)
+Usage: python3 daw_mcp.py  (stdio)   |   --selftest (test without MCP)
 """
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ else:
                              output_path, positive, run_process, wav_files, write_audio)
 
 
-# ---------------------------------------------------------------- medición ---
+# ---------------------------------------------------------------- measurement ---
 def _load(path: str) -> tuple[np.ndarray, int]:
     return load_audio(path)
 
@@ -54,7 +54,7 @@ def _profile(name: str) -> dict:
 
 
 def _octave_bands(data: np.ndarray, sr: int) -> dict:
-    """Energía por banda de octava (Hz de centro)."""
+    """Energy per octave band (center frequency in Hz)."""
     mono = data.mean(axis=0)
     n = len(mono)
     if n == 0:
@@ -121,7 +121,7 @@ def analyze_masking(stems_dir: str, top: int = 8) -> dict:
         for j in range(i + 1, len(names)):
             a, b = bands[names[i]], bands[names[j]]
             keys = sorted(a.keys() & b.keys())
-            # solapamiento normalizado: cuánto coinciden los perfiles espectrales
+            # normalized overlap: how closely the spectral profiles match
             va = np.array([a[k] for k in keys])
             vb = np.array([b[k] for k in keys])
             va = va - va.mean(); vb = vb - vb.mean()
@@ -132,8 +132,8 @@ def analyze_masking(stems_dir: str, top: int = 8) -> dict:
     return {
         'stems': names,
         'top_overlaps': pairs[:top],
-        'note': 'Heurística de solapamiento espectral. NO prueba que un instrumento '
-                'sea inaudible; señala dónde investigar.',
+        'note': 'Spectral overlap heuristic. Does NOT prove that an instrument '
+                'is inaudible; indicates where to investigate.',
     }
 
 
@@ -209,7 +209,7 @@ def render_stems(midi_path: str, out_dir: str, gain: float = 0.5) -> dict:
     return {'out_dir': str(out), 'stems': names, 'count': len(names)}
 
 
-# --------------------------------------------------------------- procesado ---
+# --------------------------------------------------------------- processing ---
 def apply_eq(path: str, out: str, band: str = 'peak', freq: float = 1000,
              gain_db: float = 0.0, q: float = 1.0) -> dict:
     """Use for a targeted tonal correction. Write a new WAV and return out,
@@ -335,7 +335,7 @@ def compare_to_reference(a: str, b: str) -> dict:
             'band_delta_db': diff,
             'peak_delta_db': round(mb['peak_db'] - ma['peak_db'], 2),
             'rms_delta_db': round(mb['rms_db'] - ma['rms_db'], 2),
-            'note': 'Delta positivo = el comparado tiene MÁS energía en esa banda.'}
+            'note': 'Positive delta = the compared file has MORE energy in that band.'}
 
 
 def release_check(path: str, profile: str = 'power_metal') -> dict:
@@ -350,21 +350,21 @@ def release_check(path: str, profile: str = 'power_metal') -> dict:
     measured.pop('raw')
     issues = []
     if m['clipping']:
-        issues.append('CLIPPING: el pico alcanza 0 dB')
+        issues.append('CLIPPING: the peak reaches 0 dB')
     if m['peak_db'] > -0.3:
-        issues.append(f"pico muy alto ({m['peak_db']} dB); deja margen a -1 dBTP")
+        issues.append(f"peak too high ({m['peak_db']} dB); leave headroom to -1 dBTP")
     if measured['true_peak_dbfs'] > -0.9:
-        issues.append(f"true peak muy alto ({measured['true_peak_dbfs']} dBTP); objetivo <= -1 dBTP")
+        issues.append(f"true peak too high ({measured['true_peak_dbfs']} dBTP); target <= -1 dBTP")
     if m['rms_db'] > -9:
-        issues.append(f"RMS muy alto ({m['rms_db']} dB): probable sobre-compresión")
+        issues.append(f"RMS too high ({m['rms_db']} dB): likely overcompression")
     if m['stereo_correlation'] > 0.98:
-        issues.append('correlación estéreo ~1.0: mezcla casi mono')
+        issues.append('stereo correlation ~1.0: nearly mono mix')
     if m['stereo_correlation'] < 0.2:
-        issues.append('correlación estéreo muy baja: riesgo de cancelación en mono')
+        issues.append('stereo correlation very low: risk of cancellation in mono')
     return {'file': str(path), 'profile': profile, 'metrics': m, 'loudness': measured,
             'verdict': 'needs_work' if issues else 'ready',
             'issues': issues,
-            'note': 'Veredicto estructural. No evalúa gusto musical.'}
+            'note': 'Structural verdict. Does not assess musical taste.'}
 
 
 def list_profiles() -> dict:
@@ -374,7 +374,7 @@ def list_profiles() -> dict:
     return {'profiles': {k: {'roles': list(v['roles']),
                              'role_settings': {r: dict(c) for r, c in v['roles'].items()},
                              'master': v['master']} for k, v in PROFILES.items()},
-            'note': 'Valores de partida de ingeniería, no verdad absoluta.'}
+            'note': 'Engineering starting points, not absolute truth.'}
 
 
 TOOLS = [list_profiles, render_stems, analyze_audio, analyze_masking, auto_mix,

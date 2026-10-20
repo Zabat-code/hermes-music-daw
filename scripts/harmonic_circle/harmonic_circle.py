@@ -3,25 +3,25 @@
 Harmonic Circle Progressions MIDI Generator
 ===========================================
 
-Genera progresiones de acordes MIDI basadas en el Círculo de Quintas,
-basado en el video "Un TRUCO INCREÍBLE PARA ENTENDER ACORDES Y ESCALAS:
-El Círculo de Quintas" de Jaime Altozano (con millones de vistas).
+Generate MIDI chord progressions based on the Circle of Fifths,
+based on Jaime Altozano's video "An INCREDIBLE TRICK FOR UNDERSTANDING CHORDS AND SCALES:
+The Circle of Fifths" (with millions of views).
 
-Funciona con:
-  - El Círculo de Quintas (I, IV, V, vi, III, II, vii°)
+Works with:
+  - The Circle of Fifths (I, IV, V, vi, III, II, viidim)
   - Extended chords (7, 9, 11, 13)
-  - Substitutions (ii° → V, vi → III, etc.)
+  - Substitutions (iidim -> V, vi -> III, etc.)
   - Function harmony (Tonic, Subdominant, Dominant)
 
 MIDI output:
-  - Pista 0: Voz (harmonías en octavas)
-  - Pista 1: Bajo (root note)
-  - Pista 2: Arpegio de la melodía
+  - Track 0: Voice (octave harmonies)
+  - Track 1: Bass (root note)
+  - Track 2: Melody arpeggio
 
-Uso:
+Usage:
     python3 harmonic_circle.py --genre pop --progression "I-vi-IV-V" --out pop.mid
 
-    # Listar progresiones
+    # List progressions
     python3 harmonic_circle.py list
 """
 
@@ -33,72 +33,72 @@ from pathlib import Path
 import mido
 
 
-# ---------- Semitones por dimensión ----------
+# ---------- Semitones per scale degree ----------
 
-# Dimensión de cada nota de la escala (MIDI 0-127)
-# C mayor = 0
+# Degree of each scale note (MIDI 0-127)
+# C major = 0
 SCALE_DEGREES = {
-    # Notas fuertes
-    'I': 0,    # Tónica
-    'II': 2,   # Supertónica
-    'III': 4,  # Tercera
-    'IV': 5,   # Subdominante
-    'V': 7,    # Dominante
-    'VI': 9,   # Submediante
-    'VII': 11, # Líder
-    # Notas menores (mismo patrón relativo)
-    'ii': 2,   # Super tónica menor
-    'iii': 4,  # Tercera menor
-    'vi': 9,   # Submediante menor
-    'vii': 11, # Líder menor
+    # Strong notes
+    'I': 0,    # Tonic
+    'II': 2,   # Supertonic
+    'III': 4,  # Third
+    'IV': 5,   # Subdominant
+    'V': 7,    # Dominant
+    'VI': 9,   # Submediant
+    'VII': 11, # Leading tone
+    # Minor notes (same relative pattern)
+    'ii': 2,   # Minor supertonic
+    'iii': 4,  # Minor third
+    'vi': 9,   # Minor submediant
+    'vii': 11, # Minor leading tone
 }
 
-# Segundos de cada nota de calidad
+# Semitone intervals for each chord quality
 QUALITIES = {
-    'maj': [0, 4, 7],          # Mayoria
-    'min': [0, 3, 7],          # Menor
-    'dom7': [0, 4, 7, 10],     # Dominante 7ª
-    'maj7': [0, 4, 7, 11],     # Mayor 7ª
-    'min7': [0, 3, 7, 10],     # Menor 7ª
-    'dim7': [0, 3, 6, 9],      # Disminuida 7ª
-    'aug': [0, 4, 8],          # Aumentada
-    '5': [0, 7],               # Ocasión 5ª
+    'maj': [0, 4, 7],          # Major
+    'min': [0, 3, 7],          # Minor
+    'dom7': [0, 4, 7, 10],     # Dominant 7th
+    'maj7': [0, 4, 7, 11],     # Major 7th
+    'min7': [0, 3, 7, 10],     # Minor 7th
+    'dim7': [0, 3, 6, 9],      # Diminished 7th
+    'aug': [0, 4, 8],          # Augmented
+    '5': [0, 7],               # Perfect 5th
 }
 
-# Código de gramática para progresiones
-# Ej: "I-vi-IV-V" = Tónica, Submediante, Subdominante, Dominante
-#     "I-V-vi-IV" = Pop progression clásica
-#     "ii-V-I" = Función clásica
+# Grammar notation for progressions
+# E.g.: "I-vi-IV-V" = Tonic, Submediant, Subdominant, Dominant
+#     "I-V-vi-IV" = Classic pop progression
+#     "ii-V-I" = Classical function
 #     "I-V-vi-III-IV-I-V" = Song structure
 
-# Progresiones predefinidas (notas de la escala + cualidad)
+# Predefined progressions (scale notes + quality)
 POP_PROGRESSIONS = [
     {
         'name': 'I-V-vi-IV',
         'progression': ['I', 'V', 'vi', 'IV'],
         'quality': 'maj',
-        'description': 'Progresión clásica pop',
+        'description': 'Classic pop progression',
         'chord_types': ['maj', 'maj', 'min', 'maj'],
     },
     {
         'name': 'I-vi-IV-V',
         'progression': ['I', 'vi', 'IV', 'V'],
         'quality': 'maj',
-        'description': 'Progresión de la canción "Let It Be"',
+        'description': 'Progression from the song "Let It Be"',
         'chord_types': ['maj', 'min', 'maj', 'maj'],
     },
     {
         'name': 'I-V-vi-III-IV-I-V',
         'progression': ['I', 'V', 'vi', 'III', 'IV', 'I', 'V'],
         'quality': 'maj',
-        'description': 'Progresión punta de lanza (The Sing-Along)',
+        'description': 'Flagship progression (The Sing-Along)',
         'chord_types': ['maj', 'maj', 'min', 'min', 'maj', 'maj', 'maj'],
     },
     {
         'name': 'I-V-IV-vi',
         'progression': ['I', 'V', 'IV', 'vi'],
         'quality': 'maj',
-        'description': 'Progresión de la era 80s',
+        'description': '1980s progression',
         'chord_types': ['maj', 'maj', 'maj', 'min'],
     },
 ]
@@ -108,14 +108,14 @@ REGGAE_PROGRESSIONS = [
         'name': 'I-vi-IV-V',
         'progression': ['I', 'vi', 'IV', 'V'],
         'quality': 'maj',
-        'description': 'Progresión de la bachata/reggae',
+        'description': 'Bachata/reggae progression',
         'chord_types': ['maj', 'min', 'maj', 'maj'],
     },
     {
         'name': 'I-VII-I-VI',
         'progression': ['I', 'VII', 'I', 'VI'],
         'quality': 'maj',
-        'description': 'Progresión del club Latino',
+        'description': 'Latin club progression',
         'chord_types': ['maj', 'min', 'maj', 'min'],
     },
 ]
@@ -125,53 +125,53 @@ CLASSICAL_PROGRESSIONS = [
         'name': 'ii-V-I',
         'progression': ['ii', 'V', 'I'],
         'quality': 'dom7',
-        'description': 'Tonica de la función musical',
+        'description': 'Tonic in musical function',
         'chord_types': ['min7', 'dom7', 'maj'],
     },
     {
         'name': 'I-IV-V-I',
         'progression': ['I', 'IV', 'V', 'I'],
         'quality': 'maj',
-        'description': 'Tonica clásica de la canción',
+        'description': 'Classical tonic of the song',
         'chord_types': ['maj', 'maj', 'maj', 'maj'],
     },
     {
         'name': 'I-vi-IV-V',
         'progression': ['I', 'vi', 'IV', 'V'],
         'quality': 'maj',
-        'description': 'Progresión del círculo de la mecánica',
+        'description': 'Circle progression mechanics',
         'chord_types': ['maj', 'min', 'maj', 'maj'],
     },
 ]
 
 
-# ---------- Cálculo de acordes ----------
+# ---------- Chord calculation ----------
 
 def get_scale_notes(root, quality='maj'):
-    """Obtiene las notas de un acorde a partir de la raíz y calidad."""
+    """Get chord notes from the root and quality."""
     root_idx = SCALE_DEGREES[root]
     intervals = QUALITIES[quality]
 
-    # Ajustar a pitch 0-127 (MIDI)
+    # Adjust to pitch 0-127 (MIDI)
     notes = []
     for interval in intervals:
         note_idx = (root_idx + interval) % 12
-        # Convertir a pitch 0-127 (asumiendo C3 = 48, A2 = 45)
-        pitch = 48 + (note_idx * 2)  # ~2 semitones por grado promedio
+        # Convert to pitch 0-127 (assuming C3 = 48, A2 = 45)
+        pitch = 48 + (note_idx * 2)  # ~2 semitones per degree on average
         notes.append(pitch)
 
     return notes
 
 
 def get_chord(root, quality='maj'):
-    """Devuelve las notas del acorde."""
+    """Return the chord notes."""
     return get_scale_notes(root, quality)
 
 
-# ---------- Generación de MIDI ----------
+# ---------- MIDI generation ----------
 
 def create_harmony_track(title, notes, channel=0):
-    """Crea una pista MIDI con una armonía."""
+    """Create a MIDI track with a harmony."""
     track = mido.MidiTrack()
     track.append(mido.MetaMessage('track_name', name=title, time=0))
     track.append(mido.MetaMessage('set_tempo', tempo=500000, time=0))
@@ -180,14 +180,14 @@ def create_harmony_track(title, notes, channel=0):
     if not notes:
         return track
 
-    # Cada acorde dura 2 segundos (aprox 8 cuartos a 120 BPM)
+    # Each chord lasts 2 seconds (approx. 8 quarter notes at 120 BPM)
     seconds_per_chord = 2.0
     ticks_per_beat = 480
-    beats_per_second = 60.0 / 120.0  # 0.5 segundos por cuarto
+    beats_per_second = 60.0 / 120.0  # 0.5 seconds per quarter note
     ticks_per_second = ticks_per_beat * beats_per_second
 
     for i, note in enumerate(notes):
-        chord_time = i * ticks_per_second * 4  # 4 notas por acorde
+        chord_time = i * ticks_per_second * 4  # 4 notes per chord
         track.append(mido.Message('note_on', channel=channel, note=note, velocity=80, time=int(chord_time)))
         track.append(mido.Message('note_off', channel=channel, note=note, velocity=60, time=10))
 
@@ -195,7 +195,7 @@ def create_harmony_track(title, notes, channel=0):
 
 
 def create_bass_track(title, progressions):
-    """Crea una pista de bajo con la tríada de cada acorde."""
+    """Create a bass track with the triad of each chord."""
     track = mido.MidiTrack()
     track.append(mido.MetaMessage('track_name', name=title, time=0))
     track.append(mido.MetaMessage('set_tempo', tempo=500000, time=0))
@@ -210,7 +210,7 @@ def create_bass_track(title, progressions):
             bass_notes.append((bass_note, root_name))
 
     for i, (note, root) in enumerate(bass_notes):
-        chord_time = i * 960  # 2 segundos a 120 BPM
+        chord_time = i * 960  # 2 seconds at 120 BPM
         track.append(mido.Message('note_on', channel=1, note=note, velocity=70, time=int(chord_time)))
         track.append(mido.Message('note_off', channel=1, note=note, velocity=50, time=10))
 
@@ -218,21 +218,21 @@ def create_bass_track(title, progressions):
 
 
 def create_harmony_midi(progressions, output_file):
-    """Crea un archivo MIDI con progresiones armónicas."""
+    """Create a MIDI file with harmonic progressions."""
     if not progressions:
-        print('ERROR: No se proporcionaron progresiones', file=sys.stderr)
+        print('ERROR: No progressions provided', file=sys.stderr)
         return 1
 
-    print(f'🎵 Generando progresiones armónicas MIDI')
-    print(f'   Progresiones: {len(progressions)}')
+    print(f'Generating harmonic MIDI progressions')
+    print(f'   Progressions: {len(progressions)}')
 
     for i, prog in enumerate(progressions):
-        print(f'   Progresión {i+1}: {prog["name"]}')
+        print(f'   Progression {i+1}: {prog["name"]}')
 
-    # Crear pistas
+    # Create tracks
     tracks = []
 
-    # Pista 0: Voz armónica
+    # Track 0: Harmonic voice
     voice_notes = []
     for prog in progressions:
         for chord in prog['progression']:
@@ -241,34 +241,34 @@ def create_harmony_midi(progressions, output_file):
 
     tracks.append(create_harmony_track('Voice', voice_notes))
 
-    # Pista 1: Bajo
+    # Track 1: Bass
     tracks.append(create_bass_track('Bass', progressions))
 
-    # Pista 2: Arpegio
+    # Track 2: Arpeggio
     arpeggio_notes = []
     for prog in progressions:
         for chord in prog['progression']:
             notes = get_chord(chord, prog.get('quality', 'maj'))
-            # Arpegio ascendente - reverso
+            # Ascending arpeggio - reversed
             arpeggio = notes + notes[::-1]
-            arpeggio_notes.extend(arpeggio[::2])  # Saltos de 2
+            arpeggio_notes.extend(arpeggio[::2])  # Steps of 2
 
     tracks.append(create_harmony_track('Arpeggio', arpeggio_notes))
 
-    # Crear archivo
+    # Create file
     mid = mido.MidiFile()
     mid.ticks_per_beat = 480
     mid.tracks = tracks
 
     mid.save(output_file)
 
-    print(f'   ✅ Guardado: {output_file}')
+    print(f'   Saved: {output_file}')
     return 0
 
 
 def list_progressions():
-    """Lista las progresiones disponibles."""
-    print('🔥 Progresiones armónicas disponibles:')
+    """List available progressions."""
+    print('Available harmonic progressions:')
     all_progs = POP_PROGRESSIONS + REGGAE_PROGRESSIONS + CLASSICAL_PROGRESSIONS
     for i, prog in enumerate(all_progs):
         print(f'  {i+1:2d}. {prog["name"]:30s} | {prog["description"]}')
@@ -279,16 +279,16 @@ def main():
         description='Harmonic Circle Progressions MIDI Generator',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-Ejemplos:
+Examples:
     python3 harmonic_circle.py --genre pop --out pop.mid
     python3 harmonic_circle.py --names "I-V-vi-IV" --out my_progression.mid
     python3 harmonic_circle.py list
         '''
     )
-    parser.add_argument('--genre', '-g', help='Género (pop, reggae, classical)')
-    parser.add_argument('--names', '-n', nargs='+', help='Progresiones específicas (ej: I-V-vi-IV, I-V-VI-IV)')
-    parser.add_argument('--out', '-o', help='Archivo de salida')
-    parser.add_argument('--list', '-l', action='store_true', help='Lista las progresiones disponibles')
+    parser.add_argument('--genre', '-g', help='Genre (pop, reggae, classical)')
+    parser.add_argument('--names', '-n', nargs='+', help='Specific progressions (e.g.: I-V-vi-IV, I-V-VI-IV)')
+    parser.add_argument('--out', '-o', help='Output file')
+    parser.add_argument('--list', '-l', action='store_true', help='List available progressions')
 
     args = parser.parse_args()
 
@@ -297,18 +297,18 @@ Ejemplos:
         return
 
     if not args.genre and not args.names:
-        print('ERROR: -n o -g son requeridos', file=sys.stderr)
-        print('   Alelos: --list para ver progresiones disponibles', file=sys.stderr)
+        print('ERROR: -n or -g is required', file=sys.stderr)
+        print('   Options: --list to view available progressions', file=sys.stderr)
         sys.exit(1)
 
     if args.out is None:
         args.out = f'harmonic_{args.genre}.mid'
 
-    # Seleccionar progresiones
+    # Select progressions
     all_progs = POP_PROGRESSIONS + REGGAE_PROGRESSIONS + CLASSICAL_PROGRESSIONS
 
     if args.names:
-        # Progresiones específicas
+        # Specific progressions
         progressions = []
         for name in args.names:
             for prog in all_progs:
@@ -316,7 +316,7 @@ Ejemplos:
                     progressions.append(prog)
                     break
             else:
-                print(f'   ⚠️  Progresión no encontrada: {name}', file=sys.stderr)
+                print(f'   WARNING: Progression not found: {name}', file=sys.stderr)
 
     elif args.genre:
         genre_map = {
@@ -326,7 +326,7 @@ Ejemplos:
         }
         progressions = genre_map.get(args.genre.lower(), POP_PROGRESSIONS)
 
-    # Crear MIDI
+    # Create MIDI
     sys.exit(create_harmony_midi(progressions, args.out))
 
 

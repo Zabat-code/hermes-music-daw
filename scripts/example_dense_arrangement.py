@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Referencia AUTÓNOMA de arreglo denso, adaptada de Iron Determination v2.
+"""STANDALONE dense arrangement reference, adapted from Iron Determination v2.
 
-Autoría de eventos nota a nota: forma, grooves, registros y silencios explícitos.
-Las duraciones cortas aproximan articulación; GM NO acredita palm mute ni metal.
-Correcciones de auditoría: voicing máximo de dos piezas por ataque, sustitución
-real de platillo por crash, toms con espacio, sin acorde duplicado en la coda,
-sin duplicados del solo y terceras menores donde el cifrado dice menor.
-No escribe los MIDI originales ni usa módulos de proyectos externos.
+Note-by-note event authoring: explicit form, grooves, registers and rests.
+Short durations approximate articulation; GM does NOT establish palm muting or metal.
+Audit corrections: voicing capped at two kit pieces per attack, actual cymbal
+replacement with crash, spaced toms, no duplicated chord in the coda,
+no solo duplicates and minor thirds where the chord symbol specifies minor.
+Does not write the original MIDIs or use modules from external projects.
 
-1) --plan plan.json escribe decisiones, sin generar notas.
+1) --plan plan.json writes decisions without generating notes.
 2) composition_guard.py plan.json --out final.mid -- este_script.py --out {draft}
 """
 import argparse
@@ -39,12 +39,12 @@ PCS = {'C': 0, 'C#': 1, 'Db': 1, 'D': 2, 'D#': 3, 'Eb': 3, 'E': 4, 'F': 5,
 def root_midi(sym: str, octave: int) -> int:
     m = re.match(r'([A-G](?:#|b)?)', sym)
     if not m:
-        raise ValueError(f'acorde no soportado: {sym!r}')
+        raise ValueError(f'unsupported chord: {sym!r}')
     return 12 * (octave + 1) + PCS[m.group(1)]
 
 
-# --- estructura: 120 compases exactos -------------------------------------
-# (nombre, compases, acordes 1/compás, energía 0-1, estilo de batería)
+# --- structure: exactly 120 bars -------------------------------------
+# (name, bars, chords 1/bar, energy 0-1, drum style)
 SECTIONS = (
     ('intro',     8,  ('Em', 'Em', 'C', 'D', 'Em', 'Em', 'C', 'D'), 0.35, 'intro'),
     ('verse1',    16, ('Em', 'C', 'G', 'D') * 4,                     0.62, 'verse'),
@@ -64,7 +64,7 @@ def clamp(v):
 
 
 # ==========================================================================
-# BATERÍA — grooves por función, velocidades separadas, fills solo en bordes
+# DRUMS - grooves per function, separate velocities, fills only at boundaries
 # ==========================================================================
 def arrange_drums(rng):
     notes = []
@@ -78,10 +78,10 @@ def arrange_drums(rng):
             bar = gbar
             phrase = (local // 4) % 4
             boundary = (local == bars - 1)
-            hats_off = ()          # posiciones a omitir para dejar sitio al fill
+            hats_off = ()          # positions to omit to make room for the fill
 
             if style == 'intro':
-                # construye: primeros 4 compases mínimos, luego entra la banda
+                # build: minimal first 4 bars, then the band enters
                 if local < 4:
                     for off in (0, 2):
                         hit(bar, off, 36, 92)
@@ -113,7 +113,7 @@ def arrange_drums(rng):
                     hit(bar, off, 42, 64 if off.is_integer() else 52)
 
             elif style == 'prechorus':
-                # tensión creciente: hi-hat -> ride, doble bombo al final
+                # increasing tension: hi-hat -> ride, double kick at the end
                 for i in range(8):
                     off = i * .5
                     hit(bar, off, 36, 100 if off.is_integer() else 88)
@@ -151,7 +151,7 @@ def arrange_drums(rng):
                 if local == 0:
                     hit(bar, 0, 49, 108, 0.30)
 
-            # fills SOLO en el borde de sección (no cada 4 compases)
+            # fills ONLY at section boundaries (not every 4 bars)
             if boundary and style != 'outro':
                 hats_off = (3, 3.5)
                 for i, p in enumerate((47, 45, 43, 41)):
@@ -161,15 +161,15 @@ def arrange_drums(rng):
                 hit(bar, 0, 49, 110, 1.60)
                 hit(bar, 2, 49, 102, 1.60)
 
-            # quitar los platillos que chocarían con el fill
+            # remove cymbals that would clash with the fill
             if hats_off:
                 notes[:] = [n for n in notes
                             if not (n[2] in (42, 51) and n[0] in
                                     {round(bar * 4 + off, 5) for off in hats_off})]
             gbar += 1
-    # Orquestación explícita del kit: escoger articulaciones de cada ataque.
-    # No es una corrección del auditor; forma parte de esta receta de composición.
-    # Tom reemplaza caja, crash reemplaza hat/ride; se reserva máximo un par.
+    # Explicit kit orchestration: choose articulations for each attack.
+    # This is not an auditor correction; it is part of this composition recipe.
+    # Tom replaces snare, crash replaces hat/ride; retain at most a pair.
     voiced = []
     by_attack = {}
     for event in notes:
@@ -180,15 +180,15 @@ def arrange_drums(rng):
             events = [e for e in events if e[2] != 38]
         if 49 in pitches:
             events = [e for e in events if e[2] not in (42, 51)]
-        # En un relleno se conservan tom+crash, en backbeat bombo+caja;
-        # el platillo cede el sitio cuando ambas manos/pie ya tienen acento.
+        # Retain tom+crash in a fill, kick+snare on a backbeat;
+        # the cymbal yields when both hands/foot already carry an accent.
         priority = {47: 0, 45: 0, 43: 0, 41: 0, 38: 1, 49: 2, 36: 3, 51: 4, 42: 5}
         voiced.extend(sorted(events, key=lambda e: priority[e[2]])[:2])
     return voiced
 
 
 # ==========================================================================
-# GUITARRAS — power chords + palm mute, doble pista (L/R), NO arpegios
+# GUITARS - power chords + palm mute, double-tracked (L/R), NO arpeggios
 # ==========================================================================
 def arrange_guitars(rng):
     L, R = [], []
@@ -206,7 +206,7 @@ def arrange_guitars(rng):
     for name, bars, chords, energy, style in SECTIONS:
         for local in range(bars):
             beat = gbar * 4
-            # octava 3: power chords 48-64, cuerpo de guitarra (no embarrado)
+            # octave 3: power chords 48-64, guitar body (not muddy)
             root = root_midi(chords[local % len(chords)], 3)
             shift = 0.014
 
@@ -250,7 +250,7 @@ def arrange_guitars(rng):
 
 
 # ==========================================================================
-# BAJO — raíz en corcheas, saltos de octava en el estribillo
+# BASS - eighth-note root, octave jumps in the chorus
 # ==========================================================================
 def arrange_bass(rng):
     notes = []
@@ -276,7 +276,7 @@ def arrange_bass(rng):
 
 
 # ==========================================================================
-# PIANO SINTÉTICO (Electric Piano, prog 4) — CON ESPACIO: calla en versos/solo
+# SYNTH PIANO (Electric Piano, prog 4) - WITH SPACE: silent in verses/solo
 # ==========================================================================
 def arrange_piano(rng):
     notes = []
@@ -285,22 +285,22 @@ def arrange_piano(rng):
         for local in range(bars):
             beat = gbar * 4
             sym = chords[local % len(chords)]
-            r4 = root_midi(sym, 4)          # octava 4: 60-71
+            r4 = root_midi(sym, 4)          # octave 4: 60-71
             third = 3 if sym.endswith('m') else 4
-            r5 = root_midi(sym, 5)          # octava 5: 72-83 (tope 84)
+            r5 = root_midi(sym, 5)          # octave 5: 72-83 (cap 84)
 
             if style == 'intro':
-                # arpegio suave 8vos
+                # gentle eighth-note arpeggio
                 for i, p in enumerate((r4, r4 + third, r4 + 7, r4 + 12,
                                        r4 + 7, r4 + third, r4, r4 + 7)):
                     notes.append((round(beat + i * .5, 5), 0.46, p, clamp(56 + rng.randint(-3, 3))))
             elif style == 'prechorus':
-                # acordes sostenidos, crece
+                # sustained chords, building
                 for i in (0, 2):
                     for p in (r4, r4 + third, r4 + 7):
                         notes.append((round(beat + i, 5), 1.8, p, clamp(60 + int(energy * 14))))
             elif style in ('chorus', 'outro'):
-                # dobla el riff en octava alta + chispa (tope estricto 84)
+                # double the riff in the upper octave + sparkle (strict cap 84)
                 for i in (0, 2):
                     for p in (r5, r5 + 7):
                         if p <= 84:
@@ -308,13 +308,13 @@ def arrange_piano(rng):
                                           clamp(66 + int(energy * 12))))
                 if r5 + 12 <= 84:
                     notes.append((round(beat + 3.5, 5), 0.4, r5 + 12, clamp(62)))
-            # versos y solo: SILENCIO deliberado (deja espacio a guitarras)
+            # verses and solo: deliberate SILENCE (leave room for guitars)
             gbar += 1
     return notes
 
 
 # ==========================================================================
-# LEAD — registro 76-88 (nunca 102), frases con respiración
+# LEAD - register 76-88 (never 102), phrases with breathing room
 # ==========================================================================
 MOTIFS = {
     'A': [(0, .70, 76), (.75, .25, 79), (1, .45, 81), (1.5, .45, 83),
@@ -347,7 +347,7 @@ def arrange_lead(rng):
             elif style == 'chorus' and local % 4 in (2, 3):
                 phrase(beat, 'B', 100)
             elif style == 'solo':
-                # corrida continua: escala de Mi menor, 16 notas por 2 compases
+                # continuous run: E minor scale, 16 notes per 2 bars
                 scale = (76, 78, 79, 81, 83, 84, 86, 88)
                 if local % 2 == 0:
                     seq = scale + scale[::-1]
@@ -383,8 +383,8 @@ def compose():
 
 
 PROGRAMS = {
-    'rhythm_guitar_L': (30, 0),   # Overdriven Guitar, pan izq
-    'rhythm_guitar_R': (30, 1),   # Overdriven Guitar, pan der
+    'rhythm_guitar_L': (30, 0),   # Overdriven Guitar, pan left
+    'rhythm_guitar_R': (30, 1),   # Overdriven Guitar, pan right
     'electric_bass':   (34, 2),   # Electric Bass (pick)
     'synth_piano':     (4,  3),   # Electric Piano 1
     'lead_guitar':     (31, 4),   # Distortion Guitar
@@ -397,7 +397,7 @@ def save_midi(path=OUT_MID):
     tracks = compose()
     song = mido.MidiFile(type=1, ticks_per_beat=TPB)
     meta = mido.MidiTrack([
-        mido.MetaMessage('track_name', name='Referencia auditada: adaptación de Iron Determination'),
+        mido.MetaMessage('track_name', name='Audited reference: adaptation of Iron Determination'),
         mido.MetaMessage('set_tempo', tempo=mido.bpm2tempo(BPM)),
         mido.MetaMessage('time_signature', numerator=4, denominator=4),
     ])
@@ -419,11 +419,11 @@ def save_midi(path=OUT_MID):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists():
-        raise FileExistsError(f'No sobrescribir: {path}')
+        raise FileExistsError(f'Do not overwrite: {path}')
     song.save(path)
     problems, duration = validate_midi(str(path), expected_duration=180.0, tol=0.5)
     if problems:
-        raise ValueError(f'MIDI inválido: {problems}')
+        raise ValueError(f'Invalid MIDI: {problems}')
     require_arrangement(path)
     return path, duration, tracks
 
@@ -441,8 +441,8 @@ def decision_plan():
         end += bars
         if style != 'outro':
             fills.append(end)
-    return {'profile': 'dense', 'intent': 'Maqueta power metal instrumental para gym; '
-            'contraste de energía, riffs de quintas y silencio del piano. Calidad sonora pendiente de escucha.',
+    return {'profile': 'dense', 'intent': 'Instrumental power metal demo for gym use; '
+            'energy contrast, power-chord riffs and piano silence. Sound quality awaits listening.',
             'sections': [{'name': n, 'bars': b, 'groove': style,
                           'density': densities[style]} for n, b, c, e, style in SECTIONS],
             'instruments': [{'name': 'drums', 'role': 'drums', 'silent_bars': 0}] +
@@ -453,13 +453,13 @@ def decision_plan():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, default=OUT_MID)
-    parser.add_argument('--plan', type=Path, help='escribir solo las decisiones, sin música')
+    parser.add_argument('--plan', type=Path, help='write only the decisions, without music')
     args = parser.parse_args()
     if args.plan:
         with args.plan.open('x') as f:
             json.dump(decision_plan(), f, ensure_ascii=False, indent=2)
             f.write('\n')
-        print(f'Plan escrito: {args.plan}')
+        print(f'Plan written: {args.plan}')
     else:
         path, duration, tracks = save_midi(args.out)
-        print(f'BORRADOR AUDITADO: {path} | {duration:.3f}s; pendiente publicación por composition_guard.py')
+        print(f'AUDITED DRAFT: {path} | {duration:.3f}s; awaiting publication through composition_guard.py')

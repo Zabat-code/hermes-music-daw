@@ -1,44 +1,44 @@
-# Comparación de batería MIDI: Ash to Dawn vs. referencia metal (2026-10-19)
+# MIDI drum comparison: Ash to Dawn vs. metal reference (2026-10-19)
 
-## Procedencia y licencia
+## Provenance and licensing
 
-- Referencia: «Boss Battle #9 [Metal]», **nene**, OpenGameArt, publicado 2023-04-27. Página inspeccionada en Brave: `https://opengameart.org/content/boss-battle-9-metal`; anuncia MIDI incluido y licencia **CC0/Public Domain**. Archivo publicado en `https://opengameart.org/sites/default/files/boss_battle_9.mid`.
-- Descarga local: `~/.hermes/music/FinalBattlePowerMetal_AshToDawn/reference_nene_boss_battle_9.mid` (17,524 bytes, SHA-256 `d9848be9fb7d4e9d1a1f6c7e2882f806dac4ca90b3db462e97b2f5fff3bdee38`). Respuesta HTTP 200, `audio/midi`, encabezado `MThd`; se verificó que los bytes guardados coinciden con la respuesta. Página vista en el Brave real y descarga directa de su enlace de archivo confirmado.
-- Comparada con `~/.hermes/music/FinalBattlePowerMetal_AshToDawn/Ash_to_Dawn_demo.mid`, que es el MIDI fuente del OGG entregado antes. **No se alteró la canción original, el OGG del Escritorio ni el motor.**
+- Reference: “Boss Battle #9 [Metal],” **nene**, OpenGameArt, published 2023-04-27. Page inspected in Brave: `https://opengameart.org/content/boss-battle-9-metal`; it advertises an included MIDI and a **CC0/Public Domain** license. File published at `https://opengameart.org/sites/default/files/boss_battle_9.mid`.
+- Local download: `~/<project>/reference_nene_boss_battle_9.mid` (17,524 bytes, SHA-256 `d9848be9fb7d4e9d1a1f6c7e2882f806dac4ca90b3db462e97b2f5fff3bdee38`). HTTP 200 response, `audio/midi`, `MThd` header; saved bytes were verified against the response. The page was viewed in the actual Brave browser, and the download came directly from its confirmed file link.
+- Compared against `~/<project>/Ash_to_Dawn_demo.mid`, the source MIDI for the previously delivered OGG. **The original song, Desktop OGG, and engine were not altered.**
 
-## Lo observado en el MIDI (no es evaluación auditiva)
+## MIDI observations (not a listening assessment)
 
-| Variable | Referencia de nene | Ash to Dawn |
+| Variable | nene reference | Ash to Dawn |
 |---|---:|---:|
-| Duración musical | 59.47 s | 120.00 s |
-| Tempo inicial | ~113 BPM (530,973 μs/negras) | 156 BPM |
-| Compás | 4/4 | 4/4 |
-| Compases | 28 | 78 |
-| Golpes de batería | 540 | 1435 |
-| Patrones de ataques de percusión distintos por compás* | 22/28 | 8/78 |
-| Patrón más repetido* | 4 compases | 45 compases |
-| Bombo GM36 | 247 | 584 |
-| Caja GM38 | 119 | 156 |
-| Platillo recurrente | GM55 splash: 91 | GM51 ride: 544; GM42 hi-hat: 48 |
-| Toms y otros platillos | Presentes y repartidos | Fills de cuatro toms al cierre de cada bloque de cuatro compases |
-| Bajo / guitarras | 240 notas de bajo; dos guitarras de 383 cada una y lead 404 | 584 notas de bajo; dos guitarras de 1284 cada una, lead 262 |
+| Musical duration | 59.47 s | 120.00 s |
+| Initial tempo | ~113 BPM (530,973 μs/quarter note) | 156 BPM |
+| Meter | 4/4 | 4/4 |
+| Bars | 28 | 78 |
+| Drum hits | 540 | 1435 |
+| Distinct per-bar percussion attack patterns* | 22/28 | 8/78 |
+| Most repeated pattern* | 4 bars | 45 bars |
+| Kick GM36 | 247 | 584 |
+| Snare GM38 | 119 | 156 |
+| Recurring cymbal | GM55 splash: 91 | GM51 ride: 544; GM42 hi-hat: 48 |
+| Toms and other cymbals | Present and distributed | Four-tom fills at the end of every four-bar block |
+| Bass / guitars | 240 bass notes; two guitars with 383 each and lead with 404 | 584 bass notes; two guitars with 1284 each, lead with 262 |
 
-\*Firma de patrón = conjunto de golpes por instrumento GM y fase dentro de compás, sin dinámicas ni duración. El número no determina calidad musical ni cuenta instrumentos tonales.
+\*Pattern signature = set of hits by GM instrument and phase within the bar, excluding dynamics and duration. This count does not determine musical quality or count pitched instruments.
 
-### Grooves observados
+### Observed grooves
 
-- En la referencia, los compases 5–7 ponen bombo en contratiempos de corchea (0.25, 0.75, 1.25 ...), caja en 0, 0.5, 1 ...; el compás 9 cambia a caja en pulsos 1 y 3 (contados desde cero) y bombo con semicorcheas y silencios. Otras secciones alternan variaciones, redobles de bombo y toms. El comienzo es un fill de entrada, no la rejilla principal. Atención: esta referencia NO es modelo universal: la caja aparece en todas las corcheas de algunos compases, GM55 (splash) aparece frecuentemente como pulso regular, y la batería exportada emplea velocidad 95 prácticamente constante, por lo que también puede sonar artificial con un banco GM.
-- En **Ash to Dawn**, todos los 68 compases de secciones densas contienen **exactamente ocho bombos y ocho rides por compás**, ambos disparados juntos en 0, 0.5, 1, 1.5, 2, 2.5, 3 y 3.5 pulsos. La caja repite dos golpes por compás (1 y 3). La sustitución tras la intro se resuelve casi solo cambiando hi-hat GM42 por ride GM51; no hay huecos, síncopas de bombo ni fraseo condicionado por guitarra o bajo. En el corpus de 78 compases, el patrón más repetido aparece 45 veces, y los dos más comunes suman 62. Fills periódicos reaparecen con las mismas alturas GM47-45-43-41 y el crash anticipado en 3.75, sin reaccionar a cadencias o respiración de riffs.
+- In the reference, bars 5–7 place kick hits on eighth-note offbeats (0.25, 0.75, 1.25 ...), snare on 0, 0.5, 1 ...; bar 9 switches to snare on beats 1 and 3 (zero-based) and kick with sixteenth notes and rests. Other sections alternate variations, kick rolls, and toms. The opening is an introductory fill, not the main grid. Caution: this reference is NOT a universal model: snare appears on every eighth note in some bars, GM55 (splash) frequently serves as a regular pulse, and the exported drums use an almost constant velocity of 95, so it can also sound artificial with a GM sound bank.
+- In **Ash to Dawn**, all 68 bars of dense sections contain **exactly eight kick and eight ride hits per bar**, both triggered together at beats 0, 0.5, 1, 1.5, 2, 2.5, 3, and 3.5. Snare repeats two hits per bar (1 and 3). The change after the intro consists almost entirely of replacing hi-hat GM42 with ride GM51; there are no gaps, kick syncopations, or phrasing shaped by guitar or bass. Across the 78 bars, the most repeated pattern occurs 45 times, and the two most common total 62. Periodic fills recur with the same GM47-45-43-41 pitches and an anticipated crash at 3.75, without responding to cadences or breathing room in riffs.
 
-## Diagnóstico probable (inferencia, no certeza auditiva)
+## Likely diagnosis (inference, not auditory certainty)
 
-La batería que se siente «rara» es coherente con **rejilla mecánica uniforme + ride perpetuo + redoble idéntico cada cuatro compases**. Al renderizar con FluidR3 GM, el platillo GM51 repetido sobre cada bombo puede subrayar aún más el efecto sintetizado. La referencia CC0 presenta cambios de groove y de microfiguras dentro de las frases, aunque tampoco demuestra por sí sola una interpretación humana. No se compararon grabaciones de batería aislada ni se hizo escucha A/B humana: no atribuir cada sensación del usuario a una causa acústica definitiva.
+The drums feeling “odd” is consistent with **a uniform mechanical grid + perpetual ride + an identical fill every four bars**. When rendered with FluidR3 GM, the GM51 cymbal repeated over every kick may further emphasize the synthesized effect. The CC0 reference contains changes in groove and small rhythmic figures within phrases, though it does not by itself demonstrate human performance. No isolated drum recordings were compared and no human A/B listening was performed: do not attribute each user impression to a definitive acoustic cause.
 
-## Corrección sugerida antes de rehacer la pieza (NO aplicada)
+## Suggested correction before rebuilding the piece (NOT applied)
 
-1. Escribir 3–4 grooves intencionales por función (amenaza, riff, preparación, clímax) con variaciones locales y silencios. Evitar bombo/platillo en todos los contratiempos durante toda la canción.
-2. Alinear bombo con acentos reales del riff y del bajo; reservar semicorcheas/doble bombo para empujes, intercalar patrones más abiertos para que se note el contraste.
-3. Separar dinámica de caja, hi-hat y ride; no usar ride GM51 continuamente en secciones enteras. Introducir crash en comienzos de frase y fills solo en transiciones relevantes, no en cada cuarto compás por contador.
-4. Probar en el mismo SoundFont la pieza nueva y la referencia y someter el resultado a escucha comparativa humana antes de declarar «metal».
+1. Write 3–4 intentional grooves by function (threat, riff, buildup, climax), with local variations and rests. Avoid kick/cymbal hits on every offbeat throughout the song.
+2. Align kick with actual riff and bass accents; reserve sixteenth notes/double kick for pushes, alternating with more open patterns to make the contrast audible.
+3. Separate snare, hi-hat, and ride dynamics; do not use ride GM51 continuously throughout entire sections. Introduce crashes at phrase starts and fills only at relevant transitions, not every fourth bar by counter.
+4. Test the new piece and the reference with the same SoundFont and submit the result to human comparative listening before declaring it “metal.”
 
-Este estudio justifica ajustar el algoritmo; **no se copiaron riffs ni patrones íntegros de la referencia** ni se cambió ningún archivo del juego.
+This study justifies adjusting the algorithm; **no complete riffs or patterns were copied from the reference**, and no game file was changed.

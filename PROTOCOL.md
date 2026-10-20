@@ -1,49 +1,49 @@
-# Protocolo operativo para agentes
+# Operating protocol for agents
 
-Entrada de lectura: este archivo → [SKILL.md](SKILL.md) → lecturas del guard.
-El README contiene instalación; [docs/README.md](docs/README.md) distingue guías
-vigentes de evidencia histórica. Ejecutar desde la raíz con el Python del venv
-activado. No usar rutas personales del autor.
+Reading entry point: this file → [SKILL.md](SKILL.md) → the guard's required readings.
+The README covers installation; [docs/README.md](docs/README.md) distinguishes
+current guides from historical evidence. Run from the repository root with the
+venv's Python activated. Do not use the author's personal paths.
 
-## 0. Verificar instalación y preparar destino
+## 0. Verify installation and prepare the destination
 
 ```bash
 python scripts/check_install.py
 python -m pytest tests/ -q
 ```
 
-Ambos deben salir con 0 para validar el entorno completo. Si falta audio, instalar
-`fluidsynth`, `ffmpeg`, `fluid-soundfont-gm`, o definir `MIDI_SOUNDFONT`.
-`FLUIDSYNTH`, `FFMPEG`, `FFPROBE` permiten seleccionar ejecutables fuera de PATH.
-Un override inválido aborta. El smoke test verifica recursos del paquete y permisos
-del directorio actual; no sustituye la ejecución del ejemplo.
+Both must exit with 0 to validate the full environment. If audio support is missing,
+install `fluidsynth`, `ffmpeg`, `fluid-soundfont-gm`, or set `MIDI_SOUNDFONT`.
+`FLUIDSYNTH`, `FFMPEG`, and `FFPROBE` select executables outside PATH.
+An invalid override aborts. The smoke test checks package resources and current
+directory permissions; it does not replace running the example.
 
-Si el runtime bloquea `socketpair.send()` y el MCP inicia pero no responde,
-configurar `HERMES_DAW_STDIO_POLL=1` en su `env`. Mantiene el event loop activo
-con un timer de 50 ms; no abre puertos. El cliente también debe funcionar en ese
-runtime. La prueba local mantiene activos ambos loops y usa MCP stdio real.
+If the runtime blocks `socketpair.send()` and MCP starts but does not respond,
+set `HERMES_DAW_STDIO_POLL=1` in its `env`. This keeps the event loop active
+with a 50 ms timer; it opens no ports. The client must also work in that
+runtime. The local test keeps both loops active and uses real MCP stdio.
 
-Elegir un directorio nuevo para cada entrega. El guard nunca sobrescribe MIDI
-ni certificado. Mantener plan, compositor, lecturas, log, MIDI, certificado,
-informe de auditoría y métricas de audio juntos o localizables.
+Choose a new directory for each delivery. The guard never overwrites MIDI
+or certificates. Keep the plan, composer, readings, log, MIDI, certificate,
+audit report, and audio metrics together or easy to locate.
 
-## 1. Leer → decidir → componer
+## 1. Read → decide → compose
 
-El guard lee, muestra y calcula hashes de cinco diagnósticos en `docs/`, teoría,
-render y ejemplo interno ANTES de ejecutar el compositor. La lectura registrada
-no demuestra comprensión: el plan y el MIDI deben cumplir lo declarado.
+The guard reads, displays, and hashes five diagnostic documents in `docs/`, theory,
+rendering guidance, and the internal example BEFORE running the composer. Logged
+reading does not demonstrate understanding: the plan and MIDI must fulfill their claims.
 
-Para comprobar el flujo corto ya diseñado, ejecutar exactamente:
+To check the predesigned short workflow, run exactly:
 
 ```bash
 python examples/01_compose.py --work output/my-first-run
 ```
 
-Este comando crea `plan.json`, ejecuta el compositor a través del guard, y publica
-`demo.mid` más `demo.mid.audit.json` solo tras pasar auditoría y contrato. Guarda
-las lecturas completas en `composition.log`. No trata un fallo como advertencia.
+This command creates `plan.json`, runs the composer through the guard, and publishes
+`demo.mid` plus `demo.mid.audit.json` only after passing the audit and contract. It saves
+the complete readings in `composition.log`. It does not treat a failure as a warning.
 
-Para una pieza nueva, crear primero decisiones y adaptar TAMBIÉN el compositor:
+For a new piece, first record decisions and ALSO adapt the composer:
 
 ```bash
 mkdir -p output/my-piece
@@ -55,38 +55,38 @@ python scripts/composition_guard.py output/my-piece/plan.json \
   > output/my-piece/composition.log 2>&1
 ```
 
-La última llamada usa la referencia íntegra de 120 compases / 180 s. Para otra
-pieza, sustituir el script por un compositor propio que acepte `--out` y
-marcadores de sección. El guard lo ejecuta con el MISMO Python. `{draft}` es una
-ruta temporal; nunca debe ser una entrega pública. Comprobar el exit code del
-guard antes de continuar. Tras un fallo, leer el final de `composition.log`.
+The final call uses the full 120-bar / 180 s reference. For another
+piece, replace the script with your own composer accepting `--out` and
+section markers. The guard runs it with the SAME Python. `{draft}` is a
+temporary path; it must never be a public delivery. Check the guard's exit code
+before continuing. After a failure, read the end of `composition.log`.
 
-Contrato del plan implementado:
+Implemented plan contract:
 
-- `profile: "dense"`, `intent` explícito con género/variante y límite de timbre.
-- `sections`: nombres únicos, `bars` entero >=2, `groove` y `density` objetivo.
-  La densidad es **golpes de batería por compás**, promediados por sección.
-- `instruments`: nombres idénticos a pistas MIDI, `role`, `min`/`max` MIDI
-  (excepto batería), `silent_bars` enteros >=0. Algún instrumento armónico debe
-  callar un compás completo sin notas ni sustain.
-- `fill_bars`: lista de compases con fill, **numerados desde 1**, solo finales de
-  sección. El MIDI debe tener los fills detectados por la heurística en esa lista.
-- 4/4, marcadores al inicio exacto de cada sección y fin MIDI en el compás previsto.
+- `profile: "dense"`, explicit `intent` with genre/variant and timbre limitations.
+- `sections`: unique names, integer `bars` >=2, target `groove` and `density`.
+  Density means **drum hits per bar**, averaged over each section.
+- `instruments`: names identical to MIDI tracks, `role`, MIDI `min`/`max`
+  (except drums), integer `silent_bars` >=0. At least one harmonic instrument must
+  remain silent for a full bar without notes or sustain.
+- `fill_bars`: list of bars with fills, **numbered from 1**, only at section
+  endings. The MIDI must contain the heuristically detected fills in that list.
+- 4/4, markers at the exact start of each section, and MIDI ending at the planned bar.
 
-Los ocho gates existentes comprueban estructura, dinámica, registro, espacio,
-solapamiento del kit, patrones, densidad y fills. No quitar batería para eludir
-el contrato ni cambiar umbrales para conseguir un aprobado. Otros estilos
-necesitan un contrato diseñado y probado por separado.
+The eight existing arrangement gates check structure, dynamics, register, space,
+kit overlap, patterns, density, and fills. Do not remove drums to evade
+the contract or change thresholds to obtain a pass. Other styles
+need a separately designed and tested contract.
 
-## 2. Auditar y verificar el certificado
+## 2. Audit and verify the certificate
 
-Para el ejemplo corto:
+For the short example:
 
 ```bash
 python examples/02_audit.py --work output/my-first-run
 ```
 
-Para la referencia íntegra o una pieza propia:
+For the full reference or your own piece:
 
 ```bash
 python scripts/audit_arrangement.py output/my-piece/piece.mid \
@@ -94,30 +94,30 @@ python scripts/audit_arrangement.py output/my-piece/piece.mid \
 python scripts/composition_guard.py --verify output/my-piece/piece.mid
 ```
 
-Ambos deben salir con 0. `validate_midi`, una etiqueta de clasificador y duración
-correcta por sí solos NO aprueban un arreglo. No sobrescribir `*.audit.json`
-con el informe independiente de `audit_arrangement`: el certificado contiene
-también plan, hashes de lecturas y código.
+Both must exit with 0. `validate_midi`, a classifier label, and correct duration
+alone do NOT approve an arrangement. Do not overwrite `*.audit.json`
+with the independent `audit_arrangement` report: the certificate also contains
+the plan, reading hashes, and code hashes.
 
-Una modificación posterior del MIDI exige volver al guard y publicar con otro
-nombre. Los certificados actuales incluyen rutas absolutas: tras mover el
-checkout o actualizar código/lecturas, volver a ejecutar el flujo. SHA-256 no
-es una firma digital ni impide que alguien con escritura falsifique un recibo.
+Any subsequent MIDI change requires returning to the guard and publishing under
+another name. Current certificates include absolute paths: after moving the
+checkout or updating code/readings, rerun the workflow. SHA-256 is not
+a digital signature and cannot stop someone with write access from forging a receipt.
 
-## 3. Renderizar y mezclar
+## 3. Render and mix
 
-Recorrido completo del ejemplo corto, después de pasos 1 y 2:
+Complete short-example workflow, after steps 1 and 2:
 
 ```bash
 python examples/03_mix_and_master.py --work output/my-first-run
 ```
 
-El script realiza en orden `verify_delivery` → `render_stems` → `auto_mix` →
-`master` → encode OGG → `release_check` sobre el OGG, y conserva `results.json`.
-Un target incumplido o un veredicto `needs_work` produce exit 1.
+The script runs `verify_delivery` → `render_stems` → `auto_mix` →
+`master` → OGG encoding → `release_check` on the OGG, in order, and retains `results.json`.
+A missed target or a `needs_work` verdict produces exit 1.
 
-Para una pieza propia, estos son los comandos de audio exactos (requieren la
-instalación editable); usar rutas del mismo directorio de trabajo:
+For your own piece, these are the exact audio commands (they require an
+editable installation); use paths in the same working directory:
 
 ```bash
 python - <<'PY'
@@ -131,24 +131,24 @@ python scripts/mix_engine.py --stems output/my-piece/stems \
   --out output/my-piece/mix.wav --profile balanced
 ```
 
-`stems/` debe ser nuevo o vacío. Se produce un WAV por pista con notas; nombres
-seguros y únicos, un canal por pista. Para tipo 0 multicanal, separar instrumentos
-primero. Mantener programas/controladores en la propia pista de cada instrumento.
-Se preserva el mapa global de tempo y los tiempos delta. Un fallo de FluidSynth
-aborta; nunca inferir éxito por la existencia de un WAV antiguo.
+`stems/` must be new or empty. One WAV is produced per track containing notes;
+names are safe and unique, with one channel per track. For multichannel type 0 MIDI,
+separate instruments first. Keep programs/controllers in each instrument's own track.
+The global tempo map and delta times are preserved. A FluidSynth failure
+aborts; never infer success from an old WAV's existence.
 
-Consultar `list_profiles()` antes de mezclar. Nombres soportados:
+Call `list_profiles()` before mixing. Supported names:
 `drums`, `electric_bass`, `rhythm_guitar_L`, `rhythm_guitar_R`, `lead_guitar`,
-`lead_guitar_L`, `lead_guitar_R`, `synth_piano`. Se admite un subconjunto; cualquier
-nombre ajeno aborta incluso si otros sí coinciden. Renombrar con intención o
-añadir y probar un perfil; no descartar instrumentos en silencio.
+`lead_guitar_L`, `lead_guitar_R`, `synth_piano`. A subset is accepted; any
+unknown name aborts even if others match. Rename deliberately or
+add and test a profile; do not silently discard instruments.
 
-Mono se duplica a estéreo, tasas distintas se remuestrean a 44100 Hz. Sin
-`--duration` se usa el stem más largo para conservar colas. `--duration N`
-recorta o rellena con ceros: declarar cualquier recorte musical en la entrega.
-Archivos sin frames, sin señal, corruptos o con valores no finitos abortan.
+Mono is duplicated to stereo; differing sample rates are resampled to 44100 Hz. Without
+`--duration`, the longest stem determines duration to preserve tails. `--duration N`
+truncates or zero-pads: disclose any musical truncation in the delivery.
+Files with no frames, no signal, corruption, or nonfinite values cause an abort.
 
-## 4. Masterizar y codificar
+## 4. Master and encode
 
 ```bash
 python - <<'PY'
@@ -163,19 +163,19 @@ ffmpeg -nostdin -y -i output/my-piece/master.wav -ar 44100 -ac 2 \
   -c:a libvorbis -q:a 5 output/my-piece/piece.ogg
 ```
 
-Si se configuró `FFMPEG` fuera del PATH, sustituir `ffmpeg` por esa ruta. El
-master aplica cadena de bus y `loudnorm` de dos pasadas; devuelve LUFS integrado,
-true peak medido por FFmpeg y LRA. `target_met` exige ±1 LU del objetivo y
-TP <= -0.9 dBTP (tolerancia de 0.1 respecto al objetivo -1). No garantiza que
-toda señal pueda llegar al objetivo sin alterar dinámica. El mix ya tiene bus;
-el master añade otra cadena deliberada. Comparar antes/después por si se prefiere
-omitir procesamiento tonal adicional en una futura política.
+If `FFMPEG` is configured outside PATH, replace `ffmpeg` with that path. The
+master applies a bus chain and two-pass `loudnorm`; it returns integrated LUFS,
+FFmpeg-measured true peak, and LRA. `target_met` requires ±1 LU of the target and
+TP <= -0.9 dBTP (0.1 tolerance relative to the -1 target). It does not guarantee
+that every signal can reach the target without changing dynamics. The mix already has a bus;
+mastering adds another deliberate chain. Compare before/after to assess whether
+additional tonal processing should be omitted under a future policy.
 
-No llamar «true peak» al pico de muestras de Pedalboard. No llamar LUFS al RMS.
-Forzar sample rate y canales al exportar; `loudnorm` puede trabajar a 192 kHz.
-La compresión con pérdida puede elevar picos, por eso se verifica EL OGG FINAL.
+Do not call Pedalboard's sample peak “true peak.” Do not call RMS LUFS.
+Force sample rate and channel count on export; `loudnorm` can operate at 192 kHz.
+Lossy compression can raise peaks, which is why the FINAL OGG is checked.
 
-## 5. Verificar → escuchar → publicar
+## 5. Verify → listen → publish
 
 ```bash
 python - <<'PY'
@@ -191,33 +191,33 @@ ffprobe -v error -show_entries format=duration:stream=sample_rate,channels \
   -of json output/my-piece/piece.ogg
 ```
 
-`release_check` mide y señala clipping, margen de pico/true peak, RMS muy alto
-y correlación estéreo sospechosa. Sus umbrales son generales; el parámetro
-`profile` se valida y se informa, pero no representa objetivos distintos por
-género. LUFS/LRA se reportan; el veredicto no certifica un objetivo de loudness.
+`release_check` measures and flags clipping, peak/true peak headroom, very high RMS,
+and suspicious stereo correlation. Its thresholds are general; the `profile`
+parameter is validated and reported but does not represent different targets by
+genre. LUFS/LRA are reported; the verdict does not certify a loudness target.
 
-Escuchar en estéreo y mono, comprobar balance y timbre. Si el agente no puede
-escuchar, entregar como **«maqueta estructuralmente auditada; calidad sonora
-pendiente de escucha humana»**. Un `ready` no autoriza afirmar «suena bien».
+Listen in stereo and mono; check balance and timbre. If the agent cannot
+listen, deliver as **“structurally audited mockup; sound quality
+pending human listening.”** A `ready` verdict does not justify claiming “it sounds good.”
 
-Antes de compartir: conservar salida real de gates, métricas, licencia y
-limitaciones. Publicar MIDI/OGG seleccionados y sus notas de procedencia;
-excluir stems/WAV/cache/backups. Subir a GitHub o Reddit es una acción del dueño
-tras revisar; este protocolo no ejecuta publicaciones remotas.
+Before sharing: retain actual gate output, metrics, licensing, and
+limitations. Publish selected MIDI/OGG files and their provenance notes;
+exclude stems/WAV/cache/backups. Uploading to GitHub or Reddit is an owner's action
+after review; this protocol does not perform remote publication.
 
-## Errores frecuentes y reparación concreta
+## Common errors and specific repairs
 
-| Error | Diagnóstico y reparación |
+| Error | Diagnosis and repair |
 | --- | --- |
-| `plan sin silencio de instrumento armónico` | Declarar `silent_bars >= 1` en piano/guitarra/pad/cuerdas/coro Y escribir al menos ese número de compases completos sin notas/sustain. Silenciar solo el lead o el bajo no cuenta. |
-| `fill_bars` fuera de finales | Calcular suma acumulada de `bars`: para 4+4+4 los únicos bordes son `[4,8,12]`, no `[3,7,11]`. Incluir solo bordes con fill real detectado. Mover los fills del MIDI; no falsear la lista. |
-| Fills detectados ≠ lista del plan | Revisar `fill_bars` del informe. La heurística detecta >=3 toms o >=4 cajas en el último pulso. Corregir ataques y ubicación; no inventar fills en el plan ni aplicar fills periódicos cada 4 compases. |
-| `densidad difiere más de 3 golpes` | Comparar `density_sections` con la intención. Es promedio de golpes de batería por compás, no total de notas ni densidad de guitarras. Arreglar el groove o corregir un objetivo mal expresado antes de regenerar; diferencia permitida <=3. |
-| Compases del plan ≠ MIDI | Sumar secciones, comprobar marcadores a `bar * 4 * ticks_per_beat`, último `note_off` y `end_of_track`. Un sustain que excede el fin puede añadir un compás. Alinear composición y plan; no truncar notas con un delta negativo oculto. |
-| Gate de densidad falla aunque el rango es amplio | Debe haber >=3 niveles de densidad Y contraste entre secciones >=2. Dos secciones distintas pueden tener igual número de golpes. Cambiar la orquestación del kit de forma musical, no añadir jitter. |
-| Solapamiento de batería | Máximo dos piezas por ataque; quitar duplicados, doble platillo/hat y caja+tom. Agrupa también ataques muy próximos: el jitter no oculta una colisión. |
-| `Unknown profile` / stems no coinciden | Consultar `list_profiles`, usar nombres exactos o diseñar un perfil explícito con tests. No ignorar stems. |
-| `no se sobrescriben entregas` | Elegir otro nombre/directorio. El guard protege la evidencia de entregas previas. |
-| Certificado inválido / lecturas o código cambiaron | Regenerar por el guard con un destino nuevo. Conservar el recibo anterior como evidencia histórica; no editar hashes. |
-| `Silent audio` / `Empty audio` | Verificar notas MIDI, programa, SoundFont y subprocess. No normalizar silencio ni continuar con un stem faltante. |
-| `needs_work` tras encode OGG | Revisar `issues` y TP del codec final; bajar objetivo/ganancia y volver a masterizar/codificar. Para mono intencional, documentar la excepción al chequeo estéreo en vez de afirmar que pasó. |
+| `plan without harmonic-instrument silence` | Declare `silent_bars >= 1` for piano/guitar/pad/strings/choir AND write at least that many full bars without notes/sustain. Silencing only the lead or bass does not count. |
+| `fill_bars` outside section endings | Calculate the cumulative sum of `bars`: for 4+4+4 the only boundaries are `[4,8,12]`, not `[3,7,11]`. Include only boundaries with an actual detected fill. Move MIDI fills; do not falsify the list. |
+| Detected fills ≠ plan list | Review `fill_bars` in the report. The heuristic detects >=3 tom hits or >=4 snare hits in the last beat. Correct attacks and placement; do not invent fills in the plan or apply periodic fills every 4 bars. |
+| `density differs by more than 3 hits` | Compare `density_sections` with intent. This is average drum hits per bar, not total notes or guitar density. Fix the groove or correct a misexpressed target before regenerating; allowed difference <=3. |
+| Planned bars ≠ MIDI | Sum sections; check markers at `bar * 4 * ticks_per_beat`, the last `note_off`, and `end_of_track`. Sustain extending beyond the end can add a bar. Align composition and plan; do not truncate notes with a hidden negative delta. |
+| Density gate fails despite a wide range | There must be >=3 density levels AND contrast >=2 between sections. Two different sections can have the same hit count. Change kit orchestration musically; do not add jitter. |
+| Drum overlap | Maximum two kit pieces per attack; remove duplicates, double cymbal/hi-hat, and snare+tom. Closely spaced attacks are also grouped: jitter does not hide a collision. |
+| `Unknown profile` / stem mismatch | Call `list_profiles`, use exact names, or design an explicit profile with tests. Do not ignore stems. |
+| `no se sobrescriben entregas` | Choose another name/directory. The guard protects evidence from previous deliveries. |
+| Invalid certificate / readings or code changed | Regenerate through the guard with a new destination. Retain the previous receipt as historical evidence; do not edit hashes. |
+| `Silent audio` / `Empty audio` | Check MIDI notes, program, SoundFont, and subprocess. Do not normalize silence or continue with a missing stem. |
+| `needs_work` after OGG encoding | Review `issues` and the final codec's TP; lower the target/gain and remaster/re-encode. For intentional mono, document the exception to the stereo check instead of claiming it passed. |

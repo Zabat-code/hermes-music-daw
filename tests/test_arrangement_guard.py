@@ -1,4 +1,4 @@
-"""Regresiones ejecutables de los defectos históricos y del aborto de entrega."""
+"""Executable regressions for historical defects and delivery abortion."""
 import contextlib
 import copy
 import io
@@ -63,11 +63,11 @@ class ArrangementGuardTests(unittest.TestCase):
 
     def test_historical_v1_failure_classes_fail(self):
         report = audit(self.bad)
-        for name in ('dinámica', 'registro', 'solapamiento', 'patrones', 'densidad'):
+        for name in ('dynamics', 'register', 'overlap', 'patterns', 'density'):
             self.assertFalse(self.gate(report, name))
 
     def test_corrected_reference_passes(self):
-        # El ejemplo interno conserva la corrección; no requiere archivos privados.
+        # The bundled example retains the fix; no private files are required.
         report = audit(self.reference)
         self.assertTrue(report['ok'], format_report(report))
 
@@ -77,19 +77,19 @@ class ArrangementGuardTests(unittest.TestCase):
                 for msg in tr:
                     if msg.type == 'note_on' and msg.velocity:
                         msg.velocity = 90
-        self.assertFalse(self.gate(self.mutated(flatten), 'dinámica'))
+        self.assertFalse(self.gate(self.mutated(flatten), 'dynamics'))
 
     def test_high_lead_fails(self):
         def high(song):
             for msg in song.tracks[-1]:
                 if hasattr(msg, 'note'):
                     msg.note += 14
-        self.assertFalse(self.gate(self.mutated(high), 'registro'))
+        self.assertFalse(self.gate(self.mutated(high), 'register'))
 
     def test_held_harmony_is_not_silence(self):
         def held(song):
             song.tracks[5] = build_track('synth_piano', [(0, 480, 64, 80)], 4, 3)
-        self.assertFalse(self.gate(self.mutated(held), 'espacio'))
+        self.assertFalse(self.gate(self.mutated(held), 'space'))
 
     def test_pedal_extends_occupancy(self):
         def held(song):
@@ -100,17 +100,17 @@ class ArrangementGuardTests(unittest.TestCase):
                 mido.Message('note_on', note=64, velocity=80, channel=3),
                 mido.Message('note_off', note=64, channel=3, time=480),
             ])
-        self.assertFalse(self.gate(self.mutated(held), 'espacio'))
+        self.assertFalse(self.gate(self.mutated(held), 'space'))
 
     def test_triples_across_tracks_fail(self):
         def triple(song):
             song.tracks.append(build_track('extra_drums', [(0, .1, 47, 80)], 0, 9, is_drum=True))
-        self.assertFalse(self.gate(self.mutated(triple), 'solapamiento'))
+        self.assertFalse(self.gate(self.mutated(triple), 'overlap'))
 
     def test_jitter_cannot_hide_triple(self):
         def triple(song):
             song.tracks.append(build_track('extra_drums', [(.01, .1, 47, 80)], 0, 9, is_drum=True))
-        self.assertFalse(self.gate(self.mutated(triple), 'solapamiento'))
+        self.assertFalse(self.gate(self.mutated(triple), 'overlap'))
 
     def test_repetition_and_fixed_density_fail(self):
         def repeated(song):
@@ -118,8 +118,8 @@ class ArrangementGuardTests(unittest.TestCase):
                   for b in range(120) for off, p in ((0, 36), (1, 38), (2, 36), (3, 38))]
             song.tracks[1] = build_track('drums', ns, 0, 9, is_drum=True)
         report = self.mutated(repeated)
-        self.assertFalse(self.gate(report, 'patrones'))
-        self.assertFalse(self.gate(report, 'densidad'))
+        self.assertFalse(self.gate(report, 'patterns'))
+        self.assertFalse(self.gate(report, 'density'))
 
     def test_periodic_fills_fail(self):
         def periodic(song):
@@ -138,7 +138,7 @@ class ArrangementGuardTests(unittest.TestCase):
         spec = {'sections': [{'name': 'A', 'bars': 8}], 'tracks': [
             {'role': 'drums', 'pattern': 'drum_grid',
              'grid': {'kick': [1], 'snare': [1], 'hihat': [1]}}]}
-        with self.assertRaisesRegex(ValueError, 'drum_grid rechazado'):
+        with self.assertRaisesRegex(ValueError, 'drum_grid rejected'):
             render_song(spec, str(out))
         self.assertEqual(out.read_bytes(), b'original intacto')
 
@@ -148,7 +148,7 @@ class ArrangementGuardTests(unittest.TestCase):
             {'role': 'drums', 'pattern': 'drum_grid', 'grid': {
                 'kick': [1], 'snare': [0, [1, -.25]],
                 'hihat': [0, 0, [1, -.5]]}}]}
-        with self.assertRaisesRegex(ValueError, 'tick efectivo'):
+        with self.assertRaisesRegex(ValueError, 'effective tick'):
             render_song(spec, str(out))
         self.assertFalse(out.exists())
 
@@ -191,9 +191,9 @@ class ArrangementGuardTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertTrue(verify_delivery(out)['ok'])
         edited = mido.MidiFile(out)
-        edited.tracks[0][0].name = 'Editado después de certificar'
+        edited.tracks[0][0].name = 'Edited after certifying'
         edited.save(out)
-        with self.assertRaisesRegex(ValueError, 'certificado inválido'):
+        with self.assertRaisesRegex(ValueError, 'invalid certificate'):
             verify_delivery(out)
 
 

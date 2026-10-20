@@ -30,12 +30,12 @@ def test_missing_silence_message_explains_actual_score_change():
     plan = decision_plan()
     for instrument in plan['instruments']:
         instrument['silent_bars'] = 0
-    with pytest.raises(ValueError, match='silent_bars>=1.*sin notas ni sustain'):
+    with pytest.raises(ValueError, match='silent_bars>=1.*no notes or sustain'):
         validate_plan(plan)
 
 
 def test_fill_message_reports_valid_one_based_borders():
     plan = decision_plan()
     plan['fill_bars'] = [7]
-    with pytest.raises(ValueError, match='numerados desde 1.*8, 24, 32'):
+    with pytest.raises(ValueError, match='numbered from 1.*8, 24, 32'):
         validate_plan(plan)
