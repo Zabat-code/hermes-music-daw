@@ -332,6 +332,8 @@ def build_track(name: str, notes, program: int, channel: int,
     if not is_drum:
         if not 0 <= program <= 127:
             raise ValueError(f"program out of range: {program}")
+        if isinstance(program, str):
+            program = int(program)
         track.append(Message("program_change", program=program,
                              channel=channel, time=0))
 
@@ -480,9 +482,53 @@ def render_song(spec: dict, out_path: str, tpb: int = TPB) -> str:
     for t in all_track_entries:
         patname = t.get("pattern")
         if not patname:
-            continue
+            # Engine-spec track: use role as track name, generate chord tones from progression
+            role = t.get("role")
+            if role:
+                instrument = t.get("instrument", 0)
+                channel = t.get("channel", 0)
+                dynamics = DYNAMICS.get(t.get("dynamics", "mp"), 50)
+                want = t.get("sections")
+
+                notes = []
+                for sec, sec_start, _len in spans:
+                    if want and sec.get("name") not in want:
+                        continue
+                    prog = sec.get("progression", [key])
+                    section_bars = sec.get("bars", 4)
+                    for b in range(section_bars):
+                        chord = prog[b % len(prog)]
+                        base = sec_start + b * bar_beats
+                        chord_notes = chord_midis(chord, 4)
+                        if not chord_notes:
+                            continue
+                        # Root, third, fifth (quarter notes)
+                        for i, pitch in enumerate(chord_notes):
+                            offb = i * 0.5
+                            notes.append((base + offb, 1.0, pitch, dynamics))
+
+                othr = accomp.get(role)
+
+                if othr and othr.get("instrument") != instrument:
+                    othr.setdefault("instrument", instrument)
+                    othr.setdefault("channel", channel)
+                    othr.setdefault("is_drum", False)
+                    othr.setdefault("notes", [])
+                    othr["notes"].extend(notes)
+                elif othr:
+                    othr["notes"].extend(notes)
+                else:
+                    accomp[role] = {
+                        "instrument": instrument,
+                        "channel": channel,
+                        "notes": notes,
+                        "is_drum": False,
+                    }
+                continue
+            else:
+                continue
+        # Existing pattern processing
         # --- grid-based drum pattern (16 steps/bar) ---
-        # t["grid"] = {"kick":[...16], "snare":[...], "hihat":[...], ...} fractions 0..1
         if patname == "drum_grid":
             grid = t.get("grid") or {}
             thr = float(t.get("grid_threshold", 0.4))

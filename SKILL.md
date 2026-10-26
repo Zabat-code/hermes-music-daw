@@ -1,7 +1,7 @@
 ---
 name: hermes-music
-description: Compose, render, and analyze MIDI with mido.
-version: 1.0.0
+description: Advanced MIDI composition with harmonic theory, genre-specific progressions, and orchestral instrumentation.
+version: 2.0.0
 author: the hermes-music-daw authors
 license: MIT
 platforms: [linux, macos]
@@ -294,3 +294,53 @@ python3 "$M" validate my.mid --expect 80.0
 ```
 
 If any command returns a nonzero code, abort and fix the issue. Balanced notes and correct duration alone do not approve an arrangement.
+
+## Advanced Composition Engine (v2.0.0)
+
+The `scripts/composition_engine_advanced.py` module extends the core engine with academic music theory and pattern extraction from Midibase.db.
+
+### Contrato de densidad (estructura sonora exigida)
+
+El motor `composition_engine_advanced.py` implementa la estructura "pasa el ruido":
+
+| Sección | Densidad | Dinámica | Instrumento | Función |
+|---------|----------|----------|-------------|---------|
+| `intro` | `high` | `mf` | orquesta completa (cello, viola, harp, flute, timpani) | Establecimiento del tono |
+| `development` | `sparse` | `pp` | violin solamente | Solo el violin — la sección que el usuario pidió |
+| `climax` | `relaxing` | `f` | piano + tremor | Cierre ordenado |
+| `resolution` | `low` | `p` | piano | Salida cómoda |
+
+Regla: la densidad se controla por complejidad de cámaras y nùmero de notas simultáneas, no por dinámica solo. `sparse` = 2-3 notas por compás; `high` = 8-12 notas por compás en múltiples caquetes.
+
+### Sistema de acordes y errores conocidos
+
+Los acordes se pasan **nomina directa** (C, Dm, Em, F, G, Am, G7, etc.). No usar numerales romanos (I, V, vi) ni calidades no soportadas (Maj7, M7). Si usas `analyze_chord`, queda definido como `HarmonicFunction(roman_numeral=..., function=..., chord_symbol=..., tension=..., tendency=...)`.
+
+```python
+# CORRECTO: acorde directo
+prog = HarmonicAnalyzer.generate_progression('E', 'mayor', 'classical', bars=4)
+# Resultado: ['E', 'G#m', 'A', 'B'] — cada uno como HarmonicFunction
+
+# INCORRECTO: numeral romano (falla en hermesmusic.parse_chord)
+prog = HarmonicAnalyzer.generate_progression('E', 'mayor', 'classical', bars=4)
+# Si pasas 'I', 'V', 'vi' → parse_chord lanza ValueError
+```
+
+### Usage
+
+```bash
+# Compose orchestral piece with structured dynamics
+python3 scripts/composition_engine_advanced.py --genre classical --key E --duration 240 --form orchestral_ascending
+
+# Compose pop song with verse-chorus structure
+python3 scripts/composition_engine_advanced.py --genre pop --key G --duration 240 --bpm 120
+
+# Compose jazz standard
+python3 scripts/composition_engine_advanced.py --genre jazz --key F --duration 240 --bpm 90
+```
+
+### Supported Genres
+classical, pop, jazz, flamenco, romantic, reggaeton, electronic, ambient, folk, blues, baroque, romantic, swing, bossa_nova, samba, funk, soul, rnb, disco, house, techno, and 80+ more.
+
+### Output Format
+Returns a `SongSpec` dict compatible with `hermesmusic.py` — can be rendered to audio via `render_song()`.
