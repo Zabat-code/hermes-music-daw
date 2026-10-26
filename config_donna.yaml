@@ -1,0 +1,58 @@
+# config_donna.yaml
+# Perfil de configuración para Donna - Perfil dedicado a música
+# Uso: hermes_music.py --config config_donna.yaml
+
+profile: "default"
+template: "beanario-domesticos.json"
+
+# Modelo de lenguaje para composición
+llm:
+  provider: "nous"
+  model: "upstage/solar-pro4:free"
+  context_window: 128000
+
+# Tiempo de composición y generación
+timing:
+  tempo_min: 70
+  tempo_max: 120
+  bars_min: 4
+  bars_max: 64
+  tempo: 120  # BPM por defecto
+
+# Género por defecto
+genre: "bachata"
+
+# Instrumentos disponibles (GM Standard)
+instruments:
+  guitarra: 24
+  bajo: 33
+  piano: 48
+  bongo: 79
+  gaita: 81
+  coros: 53
+  tumbadora: 42
+  timbales: 41
+  conga: 67
+  trumeta: 56
+  sax: 57
+  cinta: 89
+  maraca: 80
+  baru: 86
+  dembow: 48
+
+# Perfil de mezcla
+mix_profile: "balanced"
+
+# Audio
+audio:
+  soundfont: "/usr/share/sounds/sf2/FluidR3_GM.sf2"
+  format: "wav"
+  sample_rate: 44100
+  samples_per_chan: 4096
+
+# Evaluación
+evaluation:
+  target_lufs: -16.0
+  target_true_peak: -0.9
+  min_len_s: 30
+  max_len_s: 300

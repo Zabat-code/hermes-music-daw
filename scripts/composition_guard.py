@@ -24,12 +24,21 @@ else:
 
 SKILL = Path(__file__).resolve().parent.parent
 DOCS = SKILL / 'docs'
-READINGS = [DOCS / name for name in (
+# Mandatory readings: the consolidated operational guide + reference skeleton.
+# Previously 5 documentation documents (31 KB) + 3 from the skill (35 KB) = 66 KB
+# were dumped in full to stdout on every run. Now the ~5 KB guide is read and the
+# full sources stay on demand (see references/INDICE.md).
+READINGS = [
+    SKILL / 'references/GUIA-OPERATIVA.md',
+    SKILL / 'references/teoria-composicion.md',
+    SKILL / 'references/rendering.md',
+    SKILL / 'scripts/example_dense_arrangement.py',
+]
+# Full references, loaded only when the guide is not enough (on demand).
+REFERENCE_ON_DEMAND = [DOCS / name for name in (
     'ERROR-REPETIDO-2026-10-19.md', 'OBSERVACIONES-PARA-AUDITOR-2026-10-19.md',
     'COMPARATIVA-BATERIA-METAL-2026-10-19.md', 'TEORIA-Y-ARQUITECTURA-2026-10-19.md',
-    'HALLAZGOS.md')] + [SKILL / 'references/teoria-composicion.md',
-                         SKILL / 'references/rendering.md',
-                         SKILL / 'scripts/example_dense_arrangement.py']
+    'HALLAZGOS.md')]
 
 
 def digest(path):
@@ -168,10 +177,21 @@ def main(argv=None):
             raise ValueError('the command requires compositor.py and --out {draft}')
         print('REQUIRED PROTOCOL: 1 READ -> 2 DECIDE -> 3 WRITE -> 4 VERIFY', flush=True)
         evidence = {}
+        # Compact output: hash + one-line summary per reading, NOT the full content.
+        # The full text stays in the .audit.json certificate (hashes) and the sources
+        # remain available on demand. Dumping 66 KB per run overflowed the agent's
+        # context without adding any verification value.
+        print(f'\nVERIFIED READINGS ({len(READINGS)})')
         for path in READINGS:
-            content = path.read_text()
             evidence[str(path)] = digest(path)
-            print(f'\nREADING {path}\n{content}', flush=True)
+            try:
+                raw = path.read_text()
+                first = next((ln.strip() for ln in raw.splitlines()
+                              if ln.strip() and not ln.startswith('#')), '')
+                print(f'  {digest(path)[:12]}  {len(raw):>6} B  {path.name}')
+                print(f'                {first[:90]}')
+            except OSError as exc:
+                print(f'  ERROR       {path.name}: {exc}')
         # Read and validate the plan before executing a single note from the composer.
         plan = json.loads(args.plan.read_text())
         validate_plan(plan)

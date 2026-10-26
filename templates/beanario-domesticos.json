@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "tipo": "plantilla-dominicana",
+    "version": "1.0",
+    "utiles": ["bachata", "merengue", "salsa", "reggaeton"]
+  },
+  "bachata": {
+    "id": "bachata",
+    "family": "Música dominicana clásica",
+    "instrumentos_tipicos": {
+      "guitarra": 37,
+      "alto": 61,
+      "tenor": 64,
+      "bongo": [79, 81],
+      "guita": 81,
+      "cinta": 89,
+      "bass": 33,
+      "coros": 53
+    },
+    "progresiones_tipicas": ["G", "D", "Bm", "Em", "C", "G7"],
+    "compas": "4/4",
+    "tempos_cerca": [90, 110],
+    "modelo": "pad + guitarra arpegio, bongó y guita",
+    "resultado_esperado": "La guitarra acompaña y los percusivos mantienen la ritmia"
+  },
+  "merengue": {
+    "id": "merengue",
+    "family": "Música merengue típico",
+    "instrumentos_tipicos": {
+      "tambora": [41, 42],
+      "gaita": 81,
+      "maraca": 80,
+      "bass": 33,
+      "piano": 48,
+      "coros": 53
+    },
+    "progresiones_tipicas": ["C", "G", "Am", "F", "G7", "C7"],
+    "compas": "4/4 (marcha)",
+    "tempos_cerca": [120, 150],
+    "modelo": "tambora + gaita, piano y bass",
+    "resultado_esperado": "El sonido de tambora y gaita define el género"
+  },
+  "salsa": {
+    "id": "salsa",
+    "family": "Salsa (Dominicana-Puerto Rico)",
+    "instrumentos_tipicos": {
+      "timbales": [41, 42],
+      "conga": [67, 68],
+      "piano": 48,
+      "bass": 33,
+      "trompeta": 56,
+      "sax": 57,
+      "coros": 53,
+      "bongo": 79
+    },
+    "progresiones_tipicas": ["C", "G", "Am", "F", "C7", "F7"],
+    "compas": "2/2 (conga)",
+    "tempos_cerca": [100, 125],
+    "modelo": "timbales + congas, piano montuno, bass y coros",
+    "resultado_esperado": "La estructura montuno con timbales determina el género"
+  },
+  "reggaeton": {
+    "id": "reggaeton",
+    "family": "Reggaetón/Dembow",
+    "instrumentos_tipicos": {
+      "boom_bass": 33,
+      "sub_machine": 48,
+      "cupe": 48,
+      "shaker": 80,
+      "hihat": 49,
+      "snare": 48
+    },
+    "progresiones_tipicas": ["F", "C", "G7", "Am", "Dm"],
+    "compas": "4/4 (dembow)",
+    "tempos_cerca": [140, 170],
+    "modelo": "dembow pattern (kick, snare, cupe), boom bass, sub machine",
+    "resultado_esperado": "El dembow (kick/snare/cupe) define el ritmo"
+  }
+}
