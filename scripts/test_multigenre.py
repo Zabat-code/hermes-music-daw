@@ -97,8 +97,7 @@ if errors:
         print(f"   - {e['genre']}: {e['error']}")
 
 # Guardar resultados
-output_path = f"{dest_dir}musica_multigenro_results.json"
-os.makedirs(dest_dir, exist_ok=True)
+output_path = os.path.expanduser("~/.hermes/List-p/reports/multigenre_test_results.json")
 with open(output_path, 'w') as f:
     import json
     json.dump({
